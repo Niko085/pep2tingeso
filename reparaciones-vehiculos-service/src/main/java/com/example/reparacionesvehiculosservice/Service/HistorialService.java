@@ -1,6 +1,7 @@
 package com.example.reparacionesvehiculosservice.Service;
 
 import com.example.reparacionesvehiculosservice.Entity.HistorialEntity;
+import com.example.reparacionesvehiculosservice.Entity.ReparacionEntity;
 import com.example.reparacionesvehiculosservice.Repository.HistorialRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -12,6 +13,8 @@ import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 
+
+@Service
 public class HistorialService {
     @Autowired
     HistorialRepository historialRepository;
@@ -63,41 +66,40 @@ public class HistorialService {
 
     }
 
+    /*
 
     //Función modificada para que calcule el monto total a pagar de un auto en particular, en un historial ya creado
     public Boolean calcularMontoTotalPagar(String patente) {
         double montoTotal = 0;
 
         //Buscar historiales por patente
-        List<HistorialReparacionesEntity> historiales = historialReparacionesRepository.findByPatente(patente);
+        List<HistorialEntity> historiales = historialRepository.findByPatente(patente);
 
         //Buscar automovil por patente
         AutomovilEntity automovil = automovilService.getAutomovilByPatente(patente);
         String tipoMotor = automovil.getMotor();
 
         // Buscar el historial existente por patente que esté sin pagar
-        HistorialReparacionesEntity historial = historialReparacionesRepository.findByPatenteAndAndPagadoIsFalse(patente);
+        HistorialEntity historial = historialRepository.findByPatenteAndAndPagadoIsFalse(patente);
         long idhistorial = historial.getId();
         List<ReparacionEntity> reparaciones = reparacionService.getReparacionByIdHistorialReparaciones(idhistorial);
 
         //Calculo del monto de reparaciones, sin descuentos, recargos ni iva
         for (ReparacionEntity reparacion : reparaciones) {
-            montoTotal += valorReparacionesService.getMonto(reparacion.getTipoReparacion(), tipoMotor);
+            montoTotal += valorReparacionService.getMonto(reparacion.getTipoReparacion(), tipoMotor);
         }
 
-
         //Descuentos
-        double descuentoDia = (officeHRMService.getPorcentajeDescuentoDia(historial.getFechaIngresoTaller(), historial.getHoraIngresoTaller()) * montoTotal);
-        double descuentoCantidadReparaciones = (officeHRMService.getDescuentoCantidadReparaciones(automovil,encontrarReparacionesPorFecha(historiales)))* montoTotal;
-        int descuentoPorBonos = officeHRMService.getMontoDescuentoBonos(automovil);
+        double descuentoDia = (costManagerService.getPorcentajeDescuentoDia(historial.getFechaIngresoTaller(), historial.getHoraIngresoTaller()) * montoTotal);
+        double descuentoCantidadReparaciones = (costManagerService.getDescuentoCantidadReparaciones(automovil,encontrarReparacionesPorFecha(historiales)))* montoTotal;
+        int descuentoPorBonos = costManagerService.getMontoDescuentoBonos(automovil);
         double descuentos = descuentoDia + descuentoCantidadReparaciones + descuentoPorBonos;
-
 
         //Recargos
         //historial.setRecargos(recargoAntiguedad);
-        double recargoKilometraje = officeHRMService.getPorcentajeRecargoKilometraje(automovil) * montoTotal;
-        double recargoAntiguedad = officeHRMService.getPorcentajeRecargoAntiguedad(automovil) * montoTotal;
-        double recargoRetraso = officeHRMService.getPorcentajeRecargoRetraso(historial) * montoTotal;
+        double recargoKilometraje = costManagerService.getPorcentajeRecargoKilometraje(automovil) * montoTotal;
+        double recargoAntiguedad = costManagerService.getPorcentajeRecargoAntiguedad(automovil) * montoTotal;
+        double recargoRetraso = costManagerService.getPorcentajeRecargoRetraso(historial) * montoTotal;
         double recargos = recargoAntiguedad + recargoKilometraje + recargoRetraso;
 
         double iva = (montoTotal + recargos - descuentos) * 0.19;
@@ -110,25 +112,13 @@ public class HistorialService {
         historial.setPagado(true); //está extra, pero por si las moscas
 
         // Guardar o actualizar el historial en la base de datos
-        historialReparacionesRepository.save(historial);
+        historialRepository.save(historial);
         return true;
     }
 
 
-    public int encontrarReparacionesPorFecha(List<HistorialReparacionesEntity> historialReparaciones){
-        int cantidad = 0;
-        //Fecha actual
-        LocalDate fechaActual = LocalDate.now();
-        //La fecha actual, pero hace 1 año
-        LocalDate fechaHace12Meses = fechaActual.minus(12, ChronoUnit.MONTHS);
 
-        for (HistorialReparacionesEntity historialReparacion : historialReparaciones){
-            if((historialReparacion.getFechaIngresoTaller()).isAfter(fechaHace12Meses) || (historialReparacion.getFechaIngresoTaller()).isEqual(fechaHace12Meses)){
-                cantidad += reparacionService.contarReparacionesPorHistorial(historialReparacion.getId());
-            }
-        }
-        return cantidad;
-    }
+
 
     public int getCantidadTipoReparaciones(int tipoReparacion) {
         List<String> tiposAutomovil = new ArrayList<>(); // Utilizamos una lista en lugar de un Set
@@ -172,7 +162,7 @@ public class HistorialService {
         }
         int sumaMontos = 0;
         for(String tipoMotor : tiposMotor){
-            sumaMontos += valorReparacionesService.getMonto(tipoReparacion, tipoMotor);
+            sumaMontos += valorReparacionService.getMonto(tipoReparacion, tipoMotor);
         }
         return sumaMontos;
     }
@@ -293,31 +283,21 @@ public class HistorialService {
     }
 
 
-    private int calcularTiempoReparacion(HistorialReparacionesEntity historial) {
-        LocalDate fechaIngreso = historial.getFechaIngresoTaller();
-        LocalTime horaIngreso = historial.getHoraIngresoTaller();
-        LocalDate fechaSalida = historial.getFechaSalidaTaller();
-        LocalTime horaSalida = historial.getHoraSalidaTaller();
-
-        long diasReparacion = ChronoUnit.DAYS.between(fechaIngreso.atTime(horaIngreso), fechaSalida.atTime(horaSalida));
-        return (int) diasReparacion; // Convertimos de long a int ya que el tiempo promedio probablemente será un entero
-    }
-
 
     public List<TiemposPromedio> reporteTiempoPromedioReparacion() {
-        List<HistorialReparacionesEntity> historiales = getHistorialReparaciones();
+        List<HistorialEntity> historiales = getHistorialReparaciones();
         List<TiemposPromedio> tiemposPromedio = new ArrayList<>();
 
         // Obtener la lista de patentes que hay en el historial
         Set<String> patentes = new HashSet<>();
-        for (HistorialReparacionesEntity historial : historiales) {
+        for (HistorialEntity historial : historiales) {
             patentes.add(historial.getPatente());
         }
 
         // Obtener los autos por su patente
         for (String patente : patentes) {
-            List<HistorialReparacionesEntity> historialesPorPatente = new ArrayList<>();
-            for (HistorialReparacionesEntity historial : historiales) {
+            List<HistorialEntity> historialesPorPatente = new ArrayList<>();
+            for (HistorialEntity historial : historiales) {
                 if (historial.getPatente().equals(patente)) {
                     historialesPorPatente.add(historial);
                 }
@@ -336,11 +316,53 @@ public class HistorialService {
         return tiemposPromedio;
     }
 
-    private double calcularTiempoPromedioReparacion(List<HistorialReparacionesEntity> historiales) {
+     */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    public int encontrarReparacionesPorFecha(List<HistorialEntity> historialReparaciones){
+        int cantidad = 0;
+        //Fecha actual
+        LocalDate fechaActual = LocalDate.now();
+        //La fecha actual, pero hace 1 año
+        LocalDate fechaHace12Meses = fechaActual.minus(12, ChronoUnit.MONTHS);
+
+        for (HistorialEntity historialReparacion : historialReparaciones){
+            if((historialReparacion.getFechaIngresoTaller()).isAfter(fechaHace12Meses) || (historialReparacion.getFechaIngresoTaller()).isEqual(fechaHace12Meses)){
+                cantidad += reparacionService.contarReparacionesPorHistorial(historialReparacion.getId());
+            }
+        }
+        return cantidad;
+    }
+
+    private int calcularTiempoReparacion(HistorialEntity historial) {
+        LocalDate fechaIngreso = historial.getFechaIngresoTaller();
+        LocalTime horaIngreso = historial.getHoraIngresoTaller();
+        LocalDate fechaSalida = historial.getFechaSalidaTaller();
+        LocalTime horaSalida = historial.getHoraSalidaTaller();
+
+        long diasReparacion = ChronoUnit.DAYS.between(fechaIngreso.atTime(horaIngreso), fechaSalida.atTime(horaSalida));
+        return (int) diasReparacion; // Convertimos de long a int ya que el tiempo promedio probablemente será un entero
+    }
+
+
+    private double calcularTiempoPromedioReparacion(List<HistorialEntity> historiales) {
         long totalHorasReparacion = 0;
         int cantidadHistoriales = historiales.size();
 
-        for (HistorialReparacionesEntity historial : historiales) {
+        for (HistorialEntity historial : historiales) {
             LocalDateTime fechaHoraIngreso = LocalDateTime.of(historial.getFechaIngresoTaller(), historial.getHoraIngresoTaller());
             LocalDateTime fechaHoraSalida = LocalDateTime.of(historial.getFechaSalidaTaller(), historial.getHoraSalidaTaller());
 
