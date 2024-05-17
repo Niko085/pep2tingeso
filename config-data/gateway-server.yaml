@@ -1,0 +1,37 @@
+server:
+  port: 8081
+eureka:
+  instance:
+    hostname: localhost
+  client:
+    fetch-registry: true
+    register-with-eureka: true
+    service-url:
+      default-zone: http://localhost:8761/eureka
+spring:
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+      globalcors:
+        cors-configurations:
+          '[/**]':
+            allowedOrigins: '*'
+            allowedMethods: "*"
+            allowedHeaders: "*"
+      routes:
+        - id: vehiculos-service
+          uri: lb://vehiculos-service:8090
+          predicates:
+            - Path=/automoviles/**
+
+        - id: reparaciones-vehiculos-service
+          uri: lb://reparaciones-vehiculos-service:8091
+          predicates:
+            - Path=/historial/**
+            
+        - id: valor-reparaciones-service
+          uri: lb://valor-reparaciones-service:8092
+          predicates:
+            - Path=/valorReparaciones/**
