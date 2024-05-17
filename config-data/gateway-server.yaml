@@ -30,8 +30,8 @@ spring:
           uri: lb://reparaciones-vehiculos-service:8091
           predicates:
             - Path=/historial/**
-            
+
         - id: valor-reparaciones-service
           uri: lb://valor-reparaciones-service:8092
           predicates:
-            - Path=/valorReparaciones/**
+            - Path=/valorReparacion/**
