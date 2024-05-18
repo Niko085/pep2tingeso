@@ -1,6 +1,7 @@
 package com.example.reparacionesvehiculosservice.Controller;
 
 import com.example.reparacionesvehiculosservice.Entity.HistorialEntity;
+import com.example.reparacionesvehiculosservice.Model.AutomovilEntity;
 import com.example.reparacionesvehiculosservice.Service.HistorialService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -68,6 +69,14 @@ public class HistorialController {
     public ResponseEntity<Boolean> deleteHistorialById(@PathVariable Long id) throws Exception {
         var isDeleted = historialService.deleteHistorial(id);
         return ResponseEntity.noContent().build();
+    }
+
+
+
+    @GetMapping("/patente/{patente}")
+    public ResponseEntity<AutomovilEntity> getAutomovilByPatente(@PathVariable String patente) {
+        AutomovilEntity automovil = historialService.getAutomovilByPatente(patente);
+        return ResponseEntity.ok(automovil);
     }
 
 

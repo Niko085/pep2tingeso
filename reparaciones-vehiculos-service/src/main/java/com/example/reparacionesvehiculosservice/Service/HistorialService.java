@@ -2,9 +2,13 @@ package com.example.reparacionesvehiculosservice.Service;
 
 import com.example.reparacionesvehiculosservice.Entity.HistorialEntity;
 import com.example.reparacionesvehiculosservice.Entity.ReparacionEntity;
+import com.example.reparacionesvehiculosservice.Model.AutomovilEntity;
 import com.example.reparacionesvehiculosservice.Repository.HistorialRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestClient;
+import org.springframework.web.client.RestTemplate;
+
 
 import java.time.Duration;
 import java.time.LocalDate;
@@ -17,6 +21,8 @@ import java.util.*;
 @Service
 public class HistorialService {
     @Autowired
+    RestTemplate restTemplate;
+    @Autowired
     HistorialRepository historialRepository;
     @Autowired
     CostManagerService costManagerService;
@@ -26,6 +32,18 @@ public class HistorialService {
     //AutomovilService automovilService;
     //@Autowired
     //ValorReparacionService valorReparacionService;
+
+
+/*
+    public List<Book> getBooks(int studentId) {
+        List<Book> books = restTemplate.getForObject("http://book-service/book/bystudent/" + studentId, List.class);
+        return books;
+    }
+ */
+
+
+
+
 
     public ArrayList<HistorialEntity> getHistorialReparaciones() {
         return (ArrayList<HistorialEntity>) historialRepository.findAll();
@@ -66,7 +84,22 @@ public class HistorialService {
 
     }
 
-    /*
+//http://localhost:8081/historial/patente/CFYF55
+    public AutomovilEntity getAutomovilByPatente(String patente) {
+        // Utiliza el nombre lógico del servicio registrado en Eureka
+        String url = "http://vehiculos-service/automoviles/patente/" + patente;
+
+        // Realiza la solicitud utilizando RestTemplate
+        AutomovilEntity automovil = restTemplate.getForObject(url, AutomovilEntity.class);
+        return automovil;
+    }
+
+    public int getMonto(int numeroReparacion, String tipoMotor) {
+        String url = "http://lista-reparaciones-service/monto/" + numeroReparacion + "/" + tipoMotor;
+        int monto = restTemplate.getForObject(url, AutomovilEntity.class);
+        return monto;
+    }
+
 
     //Función modificada para que calcule el monto total a pagar de un auto en particular, en un historial ya creado
     public Boolean calcularMontoTotalPagar(String patente) {
@@ -76,7 +109,7 @@ public class HistorialService {
         List<HistorialEntity> historiales = historialRepository.findByPatente(patente);
 
         //Buscar automovil por patente
-        AutomovilEntity automovil = automovilService.getAutomovilByPatente(patente);
+        AutomovilEntity automovil = getAutomovilByPatente(patente);
         String tipoMotor = automovil.getMotor();
 
         // Buscar el historial existente por patente que esté sin pagar
@@ -86,7 +119,7 @@ public class HistorialService {
 
         //Calculo del monto de reparaciones, sin descuentos, recargos ni iva
         for (ReparacionEntity reparacion : reparaciones) {
-            montoTotal += valorReparacionService.getMonto(reparacion.getTipoReparacion(), tipoMotor);
+            montoTotal += valorReparacionService.getMonto(reparacion.getTipoReparacion(), tipoMotor);//////////////////////////////////////////////////////////////////
         }
 
         //Descuentos
@@ -118,7 +151,7 @@ public class HistorialService {
 
 
 
-
+/*
 
     public int getCantidadTipoReparaciones(int tipoReparacion) {
         List<String> tiposAutomovil = new ArrayList<>(); // Utilizamos una lista en lugar de un Set
