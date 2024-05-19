@@ -14,6 +14,7 @@ import java.util.List;
 @RequestMapping("/historial")
 @CrossOrigin("*")
 public class HistorialController {
+
     @Autowired
     HistorialService historialService;
 
