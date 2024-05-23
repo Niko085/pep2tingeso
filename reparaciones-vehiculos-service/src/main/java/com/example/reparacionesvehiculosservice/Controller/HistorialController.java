@@ -42,20 +42,20 @@ public class HistorialController {
     }
 
  */
-@GetMapping("/{id}")
-public ResponseEntity<HistorialEntity> buscarPorId(@PathVariable Long id) {
-    // Llama al método del servicio para buscar por ID
-    Optional<HistorialEntity> optionalHistorial = historialService.getHistorialAutoById(id);
+    @GetMapping("/{id}")
+    public ResponseEntity<HistorialEntity> buscarPorId(@PathVariable Long id) {
+        // Llama al método del servicio para buscar por ID
+        Optional<HistorialEntity> optionalHistorial = historialService.getHistorialAutoById(id);
 
-    // Verifica si se encontró el historial
-    if (optionalHistorial.isPresent()) {
-        // Si se encontró, devuelve la entidad con estado 200 OK
-        return ResponseEntity.ok(optionalHistorial.get());
-    } else {
-        // Si no se encontró, devuelve un estado 404 Not Found
-        return ResponseEntity.notFound().build();
+        // Verifica si se encontró el historial
+        if (optionalHistorial.isPresent()) {
+            // Si se encontró, devuelve la entidad con estado 200 OK
+            return ResponseEntity.ok(optionalHistorial.get());
+        } else {
+            // Si no se encontró, devuelve un estado 404 Not Found
+            return ResponseEntity.notFound().build();
+        }
     }
-}
 
 
     @PostMapping("/")
@@ -104,8 +104,29 @@ public ResponseEntity<HistorialEntity> buscarPorId(@PathVariable Long id) {
     public int getMonto(@PathVariable int numeroReparacion, @PathVariable String tipoMotor) {
         return historialService.getMonto(numeroReparacion, tipoMotor);
     }
+
+    @GetMapping("/montoTipoReparacionByTipoAutomovil/{tipoReparacion}/{tipoAuto}/{numMes}/{ano}")
+    public int getMontoTipoReparacionByTipoAutomovil(@PathVariable int tipoReparacion, @PathVariable String tipoAuto, @PathVariable int numMes, @PathVariable int ano) {
+        return historialService.getMontoTipoReparacionByTipoAutomovil(tipoReparacion, tipoAuto, numMes, ano);
+    }
+
+
+
+    @GetMapping("/cantidadTipoReparacioneByTipoAutomovil/{tipoReparacion}/{tipoAuto}/{numMes}/{ano}")
+    public int getCantidadTipoReparacioneByTipoAutomovil(@PathVariable int tipoReparacion, @PathVariable String tipoAuto, @PathVariable int numMes, @PathVariable int ano) {
+        return historialService.getCantidadTipoReparacioneByTipoAutomovil(tipoReparacion, tipoAuto, numMes, ano);
+    }
+
+
+
+
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    @GetMapping("/calculate")
+    public ResponseEntity<Void> calculatehistorial(@RequestParam("patente") String patente) {
+        historialService.calcularMontoTotalPagar(patente);
+        return ResponseEntity.noContent().build();
+    }
     //http://localhost:8090/api/historialreparaciones/calculate?patente=CFYF55
     /*@GetMapping("/calculate")
     public ResponseEntity<Void> calculatehistorial(@RequestParam("patente") String patente) {

@@ -51,10 +51,14 @@ public class HistorialService {
 
  */
 
+
     public Optional<HistorialEntity> getHistorialAutoById(Long id) {
         // Utiliza el método findById del repositorio
-        return HistorialRepository.findById(id);
+        return historialRepository.findById(id);
     }
+
+
+
 
     public HistorialEntity updateHistorial(HistorialEntity historial) {
         return historialRepository.save(historial);
@@ -342,19 +346,6 @@ public class HistorialService {
      */
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
     public int encontrarReparacionesPorFecha(List<HistorialEntity> historialReparaciones){
         int cantidad = 0;
         //Fecha actual
@@ -403,16 +394,7 @@ public class HistorialService {
 
 
 
-
-
-
-
-
-
-
-
-
-
+///////////////////////////////////////////PARA REPORTES PEP 2///////////////////////////////////////////
 
     public int getCantidadTipoReparacioneByTipoAutomovil(int tipoReparacion, String tipoAuto, int numMes, int ano) {
         int cantidad = 0;

@@ -4,6 +4,7 @@ import com.example.reportesservice.Entities.ReporteCompararMeses;
 import com.example.reportesservice.Entities.ReporteTipoRepVsTipoAuto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import java.time.Duration;
 import java.time.LocalDate;
@@ -15,11 +16,30 @@ import java.util.*;
 
 @Service
 public class ReportesService {
+    @Autowired
+    RestTemplate restTemplate;
 
+    /////////////////////////////////////COMUNICACIÓN CON HISTORIAL/////////////////////////////////////
 
+    public int getMontoTipoReparacionByTipoAutomovil(int tipoReparacion, String tipoAuto, int numMes, int ano) {
+        // Utiliza el nombre lógico del servicio registrado en Eureka
+        String url = "http://reparaciones-vehiculos-service/historial/montoTipoReparacionByTipoAutomovil/"+tipoReparacion+"/"+tipoAuto+"/"+numMes+"/"+ano;
+        // Realiza la solicitud utilizando RestTemplate
+        int monto = restTemplate.getForObject(url, Integer.class);
+        return monto;
+    }
 
+    public int getCantidadTipoReparacioneByTipoAutomovil(int tipoReparacion, String tipoAuto, int numMes, int ano) {
+        // Utiliza el nombre lógico del servicio registrado en Eureka
+        String url = "http://reparaciones-vehiculos-service/historial/cantidadTipoReparacioneByTipoAutomovil/"+tipoReparacion+"/"+tipoAuto+"/"+numMes+"/"+ano;
+        // Realiza la solicitud utilizando RestTemplate
+        int cantidad = restTemplate.getForObject(url, Integer.class);
+        return cantidad;
+    }
+    //////////////////////////////////COMUNICACIÓN CON VALOR REPARACION/////////////////////////////////
+    /////////////////////////////////////COMUNICACIÓN CON AUTOMOVIL/////////////////////////////////////
 
-
+/*
     public int getCantidadTipoReparacioneByTipoAutomovil(int tipoReparacion, String tipoAuto, int numMes, int ano) {
         int cantidad = 0;
         Month[] meses = Month.values(); // Obtener todos los meses como un array
@@ -54,8 +74,10 @@ public class ReportesService {
 
 
 
+ */
 
 
+/*
     public int getMontoTipoReparacionByTipoAutomovil(int tipoReparacion, String tipoAuto, int numMes, int ano) {
         Month[] meses = Month.values(); // Obtener todos los meses como un array
         Month mes = meses[numMes - 1]; // Obtener el mes correspondiente al número (restamos 1 porque los arrays comienzan en 0)
@@ -93,6 +115,8 @@ public class ReportesService {
         return sumaMontos;
     }
 
+
+ */
 
 
 
