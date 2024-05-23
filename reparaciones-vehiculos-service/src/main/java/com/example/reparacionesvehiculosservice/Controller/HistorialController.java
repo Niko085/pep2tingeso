@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 
 @RestController
@@ -33,13 +34,28 @@ public class HistorialController {
 
  */
 
-
+/*
     @GetMapping("/{id}")
     public HistorialEntity getHistorialReparacionesById(@PathVariable Long id) {
         HistorialEntity reparaciones = historialService.getHistorialAutoById(id);
         return ResponseEntity.ok(reparaciones).getBody();
     }
 
+ */
+@GetMapping("/{id}")
+public ResponseEntity<HistorialEntity> buscarPorId(@PathVariable Long id) {
+    // Llama al método del servicio para buscar por ID
+    Optional<HistorialEntity> optionalHistorial = historialService.getHistorialAutoById(id);
+
+    // Verifica si se encontró el historial
+    if (optionalHistorial.isPresent()) {
+        // Si se encontró, devuelve la entidad con estado 200 OK
+        return ResponseEntity.ok(optionalHistorial.get());
+    } else {
+        // Si no se encontró, devuelve un estado 404 Not Found
+        return ResponseEntity.notFound().build();
+    }
+}
 
 
     @PostMapping("/")
@@ -53,7 +69,7 @@ public class HistorialController {
         HistorialEntity historialUpdated = historialService.updateHistorial(historial);
         return ResponseEntity.ok(historialUpdated);
     }
-
+/*
     @PutMapping("/pagar/{id}")
     public ResponseEntity<Void> updatePago(@PathVariable Long id) {
         HistorialEntity historial = historialService.getHistorialAutoById(id);
@@ -65,6 +81,8 @@ public class HistorialController {
         historialService.updateHistorial(historial);
         return ResponseEntity.ok().build();
     }
+
+ */
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Boolean> deleteHistorialById(@PathVariable Long id) throws Exception {

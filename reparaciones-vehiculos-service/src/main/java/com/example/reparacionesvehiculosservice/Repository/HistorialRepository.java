@@ -12,6 +12,7 @@ public interface HistorialRepository extends JpaRepository<HistorialEntity, Long
 
     public List<HistorialEntity> findByPatente(String patente);
 
+    //public Optional<HistorialEntity> findById(Long id);
     public Optional<HistorialEntity> findById(Long id);
 
     public HistorialEntity findByPatenteAndAndPagadoIsFalse(String patente);

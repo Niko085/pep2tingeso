@@ -9,10 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 
-import java.time.Duration;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
+import java.time.*;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 
@@ -47,11 +44,17 @@ public class HistorialService {
     public HistorialEntity getHistorialAutoByPatente(String patente){
         return historialRepository.findHistorialByPatente(patente);
     }
-
+/*
     public HistorialEntity getHistorialAutoById(Long id){
         return historialRepository.findById(id).get();
     }
 
+ */
+
+    public Optional<HistorialEntity> getHistorialAutoById(Long id) {
+        // Utiliza el método findById del repositorio
+        return HistorialRepository.findById(id);
+    }
 
     public HistorialEntity updateHistorial(HistorialEntity historial) {
         return historialRepository.save(historial);
@@ -396,5 +399,98 @@ public class HistorialService {
             return 0;
         }
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    public int getCantidadTipoReparacioneByTipoAutomovil(int tipoReparacion, String tipoAuto, int numMes, int ano) {
+        int cantidad = 0;
+        Month[] meses = Month.values(); // Obtener todos los meses como un array
+        Month mes = meses[numMes - 1]; // Obtener el mes correspondiente al número (restamos 1 porque los arrays comienzan en 0)
+
+        //Se obtienen todas las reparaciones, este se puede modificar después
+        List<ReparacionEntity> reparaciones = reparacionService.getReparaciones();
+        for (ReparacionEntity reparacion : reparaciones) {
+            if (reparacion.getTipoReparacion() == tipoReparacion) {
+                String patente = reparacion.getPatente();
+                AutomovilEntity automovil = getAutomovilByPatente(patente);
+                Long idHistorial = reparacion.getIdHistorialReparaciones();
+
+                // Usamos Optional para manejar la posible ausencia de historialAuto
+                Optional<HistorialEntity> optionalHistorialAuto = getHistorialAutoById(idHistorial);
+
+                // Verificamos si existe un historial de reparaciones para este ID
+                if (optionalHistorialAuto.isPresent()) {
+                    HistorialEntity historialAuto = optionalHistorialAuto.get();
+
+                    // Comprobamos si la fecha de ingreso al taller está en el mes y año deseados
+                    if (automovil.getTipo().equals(tipoAuto)
+                            && historialAuto.getFechaIngresoTaller().getMonth() == mes
+                            && historialAuto.getFechaIngresoTaller().getYear() == ano) {
+                        cantidad++;
+                    }
+                }
+            }
+        }
+        return cantidad;
+    }
+
+
+
+
+
+    public int getMontoTipoReparacionByTipoAutomovil(int tipoReparacion, String tipoAuto, int numMes, int ano) {
+        Month[] meses = Month.values(); // Obtener todos los meses como un array
+        Month mes = meses[numMes - 1]; // Obtener el mes correspondiente al número (restamos 1 porque los arrays comienzan en 0)
+
+        List<String> tiposMotor = new ArrayList<>();
+
+        List<ReparacionEntity> reparaciones = reparacionService.getReparaciones();
+        for (ReparacionEntity reparacion : reparaciones) {
+            if (reparacion.getTipoReparacion() == tipoReparacion) {
+                String patente = reparacion.getPatente();
+                AutomovilEntity automovil = getAutomovilByPatente(patente);
+                Long idHistorial = reparacion.getIdHistorialReparaciones();
+
+                // Usamos Optional para manejar la posible ausencia de historialAuto
+                Optional<HistorialEntity> optionalHistorialAuto = getHistorialAutoById(idHistorial);
+
+                // Verificamos si existe un historial de reparaciones para este ID
+                if (optionalHistorialAuto.isPresent()) {
+                    HistorialEntity historialAuto = optionalHistorialAuto.get();
+
+                    // Comprobamos si la fecha de ingreso al taller está en el mes y año deseados
+                    if (automovil.getTipo().equals(tipoAuto)
+                            && historialAuto.getFechaIngresoTaller().getMonth() == mes
+                            && historialAuto.getFechaIngresoTaller().getYear() == ano) {
+                        tiposMotor.add(automovil.getMotor());
+                    }
+                }
+            }
+        }
+
+        int sumaMontos = 0;
+        for (String tipoMotor : tiposMotor) {
+            sumaMontos += getMonto(tipoReparacion, tipoMotor);
+        }
+        return sumaMontos;
+    }
+
+
+
+
+
+
 
 }

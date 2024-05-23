@@ -20,6 +20,6 @@ public class ReparacionEntity {
     private String descripcion;
 
     //Foranea
-    private int idHistorialReparaciones;
+    private Long idHistorialReparaciones;
     private String patente;
 }
