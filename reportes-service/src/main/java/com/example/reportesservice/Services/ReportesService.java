@@ -23,7 +23,7 @@ public class ReportesService {
 
     public int getMontoTipoReparacionByTipoAutomovil(int tipoReparacion, String tipoAuto, int numMes, int ano) {
         // Utiliza el nombre lógico del servicio registrado en Eureka
-        String url = "http://reparaciones-vehiculos-service/historial/montoTipoReparacionByTipoAutomovil/"+tipoReparacion+"/"+tipoAuto+"/"+numMes+"/"+ano;
+        String url = "http://reparaciones-vehiculos-service/historial-reparaciones/montoTipoReparacionByTipoAutomovil/"+tipoReparacion+"/"+tipoAuto+"/"+numMes+"/"+ano;
         // Realiza la solicitud utilizando RestTemplate
         int monto = restTemplate.getForObject(url, Integer.class);
         return monto;
@@ -31,7 +31,7 @@ public class ReportesService {
 
     public int getCantidadTipoReparacioneByTipoAutomovil(int tipoReparacion, String tipoAuto, int numMes, int ano) {
         // Utiliza el nombre lógico del servicio registrado en Eureka
-        String url = "http://reparaciones-vehiculos-service/historial/cantidadTipoReparacioneByTipoAutomovil/"+tipoReparacion+"/"+tipoAuto+"/"+numMes+"/"+ano;
+        String url = "http://reparaciones-vehiculos-service/historial-reparaciones/cantidadTipoReparacioneByTipoAutomovil/"+tipoReparacion+"/"+tipoAuto+"/"+numMes+"/"+ano;
         // Realiza la solicitud utilizando RestTemplate
         int cantidad = restTemplate.getForObject(url, Integer.class);
         return cantidad;

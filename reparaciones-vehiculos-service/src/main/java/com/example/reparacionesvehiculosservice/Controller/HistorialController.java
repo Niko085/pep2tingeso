@@ -1,8 +1,10 @@
 package com.example.reparacionesvehiculosservice.Controller;
 
 import com.example.reparacionesvehiculosservice.Entity.HistorialEntity;
+import com.example.reparacionesvehiculosservice.Entity.ReparacionEntity;
 import com.example.reparacionesvehiculosservice.Model.AutomovilEntity;
 import com.example.reparacionesvehiculosservice.Service.HistorialService;
+import com.example.reparacionesvehiculosservice.Service.ReparacionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,36 +14,21 @@ import java.util.Optional;
 
 
 @RestController
-@RequestMapping("/historial")
+@RequestMapping("/historial-reparaciones")
 @CrossOrigin("*")
 public class HistorialController {
-
+    @Autowired
+    ReparacionService reparacionService;
     @Autowired
     HistorialService historialService;
 
-
+//------------------------------------HISTORIAL CONTROLLER------------------------------------
     @GetMapping("/")
     public ResponseEntity<List<HistorialEntity>> listhistorialReparaciones() {
         List<HistorialEntity> historialReparaciones = historialService.getHistorialReparaciones();
         return ResponseEntity.ok(historialReparaciones);
     }
-/*
-    @GetMapping("/{patente}")
-    public ResponseEntity<List<HistorialEntity>> getHistorialReparacionesByPatente(@PathVariable String patente) {
-        List<HistorialEntity> reparaciones = historialService.getHistorialReparacionesByPatente(patente);
-        return ResponseEntity.ok(reparaciones);
-    }
 
- */
-
-/*
-    @GetMapping("/{id}")
-    public HistorialEntity getHistorialReparacionesById(@PathVariable Long id) {
-        HistorialEntity reparaciones = historialService.getHistorialAutoById(id);
-        return ResponseEntity.ok(reparaciones).getBody();
-    }
-
- */
     @GetMapping("/{id}")
     public ResponseEntity<HistorialEntity> buscarPorId(@PathVariable Long id) {
         // Llama al método del servicio para buscar por ID
@@ -69,20 +56,6 @@ public class HistorialController {
         HistorialEntity historialUpdated = historialService.updateHistorial(historial);
         return ResponseEntity.ok(historialUpdated);
     }
-/*
-    @PutMapping("/pagar/{id}")
-    public ResponseEntity<Void> updatePago(@PathVariable Long id) {
-        HistorialEntity historial = historialService.getHistorialAutoById(id);
-        if (historial == null) {
-            return ResponseEntity.notFound().build();
-        }
-
-        historial.setPagado(true);
-        historialService.updateHistorial(historial);
-        return ResponseEntity.ok().build();
-    }
-
- */
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Boolean> deleteHistorialById(@PathVariable Long id) throws Exception {
@@ -127,35 +100,48 @@ public class HistorialController {
         historialService.calcularMontoTotalPagar(patente);
         return ResponseEntity.noContent().build();
     }
-    //http://localhost:8090/api/historialreparaciones/calculate?patente=CFYF55
-    /*@GetMapping("/calculate")
-    public ResponseEntity<Void> calculatehistorial(@RequestParam("patente") String patente) {
-        historialService.calcularMontoTotalPagar(patente);
+
+//------------------------------------REPARACION CONTROLLER------------------------------------
+
+    @GetMapping("/reparacion/")
+    public ResponseEntity<List<ReparacionEntity>> listReparaciones() {
+        List<ReparacionEntity> reparaciones = reparacionService.getReparaciones();
+        return ResponseEntity.ok(reparaciones);
+
+    }
+
+    @GetMapping("/reparacion/{id}")
+    public ResponseEntity<ReparacionEntity> getReparacionById(@PathVariable Long id) {
+        ReparacionEntity reparacion = reparacionService.getReparacionById(id);
+        return ResponseEntity.ok(reparacion);
+    }
+
+
+    @PostMapping("/reparacion/")
+    public ResponseEntity<ReparacionEntity> saveReparacion(@RequestBody ReparacionEntity reparacion) {
+        ReparacionEntity reparacionNew = reparacionService.saveReparacion(reparacion);
+        return ResponseEntity.ok(reparacionNew);
+    }
+
+    @PutMapping("/reparacion/")
+    public ResponseEntity<ReparacionEntity> updateReparacion(@RequestBody ReparacionEntity reparacion){
+        ReparacionEntity reparacionUpdated = reparacionService.updateReparacion(reparacion);
+        return ResponseEntity.ok(reparacionUpdated);
+    }
+
+    @DeleteMapping("/reparacion/{id}")
+    public ResponseEntity<Boolean> deleteReparacionById(@PathVariable Long id) throws Exception {
+        var isDeleted = reparacionService.deleteReparacion(id);
         return ResponseEntity.noContent().build();
     }
 
 
-     */
-/*
-    //http://localhost:8090/api/historialreparaciones/reporte/reparaciones-vs-tipo-autos
-    @GetMapping("/reporte/reparaciones-vs-tipo-autos")
-    public List<ReparacionesvsTipoAutos> getReporteReparacionesvsTipoAutos() {
-        return historialService.reporteReparacionesvsTipoAutos();
-    }
 
- */
-/*
-    //http://localhost:8090/api/historialreparaciones/reporte/reparaciones-vs-tipo-motores
-    @GetMapping("/reporte/reparaciones-vs-tipo-motores")
-    public List<ReparacionesvsTipoMotor> getReporteReparacionesvsTipoMotor() {
-        return historialService.reporteReparacionesvsTipoMotor();
-    }
+    @GetMapping("/reparacion/historial/{id}")
+    public ResponseEntity<List<ReparacionEntity>> listReparacionesByIdHistorial(@PathVariable Long id) {
+        List<ReparacionEntity> reparaciones = reparacionService.getReparacionByIdHistorialReparaciones(id);
+        return ResponseEntity.ok(reparaciones);
 
-    @GetMapping("/reporte/marcas-vs-tiempo-promedio")
-    public List<TiemposPromedio> getReporteMarcasvsTiempoReparacion() {
-        return historialService.reporteTiempoPromedioReparacion();
     }
-
- */
 
 }
