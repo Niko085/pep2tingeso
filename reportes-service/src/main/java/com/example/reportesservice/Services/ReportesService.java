@@ -6,11 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import java.time.Duration;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.Month;
-import java.time.temporal.ChronoUnit;
 import java.util.*;
 
 
@@ -22,103 +17,16 @@ public class ReportesService {
     /////////////////////////////////////COMUNICACIÓN CON HISTORIAL/////////////////////////////////////
 
     public int getMontoTipoReparacionByTipoAutomovil(int tipoReparacion, String tipoAuto, int numMes, int ano) {
-        // Utiliza el nombre lógico del servicio registrado en Eureka
         String url = "http://reparaciones-vehiculos-service/historial-reparaciones/montoTipoReparacionByTipoAutomovil/"+tipoReparacion+"/"+tipoAuto+"/"+numMes+"/"+ano;
-        // Realiza la solicitud utilizando RestTemplate
         int monto = restTemplate.getForObject(url, Integer.class);
         return monto;
     }
 
     public int getCantidadTipoReparacioneByTipoAutomovil(int tipoReparacion, String tipoAuto, int numMes, int ano) {
-        // Utiliza el nombre lógico del servicio registrado en Eureka
         String url = "http://reparaciones-vehiculos-service/historial-reparaciones/cantidadTipoReparacioneByTipoAutomovil/"+tipoReparacion+"/"+tipoAuto+"/"+numMes+"/"+ano;
-        // Realiza la solicitud utilizando RestTemplate
         int cantidad = restTemplate.getForObject(url, Integer.class);
         return cantidad;
     }
-    //////////////////////////////////COMUNICACIÓN CON VALOR REPARACION/////////////////////////////////
-    /////////////////////////////////////COMUNICACIÓN CON AUTOMOVIL/////////////////////////////////////
-
-/*
-    public int getCantidadTipoReparacioneByTipoAutomovil(int tipoReparacion, String tipoAuto, int numMes, int ano) {
-        int cantidad = 0;
-        Month[] meses = Month.values(); // Obtener todos los meses como un array
-        Month mes = meses[numMes - 1]; // Obtener el mes correspondiente al número (restamos 1 porque los arrays comienzan en 0)
-
-        //Se obtienen todas las reparaciones, este se puede modificar después
-        List<ReparacionEntity> reparaciones = reparacionService.getReparaciones();
-        for (ReparacionEntity reparacion : reparaciones) {
-            if (reparacion.getTipoReparacion() == tipoReparacion) {
-                String patente = reparacion.getPatente();
-                AutomovilEntity automovil = automovilService.getAutomovilByPatente(patente);
-                Long idHistorial = reparacion.getIdHistorialReparaciones();
-
-                // Usamos Optional para manejar la posible ausencia de historialAuto
-                Optional<HistorialReparacionesEntity> optionalHistorialAuto = getHistorialAutoById(idHistorial);
-
-                // Verificamos si existe un historial de reparaciones para este ID
-                if (optionalHistorialAuto.isPresent()) {
-                    HistorialReparacionesEntity historialAuto = optionalHistorialAuto.get();
-
-                    // Comprobamos si la fecha de ingreso al taller está en el mes y año deseados
-                    if (automovil.getTipo().equals(tipoAuto)
-                            && historialAuto.getFechaIngresoTaller().getMonth() == mes
-                            && historialAuto.getFechaIngresoTaller().getYear() == ano) {
-                        cantidad++;
-                    }
-                }
-            }
-        }
-        return cantidad;
-    }
-
-
-
- */
-
-
-/*
-    public int getMontoTipoReparacionByTipoAutomovil(int tipoReparacion, String tipoAuto, int numMes, int ano) {
-        Month[] meses = Month.values(); // Obtener todos los meses como un array
-        Month mes = meses[numMes - 1]; // Obtener el mes correspondiente al número (restamos 1 porque los arrays comienzan en 0)
-
-        List<String> tiposMotor = new ArrayList<>();
-
-        List<ReparacionEntity> reparaciones = reparacionService.getReparaciones();
-        for (ReparacionEntity reparacion : reparaciones) {
-            if (reparacion.getTipoReparacion() == tipoReparacion) {
-                String patente = reparacion.getPatente();
-                AutomovilEntity automovil = automovilService.getAutomovilByPatente(patente);
-                Long idHistorial = reparacion.getIdHistorialReparaciones();
-
-                // Usamos Optional para manejar la posible ausencia de historialAuto
-                Optional<HistorialReparacionesEntity> optionalHistorialAuto = getHistorialAutoById(idHistorial);
-
-                // Verificamos si existe un historial de reparaciones para este ID
-                if (optionalHistorialAuto.isPresent()) {
-                    HistorialReparacionesEntity historialAuto = optionalHistorialAuto.get();
-
-                    // Comprobamos si la fecha de ingreso al taller está en el mes y año deseados
-                    if (automovil.getTipo().equals(tipoAuto)
-                            && historialAuto.getFechaIngresoTaller().getMonth() == mes
-                            && historialAuto.getFechaIngresoTaller().getYear() == ano) {
-                        tiposMotor.add(automovil.getMotor());
-                    }
-                }
-            }
-        }
-
-        int sumaMontos = 0;
-        for (String tipoMotor : tiposMotor) {
-            sumaMontos += valorReparacionesService.getMonto(tipoReparacion, tipoMotor);
-        }
-        return sumaMontos;
-    }
-
-
- */
-
-
 
 
 
@@ -148,31 +56,8 @@ public class ReportesService {
             montPick = getMontoTipoReparacionByTipoAutomovil(tipoReparacion, "Pickup",numMes, ano);
             montFurg = getMontoTipoReparacionByTipoAutomovil(tipoReparacion, "Furgoneta",numMes, ano);
 
-            //cantidadReparaciones = getCantidadTipoReparaciones(tipoReparacion);
-            //montoTotalReparaciones = getMontoTipoReparaciones(tipoReparacion);
-            if(tipoReparacion == 1) {
-                nombRep = "Reparaciones del Sistema de Frenos";
-            }else if(tipoReparacion == 2){
-                nombRep = "Servicio del Sistema de Refrigeración";
-            }else if(tipoReparacion == 3){
-                nombRep = "Reparaciones del Motor";
-            }else if(tipoReparacion == 4){
-                nombRep = "Reparaciones de la Transmisión";
-            }else if(tipoReparacion == 5){
-                nombRep = "Reparación del Sistema Eléctrico";
-            }else if(tipoReparacion == 6){
-                nombRep = "Reparaciones del Sistema de Escape";
-            }else if(tipoReparacion == 7){
-                nombRep = "Reparación de Neumáticos y Ruedas";
-            }else if(tipoReparacion == 8){
-                nombRep = "Reparaciones de la Suspensión y la Dirección";
-            }else if(tipoReparacion == 9){
-                nombRep = "Reparación del Sistema de Aire Acondicionado y Calefacción";
-            }else if(tipoReparacion == 10){
-                nombRep = "Reparaciones del Sistema de Combustible";
-            }else if(tipoReparacion == 11){
-                nombRep = "Reparación y Reemplazo del Parabrisas y Cristales";
-            }
+            nombRep = getNombreReparacion(tipoReparacion);
+
 
             totReparac = ((montSed * cantSed) + (montHatch * cantHatch) +
                     (montSuv  * cantSuv) + (montPick * cantPick) + (montFurg * cantFurg));
@@ -183,45 +68,20 @@ public class ReportesService {
 
             reparacionesvsTipoAutos.add(reparacionPorTipoAuto);
         }
-
-
         return reparacionesvsTipoAutos;
     }
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     public int getCantidadTotalAutos(int tipoReparacion, int numMes, int ano){
-        int cantAutos,cantSed,cantHatch,cantSuv,cantPick,cantFurg;
-        cantSed = getCantidadTipoReparacioneByTipoAutomovil(tipoReparacion, "Sedan",numMes, ano);
-        cantHatch = getCantidadTipoReparacioneByTipoAutomovil(tipoReparacion, "Hatchback",numMes, ano);
-        cantSuv = getCantidadTipoReparacioneByTipoAutomovil(tipoReparacion, "Suv",numMes, ano);
-        cantPick = getCantidadTipoReparacioneByTipoAutomovil(tipoReparacion, "Pickup",numMes, ano);
-        cantFurg = getCantidadTipoReparacioneByTipoAutomovil(tipoReparacion, "Furgoneta",numMes, ano);
-        cantAutos = cantSed + cantHatch + cantSuv + cantPick + cantFurg;
-        return cantAutos;
+
+        int cantSed = getCantidadTipoReparacioneByTipoAutomovil(tipoReparacion, "Sedan",numMes, ano);
+        int cantHatch = getCantidadTipoReparacioneByTipoAutomovil(tipoReparacion, "Hatchback",numMes, ano);
+        int cantSuv = getCantidadTipoReparacioneByTipoAutomovil(tipoReparacion, "Suv",numMes, ano);
+        int cantPick = getCantidadTipoReparacioneByTipoAutomovil(tipoReparacion, "Pickup",numMes, ano);
+        int cantFurg = getCantidadTipoReparacioneByTipoAutomovil(tipoReparacion, "Furgoneta",numMes, ano);
+
+        return cantSed + cantHatch + cantSuv + cantPick + cantFurg;
     }
 
 
@@ -314,7 +174,6 @@ public class ReportesService {
 
             comparaciones.add(mesAComparar);
         }
-
         return comparaciones;
     }
 

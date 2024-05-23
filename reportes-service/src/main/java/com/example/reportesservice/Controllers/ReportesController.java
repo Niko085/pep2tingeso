@@ -15,14 +15,14 @@ public class ReportesController {
     @Autowired
     ReportesService reportesService;
 
-    //http://localhost:8090/api/historialreparaciones/reporte/compararMeses/1/2024
+    //http://localhost:8081/reportes/reporte/compararMeses/1/2024
     @GetMapping("/reporte/compararMeses/{mes}/{anio}")
     public List<ReporteCompararMeses> getReporteComparMeses(@PathVariable int mes, @PathVariable int anio) {
         return reportesService.reporteCompararMeses(mes, anio);
     }
 
 
-    //http://localhost:8090/api/historialreparaciones/reporte/reparaciones-vs-tipo-autos/12/2023
+    //http://localhost:8081/reportes/reporte/reparaciones-vs-tipo-autos/12/2023
     @GetMapping("/reporte/reparaciones-vs-tipo-autos/{mes}/{anio}")
     public List<ReporteTipoRepVsTipoAuto> getReporteReparacionesvsTipoAutos(@PathVariable int mes, @PathVariable int anio) {
         return reportesService.reporteReparacionesvsTipoAutos(mes, anio);
