@@ -147,6 +147,8 @@ public class HistorialService {
 
 
 
+
+
     public int getCantidadTipoReparaciones(int tipoReparacion) {
         List<String> tiposAutomovil = new ArrayList<>(); // Utilizamos una lista en lugar de un Set
 
