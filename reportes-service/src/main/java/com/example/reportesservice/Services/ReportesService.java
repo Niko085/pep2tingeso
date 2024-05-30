@@ -17,13 +17,13 @@ public class ReportesService {
     /////////////////////////////////////COMUNICACIÓN CON HISTORIAL/////////////////////////////////////
 
     public int getMontoTipoReparacionByTipoAutomovil(int tipoReparacion, String tipoAuto, int numMes, int ano) {
-        String url = "http://reparaciones-vehiculos-service/historial-reparaciones/montoTipoReparacionByTipoAutomovil/"+tipoReparacion+"/"+tipoAuto+"/"+numMes+"/"+ano;
+        String url = "http://reparaciones-vehiculos-service/historial/montoTipoReparacionByTipoAutomovil/"+tipoReparacion+"/"+tipoAuto+"/"+numMes+"/"+ano;
         int monto = restTemplate.getForObject(url, Integer.class);
         return monto;
     }
 
     public int getCantidadTipoReparacioneByTipoAutomovil(int tipoReparacion, String tipoAuto, int numMes, int ano) {
-        String url = "http://reparaciones-vehiculos-service/historial-reparaciones/cantidadTipoReparacioneByTipoAutomovil/"+tipoReparacion+"/"+tipoAuto+"/"+numMes+"/"+ano;
+        String url = "http://reparaciones-vehiculos-service/historial/cantidadTipoReparacioneByTipoAutomovil/"+tipoReparacion+"/"+tipoAuto+"/"+numMes+"/"+ano;
         int cantidad = restTemplate.getForObject(url, Integer.class);
         return cantidad;
     }

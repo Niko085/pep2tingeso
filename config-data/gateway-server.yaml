@@ -29,7 +29,8 @@ spring:
         - id: reparaciones-vehiculos-service
           uri: lb://reparaciones-vehiculos-service:8091
           predicates:
-            - Path=/historialreparaciones/**
+            - Path=/historial/**
+            - Path=/reparaciones/**
 
         - id: valor-reparaciones-service
           uri: lb://valor-reparaciones-service:8092
