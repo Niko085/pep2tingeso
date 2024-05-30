@@ -1,22 +1,22 @@
 import httpClient from "../http-common";
 
 const getAll = () => {
-    return httpClient.get('/datosbonos/');
+    return httpClient.get('/historialreparaciones/datosbonos/');
 }
 
 const create = data => {
-    return httpClient.post("/datosbonos/", data);
+    return httpClient.post("/historialreparaciones/datosbonos/", data);
 }
 
 const get = id => {
-    return httpClient.get(`/datosbonos/${id}`);
+    return httpClient.get(`/historialreparaciones/datosbonos/${id}`);
 }
 
 const update = data => {
-    return httpClient.put('/datosbonos/', data);
+    return httpClient.put('/historialreparaciones/datosbonos/', data);
 }
 
 const remove = id => {
-    return httpClient.delete(`/datosbonos/${id}`);
+    return httpClient.delete(`/historialreparaciones/datosbonos/${id}`);
 }
 export default { getAll, create, get, update, remove };

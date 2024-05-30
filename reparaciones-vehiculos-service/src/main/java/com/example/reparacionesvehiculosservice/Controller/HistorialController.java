@@ -1,8 +1,10 @@
 package com.example.reparacionesvehiculosservice.Controller;
 
+import com.example.reparacionesvehiculosservice.Entity.DatosBonosEntity;
 import com.example.reparacionesvehiculosservice.Entity.HistorialEntity;
 import com.example.reparacionesvehiculosservice.Entity.ReparacionEntity;
 import com.example.reparacionesvehiculosservice.Model.AutomovilEntity;
+import com.example.reparacionesvehiculosservice.Service.DatosBonosService;
 import com.example.reparacionesvehiculosservice.Service.HistorialService;
 import com.example.reparacionesvehiculosservice.Service.ReparacionService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +23,8 @@ public class HistorialController {
     ReparacionService reparacionService;
     @Autowired
     HistorialService historialService;
+    @Autowired
+    DatosBonosService datosBonosService;
 
 //------------------------------------HISTORIAL CONTROLLER------------------------------------
     @GetMapping("/")
@@ -142,6 +146,40 @@ public class HistorialController {
         List<ReparacionEntity> reparaciones = reparacionService.getReparacionByIdHistorialReparaciones(id);
         return ResponseEntity.ok(reparaciones);
 
+    }
+
+
+
+    //------------------------------------DATOS BONOS CONTROLLER------------------------------------
+    @GetMapping("/datosbonos/")
+    public ResponseEntity<List<DatosBonosEntity>> listBonos() {
+        List<DatosBonosEntity> bonos = datosBonosService.getDatosBonos();
+        return ResponseEntity.ok(bonos);
+
+    }
+
+    @GetMapping("/datosbonos/{id}")
+    public ResponseEntity<DatosBonosEntity> getBonoById(@PathVariable Long id) {
+        DatosBonosEntity bono = datosBonosService.getDatosBonosById(id);
+        return ResponseEntity.ok(bono);
+    }
+
+    @PostMapping("/datosbonos/")
+    public ResponseEntity<DatosBonosEntity> saveBono(@RequestBody DatosBonosEntity bono) {
+        DatosBonosEntity bonoNew = datosBonosService.saveDatosBonos(bono);
+        return ResponseEntity.ok(bonoNew);
+    }
+
+    @PutMapping("/datosbonos/")
+    public ResponseEntity<DatosBonosEntity> updateBono(@RequestBody DatosBonosEntity bono){
+        DatosBonosEntity bonoUpdated = datosBonosService.updateDatosBonos(bono);
+        return ResponseEntity.ok(bonoUpdated);
+    }
+
+    @DeleteMapping("/datosbonos/{id}")
+    public ResponseEntity<Boolean> deleteBonoById(@PathVariable Long id) throws Exception {
+        var isDeleted = datosBonosService.deleteDatosBonos(id);
+        return ResponseEntity.noContent().build();
     }
 
 }
