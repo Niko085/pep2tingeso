@@ -1,22 +1,22 @@
 import httpClient from "../http-common";
 
 const getAll = () => {
-    return httpClient.get('/api/datosbonos/');
+    return httpClient.get('/datosbonos/');
 }
 
 const create = data => {
-    return httpClient.post("/api/datosbonos/", data);
+    return httpClient.post("/datosbonos/", data);
 }
 
 const get = id => {
-    return httpClient.get(`/api/datosbonos/${id}`);
+    return httpClient.get(`/datosbonos/${id}`);
 }
 
 const update = data => {
-    return httpClient.put('/api/datosbonos/', data);
+    return httpClient.put('/datosbonos/', data);
 }
 
 const remove = id => {
-    return httpClient.delete(`/api/datosbonos/${id}`);
+    return httpClient.delete(`/datosbonos/${id}`);
 }
 export default { getAll, create, get, update, remove };

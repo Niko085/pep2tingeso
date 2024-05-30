@@ -10,7 +10,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/reportes")
-@CrossOrigin("*")
+//@CrossOrigin("*")
 public class ReportesController {
     @Autowired
     ReportesService reportesService;

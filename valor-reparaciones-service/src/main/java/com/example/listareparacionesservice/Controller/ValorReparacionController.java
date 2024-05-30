@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/valorReparacion")
-@CrossOrigin("*")
+//@CrossOrigin("*")
 public class ValorReparacionController {
     @Autowired
     ValorReparacionService valorReparacionService;

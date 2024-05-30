@@ -15,7 +15,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/historialreparaciones/")
-@CrossOrigin("*")
+//@CrossOrigin("*")
 public class HistorialController {
     @Autowired
     ReparacionService reparacionService;
