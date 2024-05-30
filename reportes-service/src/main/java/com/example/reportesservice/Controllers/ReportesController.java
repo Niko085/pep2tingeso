@@ -1,7 +1,7 @@
 package com.example.reportesservice.Controllers;
 
-import com.example.reportesservice.Entities.ReporteCompararMeses;
-import com.example.reportesservice.Entities.ReporteTipoRepVsTipoAuto;
+import com.example.reportesservice.Dtos.ReporteCompararMeses;
+import com.example.reportesservice.Dtos.ReporteTipoRepVsTipoAuto;
 import com.example.reportesservice.Services.ReportesService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
