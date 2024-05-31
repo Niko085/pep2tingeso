@@ -67,7 +67,7 @@ const AddEditHistorialReparaciones = () => {
       historialReparacionesService
         .get(id)
         .then((historialReparaciones) => {
-          setPatente(historialReparaciones.data.patente);
+          setFechaIngresoTaller(historialReparaciones.data.patente);
           setFechaIngresoTaller(historialReparaciones.data.fechaIngresoTaller);
           setHoraIngresoTaller(historialReparaciones.data.horaIngresoTaller);
           setFechaSalidaTaller(historialReparaciones.data.fechaSalidaTaller);

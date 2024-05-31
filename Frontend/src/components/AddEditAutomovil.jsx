@@ -119,18 +119,7 @@ const AddEditAutomovil = () => {
             helperText="Ej: CFTF45"
           />
         </FormControl>
-  
-        <FormControl fullWidth>
-          <TextField
-            id="marca"
-            label="Marca"
-            value={marca}
-            variant="standard"
-            onChange={(a) => setMarca(a.target.value)}
-            helperText="Ej: Hyundai"
-          />
-        </FormControl>
-  
+
         <FormControl fullWidth>
           <TextField
             id="modelo"
@@ -185,44 +174,63 @@ const AddEditAutomovil = () => {
           />
         </FormControl>
 
-        <div style={{ display: "flex",padding: "0.5rem", gap: "2rem" }}>
-          <FormControl fullWidth>
-            <TextField
-              id="tipo"
-              label="Tipo de automóvil"
-              value={tipo}
-              select
-              variant="standard"
-              defaultValue="Sedan"
-              onChange={(a) => setTipo(a.target.value)}
-              style={{ flex: 1 }}
-            >
-              <MenuItem value={"Sedan"}>Sedán</MenuItem>
-              <MenuItem value={"Hatchback"}>Hatchback</MenuItem>
-              <MenuItem value={"Suv"}>SUV</MenuItem>
-              <MenuItem value={"Pickup"}>Pickup</MenuItem>
-              <MenuItem value={"Furgoneta"}>Furgoneta</MenuItem>
-            </TextField>
-          </FormControl>
+        <div style={{ display: "flex", padding: "0.5rem", gap: "2rem" }}>
+        <FormControl fullWidth>
+          <TextField
+            id="tipo"
+            label="Tipo de automóvil"
+            value={tipo}
+            select
+            variant="standard"
+            defaultValue="Sedan"
+            onChange={(a) => setTipo(a.target.value)}
+            style={{ flex: 1 }}
+          >
+            <MenuItem value={"Sedan"}>Sedán</MenuItem>
+            <MenuItem value={"Hatchback"}>Hatchback</MenuItem>
+            <MenuItem value={"Suv"}>SUV</MenuItem>
+            <MenuItem value={"Pickup"}>Pickup</MenuItem>
+            <MenuItem value={"Furgoneta"}>Furgoneta</MenuItem>
+          </TextField>
+        </FormControl>
 
-          <FormControl fullWidth>
-            <TextField
-              id="motor"
-              label="Tipo de motor"
-              value={motor}
-              select
-              variant="standard"
-              defaultValue="Gasolina"
-              onChange={(a) => setMotor(a.target.value)}
-              style={{ flex: 1 }}
-            >
-              <MenuItem value={"Gasolina"}>Gasolina</MenuItem>
-              <MenuItem value={"Diesel"}>Diésel</MenuItem>
-              <MenuItem value={"Hibrido"}>Híbrido</MenuItem>
-              <MenuItem value={"Electrico"}>Eléctrico</MenuItem>
-            </TextField>
-          </FormControl>
-        </div>
+        <FormControl fullWidth>
+          <TextField
+            id="motor"
+            label="Tipo de motor"
+            value={motor}
+            select
+            variant="standard"
+            defaultValue="Gasolina"
+            onChange={(a) => setMotor(a.target.value)}
+            style={{ flex: 1 }}
+          >
+            <MenuItem value={"Gasolina"}>Gasolina</MenuItem>
+            <MenuItem value={"Diesel"}>Diésel</MenuItem>
+            <MenuItem value={"Hibrido"}>Híbrido</MenuItem>
+            <MenuItem value={"Electrico"}>Eléctrico</MenuItem>
+          </TextField>
+        </FormControl>
+
+        <FormControl fullWidth>
+          <TextField
+            id="marca"
+            label="Marca de automóvil"
+            value={marca}
+            select
+            variant="standard"
+            defaultValue="Hyundai"
+            onChange={(a) => setMarca(a.target.value)}
+            style={{ flex: 1 }}
+          >
+            <MenuItem value={"Hyundai"}>Hyundai</MenuItem>
+            <MenuItem value={"Toyota"}>Toyota</MenuItem>
+            <MenuItem value={"Ford"}>Ford</MenuItem>
+            <MenuItem value={"Honda"}>Honda</MenuItem>
+          </TextField>
+        </FormControl>
+      </div>
+
 
         <FormControl>
           <br />
