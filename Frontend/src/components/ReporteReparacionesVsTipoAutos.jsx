@@ -14,7 +14,7 @@ import MenuItem from '@mui/material/MenuItem';
 function ReporteReparacionesVsTiposAutos() {
     const [reporte, setReporte] = useState([]);
     const [mes, setMes] = useState(12); // Mes predeterminado: diciembre
-    const [año, setAño] = useState(2023); // Año predeterminado: 2023
+    const [ano, setAno] = useState(2023); // Año predeterminado: 2023
 
     const meses = [
         { value: 1, label: "Enero" },
@@ -31,13 +31,9 @@ function ReporteReparacionesVsTiposAutos() {
         { value: 12, label: "Diciembre" }
     ];
 
-    const obtenerNombreMes = (numeroMes) => {
-        return meses.find(m => m.value === numeroMes)?.label || "";
-    };
-
-    const obtenerReporteReparacionesVsTiposAutos = async (mes, año) => {
+    const obtenerReporteReparacionesVsTiposAutos = async (mes, ano) => {
         try {
-            const response = await axios.get(`http://localhost:8081/reportes/reporte/reparaciones-vs-tipo-autos/${mes}/${año}`);
+            const response = await axios.get(`http://localhost:8081/reportes/reporte/reparaciones-vs-tipo-autos/${mes}/${ano}`);
             setReporte(response.data);
         } catch (error) {
             console.error('Error al obtener los datos:', error);
@@ -45,15 +41,15 @@ function ReporteReparacionesVsTiposAutos() {
     };
 
     useEffect(() => {
-        obtenerReporteReparacionesVsTiposAutos(mes, año);
-    }, [mes, año]);
+        obtenerReporteReparacionesVsTiposAutos(mes, ano);
+    }, [mes, ano]);
 
     const handleMesChange = (event) => {
         setMes(event.target.value);
     };
 
-    const handleAñoChange = (event) => {
-        setAño(event.target.value);
+    const handleAnoChange = (event) => {
+        setAno(event.target.value);
     };
 
     return (
@@ -79,13 +75,13 @@ function ReporteReparacionesVsTiposAutos() {
                 <TextField
                     label="Año"
                     type="number"
-                    value={año}
-                    onChange={handleAñoChange}
+                    value={ano}
+                    onChange={handleAnoChange}
                     variant="outlined"
                     sx={{ marginRight: 2 }}
                 />
 
-                <Button variant="contained" onClick={() => obtenerReporteReparacionesVsTiposAutos(mes, año)}>
+                <Button variant="contained" onClick={() => obtenerReporteReparacionesVsTiposAutos(mes, ano)}>
                     Consultar
                 </Button>
             </div>

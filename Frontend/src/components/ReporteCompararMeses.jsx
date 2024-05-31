@@ -14,7 +14,7 @@ import MenuItem from '@mui/material/MenuItem';
 function ReporteCompararMeses() {
     const [reporte, setReporte] = useState([]);
     const [mes, setMes] = useState(1); // Mes predeterminado: enero
-    const [año, setAño] = useState(2024); // Año predeterminado: 2024
+    const [ano, setAno] = useState(2024); // Año predeterminado: 2024
 
     const meses = [
         { value: 1, label: "Enero" },
@@ -35,9 +35,9 @@ function ReporteCompararMeses() {
         return meses.find(m => m.value === numeroMes)?.label || "";
     };
 
-    const obtenerReporteCompararMeses = async (mes, año) => {
+    const obtenerReporteCompararMeses = async (mes, ano) => {
         try {
-            const response = await axios.get(`http://localhost:8081/reportes/reporte/compararMeses/${mes}/${año}`);
+            const response = await axios.get(`http://localhost:8081/reportes/reporte/compararMeses/${mes}/${ano}`);
             setReporte(response.data);
         } catch (error) {
             console.error('Error al obtener los datos:', error);
@@ -45,15 +45,15 @@ function ReporteCompararMeses() {
     };
 
     useEffect(() => {
-        obtenerReporteCompararMeses(mes, año);
-    }, [mes, año]);
+        obtenerReporteCompararMeses(mes, ano);
+    }, [mes, ano]);
 
     const handleMesChange = (event) => {
         setMes(event.target.value);
     };
 
-    const handleAñoChange = (event) => {
-        setAño(event.target.value);
+    const handleAnoChange = (event) => {
+        setAno(event.target.value);
     };
 
     return (
@@ -79,13 +79,13 @@ function ReporteCompararMeses() {
                 <TextField
                     label="Año"
                     type="number"
-                    value={año}
-                    onChange={handleAñoChange}
+                    value={ano}
+                    onChange={handleAnoChange}
                     variant="outlined"
                     sx={{ marginRight: 2 }}
                 />
 
-                <Button variant="contained" onClick={() => obtenerReporteCompararMeses(mes, año)}>
+                <Button variant="contained" onClick={() => obtenerReporteCompararMeses(mes, ano)}>
                     Consultar
                 </Button>
             </div>
