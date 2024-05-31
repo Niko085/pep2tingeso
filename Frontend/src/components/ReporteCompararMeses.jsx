@@ -7,35 +7,89 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
+import TextField from '@mui/material/TextField';
+import Button from '@mui/material/Button';
+import MenuItem from '@mui/material/MenuItem';
 
 function ReporteCompararMeses() {
     const [reporte, setReporte] = useState([]);
+    const [mes, setMes] = useState(1); // Mes predeterminado: enero
+    const [año, setAño] = useState(2024); // Año predeterminado: 2024
 
     const meses = [
-        "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
-        "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
+        { value: 1, label: "Enero" },
+        { value: 2, label: "Febrero" },
+        { value: 3, label: "Marzo" },
+        { value: 4, label: "Abril" },
+        { value: 5, label: "Mayo" },
+        { value: 6, label: "Junio" },
+        { value: 7, label: "Julio" },
+        { value: 8, label: "Agosto" },
+        { value: 9, label: "Septiembre" },
+        { value: 10, label: "Octubre" },
+        { value: 11, label: "Noviembre" },
+        { value: 12, label: "Diciembre" }
     ];
 
     const obtenerNombreMes = (numeroMes) => {
-        return meses[numeroMes - 1] || ""; // Restar 1 porque los índices del array comienzan en 0
+        return meses.find(m => m.value === numeroMes)?.label || "";
     };
 
+    const obtenerReporteCompararMeses = async (mes, año) => {
+        try {
+            const response = await axios.get(`http://localhost:8081/reportes/reporte/compararMeses/${mes}/${año}`);
+            setReporte(response.data);
+        } catch (error) {
+            console.error('Error al obtener los datos:', error);
+        }
+    };
 
     useEffect(() => {
-        const obtenerReporteCompararMeses = async () => {
-            try {
-                const response = await axios.get('http://localhost:8081/reportes/reporte/compararMeses/1/2024');
-                setReporte(response.data);
-            } catch (error) {
-                console.error('Error al obtener los datos:', error);
-            }
-        };
-        obtenerReporteCompararMeses();
-    }, []);
+        obtenerReporteCompararMeses(mes, año);
+    }, [mes, año]);
+
+    const handleMesChange = (event) => {
+        setMes(event.target.value);
+    };
+
+    const handleAñoChange = (event) => {
+        setAño(event.target.value);
+    };
 
     return (
         <div className="container mt-4">
             <h2 className="text-center mb-4">Reporte de comparación de meses</h2>
+
+            <div className="d-flex justify-content-center mb-4">
+                <TextField
+                    select
+                    label="Mes"
+                    value={mes}
+                    onChange={handleMesChange}
+                    variant="outlined"
+                    sx={{ marginRight: 2 }}
+                >
+                    {meses.map((option) => (
+                        <MenuItem key={option.value} value={option.value}>
+                            {option.label}
+                        </MenuItem>
+                    ))}
+                </TextField>
+
+                <TextField
+                    label="Año"
+                    type="number"
+                    value={año}
+                    onChange={handleAñoChange}
+                    variant="outlined"
+                    sx={{ marginRight: 2 }}
+                />
+
+                <Button variant="contained" onClick={() => obtenerReporteCompararMeses(mes, año)}>
+                    Consultar
+                </Button>
+            </div>
+
             <TableContainer component={Paper}>
                 <Table sx={{ minWidth: 650 }} size="small" aria-label="a dense table">
                     <TableHead>
@@ -57,10 +111,8 @@ function ReporteCompararMeses() {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {/* Mapea cada elemento del reporte */}
                         {reporte.map(item => (
                             <TableRow key={item.reparacion}>
-                                {/* Añade espacio entre las columnas */}
                                 <TableCell>{item.reparacion}</TableCell>
                                 <TableCell>{obtenerNombreMes(item.mes1)}</TableCell>
                                 <TableCell>{item.cantidadAutos1}</TableCell>

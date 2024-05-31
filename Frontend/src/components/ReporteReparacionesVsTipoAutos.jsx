@@ -7,25 +7,89 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
+import TextField from '@mui/material/TextField';
+import Button from '@mui/material/Button';
+import MenuItem from '@mui/material/MenuItem';
 
 function ReporteReparacionesVsTiposAutos() {
     const [reporte, setReporte] = useState([]);
+    const [mes, setMes] = useState(12); // Mes predeterminado: diciembre
+    const [año, setAño] = useState(2023); // Año predeterminado: 2023
+
+    const meses = [
+        { value: 1, label: "Enero" },
+        { value: 2, label: "Febrero" },
+        { value: 3, label: "Marzo" },
+        { value: 4, label: "Abril" },
+        { value: 5, label: "Mayo" },
+        { value: 6, label: "Junio" },
+        { value: 7, label: "Julio" },
+        { value: 8, label: "Agosto" },
+        { value: 9, label: "Septiembre" },
+        { value: 10, label: "Octubre" },
+        { value: 11, label: "Noviembre" },
+        { value: 12, label: "Diciembre" }
+    ];
+
+    const obtenerNombreMes = (numeroMes) => {
+        return meses.find(m => m.value === numeroMes)?.label || "";
+    };
+
+    const obtenerReporteReparacionesVsTiposAutos = async (mes, año) => {
+        try {
+            const response = await axios.get(`http://localhost:8081/reportes/reporte/reparaciones-vs-tipo-autos/${mes}/${año}`);
+            setReporte(response.data);
+        } catch (error) {
+            console.error('Error al obtener los datos:', error);
+        }
+    };
 
     useEffect(() => {
-        const obtenerReporteReparacionesVsTiposAutos = async () => {
-            try {
-                const response = await axios.get('http://localhost:8081/reportes/reporte/reparaciones-vs-tipo-autos/12/2023');
-                setReporte(response.data);
-            } catch (error) {
-                console.error('Error al obtener los datos:', error);
-            }
-        };
-        obtenerReporteReparacionesVsTiposAutos();
-    }, []);
+        obtenerReporteReparacionesVsTiposAutos(mes, año);
+    }, [mes, año]);
+
+    const handleMesChange = (event) => {
+        setMes(event.target.value);
+    };
+
+    const handleAñoChange = (event) => {
+        setAño(event.target.value);
+    };
 
     return (
         <div className="container mt-4">
             <h2 className="text-center mb-4">Reporte de Reparaciones VS Tipos de auto</h2>
+
+            <div className="d-flex justify-content-center mb-4">
+                <TextField
+                    select
+                    label="Mes"
+                    value={mes}
+                    onChange={handleMesChange}
+                    variant="outlined"
+                    sx={{ marginRight: 2 }}
+                >
+                    {meses.map((option) => (
+                        <MenuItem key={option.value} value={option.value}>
+                            {option.label}
+                        </MenuItem>
+                    ))}
+                </TextField>
+
+                <TextField
+                    label="Año"
+                    type="number"
+                    value={año}
+                    onChange={handleAñoChange}
+                    variant="outlined"
+                    sx={{ marginRight: 2 }}
+                />
+
+                <Button variant="contained" onClick={() => obtenerReporteReparacionesVsTiposAutos(mes, año)}>
+                    Consultar
+                </Button>
+            </div>
+
             <TableContainer component={Paper}>
                 <Table sx={{ minWidth: 650 }} size="small" aria-label="a dense table">
                     <TableHead>
@@ -45,10 +109,8 @@ function ReporteReparacionesVsTiposAutos() {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {/* Mapea cada elemento del reporte */}
                         {reporte.map(item => (
                             <TableRow key={item.reparacion}>
-                                {/* Añade espacio entre las columnas */}
                                 <TableCell>{item.reparacion}</TableCell>
                                 <TableCell>{item.cantidadSedan}</TableCell>
                                 <TableCell>{item.montoSedan}</TableCell>
