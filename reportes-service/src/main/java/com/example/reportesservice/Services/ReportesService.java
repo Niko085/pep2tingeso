@@ -178,10 +178,15 @@ public class ReportesService {
     }
 
 
+
     public double calcularVariacion(int valorAnterior, int valorActual) {
         if (valorAnterior == 0) {
-            return valorActual == 0 ? 0.0 : 100.0;
+            return valorActual == 0 ? 0.0 : valorActual * 100.0;
+        } else if (valorActual == 0) {
+            return -valorAnterior * 100.0;
         }
         return ((double) (valorActual - valorAnterior) / valorAnterior) * 100.0;
     }
+
+
 }

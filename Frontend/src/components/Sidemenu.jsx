@@ -72,13 +72,6 @@ export default function Sidemenu({ open, toggleDrawer }) {
       <Divider />
 
       <List>
-        <ListItemButton onClick={() => navigate("/reportes/ReporteTiempoPromedio")}>
-          <ListItemIcon>
-            <DiscountIcon />
-          </ListItemIcon>
-          <ListItemText primary="Reporte tiempo promedio" />
-        </ListItemButton>
-
         <ListItemButton onClick={() => navigate("/reportes/ReporteReparacionesVsTiposAutos")}>
           <ListItemIcon>
             <MedicationLiquidIcon />
@@ -86,11 +79,11 @@ export default function Sidemenu({ open, toggleDrawer }) {
           <ListItemText primary="Reporte reparaciones Vs tipo de automovil" />
         </ListItemButton>
 
-        <ListItemButton onClick={() => navigate("/reportes/ReporteReparacionesVsTipoMotor")}>
+        <ListItemButton onClick={() => navigate("/reportes/ReporteCompararMeses")}>
           <ListItemIcon>
             <MedicationLiquidIcon />
           </ListItemIcon>
-          <ListItemText primary="Reporte reparaciones Vs tipo de motor" />
+          <ListItemText primary="Reporte de comparación de meses" />
         </ListItemButton>
 
         <Divider />

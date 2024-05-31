@@ -28,4 +28,9 @@ public class ReportesController {
         return reportesService.reporteReparacionesvsTipoAutos(mes, anio);
     }
 
+    @GetMapping("/variacion/{valorAnterior}/{valorActual}")
+    public double getVariacion(@PathVariable int valorAnterior, @PathVariable int valorActual) {
+        return reportesService.calcularVariacion(valorAnterior, valorActual);
+    }
+
 }

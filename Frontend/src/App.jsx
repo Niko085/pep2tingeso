@@ -10,9 +10,8 @@ import AddEditHistorialReparaciones from './components/AddEditHistorialReparacio
 import IngresarAutomovil from './components/IngresarAutomovil';
 import ReparacionesList from './components/ReparacionesList';
 import AddEditReparacion from './components/AddEditReparaciones';
-import ReporteTiempoPromedio from './components/ReporteTiempoPromedio';
 import ReporteReparacionesVsTiposAutos from './components/ReporteReparacionesVsTipoAutos';
-import ReporteReparacionesVsTipoMotor from './components/ReporteReparacionesVsTipoMotor';
+import ReporteCompararMeses from './components/ReporteCompararMeses';
 import ReparacionSelectionForm from './components/SeleccionarReparacion';
 import BonosList from './components/DescuentoBonosList';
 import AddEditBono from './components/AddEditDescuentoBonos';
@@ -41,9 +40,8 @@ function App() {
               <Route path="/reparaciones/add" element={<AddEditReparacion/>} />
               <Route path="/reparaciones/edit/:id" element={<AddEditReparacion/>} />
 
-              <Route path="/reportes/ReporteTiempoPromedio" element={<ReporteTiempoPromedio/>} />
               <Route path="/reportes/ReporteReparacionesVsTiposAutos" element={<ReporteReparacionesVsTiposAutos/>} />
-              <Route path="/reportes/ReporteReparacionesVsTipoMotor" element={<ReporteReparacionesVsTipoMotor/>} />
+              <Route path="/reportes/ReporteCompararMeses" element={<ReporteCompararMeses/>} />
 
               <Route path="/agregarReparacion/list" element={<ReparacionSelectionForm/>} />
               <Route path="/reparaciones/select/:idH/:patenteH" element={<ReparacionSelectionForm />} />

@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ReporteCompararMeses {
+    //----------------------------------------REPORTE  2(HU6)----------------------------------------
     String reparacion;
 
     //Mes 1

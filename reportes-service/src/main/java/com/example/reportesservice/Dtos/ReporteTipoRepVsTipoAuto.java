@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ReporteTipoRepVsTipoAuto {
+    //----------------------------------------REPORTE  1(HU5)----------------------------------------
     private String reparacion;
     //Sedan
     private int cantidadSedan;

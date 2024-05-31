@@ -113,7 +113,7 @@ const BonosList = () => {
                   Editar
                 </Button>
 
-                <Button
+                {/*<Button
                   variant="contained"
                   color="error"
                   size="small"
@@ -123,6 +123,7 @@ const BonosList = () => {
                 >
                   Eliminar
                 </Button>
+          */}
               </TableCell>
             </TableRow>
           ))}
