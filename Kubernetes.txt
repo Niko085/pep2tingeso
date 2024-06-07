@@ -1,0 +1,166 @@
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+Crear un dump de una base de datos:
+C:\Program Files\PostgreSQL\16\bin>pg_dump -U postgres -W -h localhost dbmsvehiculos > dbmsvehiculos.sql
+Contraseña:
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+Primero va docker en cada cosa hecha con spring
+En consola del intelliJ 
+config-server
+PS C:\Users\nicol\OneDrive - usach.cl\Compu\Escritorio\pep 2 tingeso\pep2tingeso\co
+nfig-server>
+1: docker build -t niko085/config-server .
+2: docker push niko085/config-server
+
+eureka-server
+PS C:\Users\nicol\OneDrive - usach.cl\Compu\Escritorio\pep 2 tingeso\pep2tingeso\eureka-server> 
+1: docker build -t niko085/eureka-server .
+2: docker push niko085/eureka-server
+
+gateway-server
+PS C:\Users\nicol\OneDrive - usach.cl\Compu\Escritorio\pep 2 tingeso\pep2tingeso\gateway-server> 
+1: docker build -t niko085/gateway-server .
+2: docker push niko085/gateway-server
+
+valor-reparaciones-service
+PS C:\Users\nicol\OneDrive - usach.cl\Compu\Escritorio\pep 2 tingeso\pep2tingeso\valor-reparaciones-service> 
+1: docker build -t niko085/valor-reparaciones-service .
+2: docker push niko085/valor-reparaciones-service
+
+reparaciones-vehiculos-service
+PS C:\Users\nicol\OneDrive - usach.cl\Compu\Escritorio\pep 2 tingeso\pep2tingeso\reparaciones-vehiculos-service> 
+1: docker build -t niko085/reparaciones-vehiculos-service .
+2: docker push niko085/reparaciones-vehiculos-service
+
+
+reportes-service
+PS C:\Users\nicol\OneDrive - usach.cl\Compu\Escritorio\pep 2 tingeso\pep2tingeso\reportes-service> 
+1: docker build -t niko085/reportes-service .
+2: docker push niko085/reportes-service
+
+vehiculos-service
+PS C:\Users\nicol\OneDrive - usach.cl\Compu\Escritorio\pep 2 tingeso\pep2tingeso\vehiculos-service> 
+1: docker build -t niko085/vehiculos-service .
+2: docker push niko085/vehiculos-service
+
+
+//////////////////////////Ahora minikube//////////////////////////
+Primero instalar minikube
+usamos esto en powershell:
+New-Item -Path 'c:\' -Name 'minikube' -ItemType Directory -Force
+Invoke-WebRequest -OutFile 'c:\minikube\minikube.exe' -Uri 'https://github.com/kubernetes/minikube/releases/latest/download/minikube-windows-amd64.exe' -UseBasicParsing
+
+
+Luego (en cmd como administrador)
+Levantar el cluster. Docker, puede ser otro, pero ese usaré (esto se usa para iniciar el minikube)
+C:\Users\nicol>minikube start --driver=docker
+minikube start --driver=docker
+
+------------------------------------------------------------------------------------------------------------------------------------------
+Nota: Si aparece el siguiente error:
+C:\Users\nicol>minikube start --driver=docker
+W0531 01:06:23.412895    2168 main.go:291] Unable to resolve the current Docker CLI context "default": context "default": context not found: open C:\Users\nicol\.docker\contexts\meta\37a8eec1ce19687d132fe29051dca629d164e2c4958ba141d5f4133a33f0688f\meta.json: The system cannot find the path specified.
+
+usar: docker context use default
+------------------------------------------------------------------------------------------------------------------------------------------
+
+Con esto obtenemos nodos( que es minikube):
+kubectl get nodes
+
+Obtenemos ip del cluster(que creo que es esto gcr.io/k8s-minikube/kicbase en el dockerDesktop):
+minikube ip
+(a mi me retornó 192.168.49.2)
+
+
+////////////Luego de lo anterior////////
+En C:\Users\nicol\OneDrive - usach.cl\Compu\Escritorio\pep 2 tingeso\pep2tingeso\deployment>
+
+----para ver los pods usamos: kubectl get pods
+
+----para ver los volumenes usamos kubectl get pv
+
+-----para borrar usamos 
+deployments: kubectl delete deployments --all
+
+services: kubectl delete services --all
+
+configmap: kubectl delete configmap postgres-config-map
+
+credenciales: deployments: kubectl delete secrets --all
+
+volumenes: deployments: kubectl delete pv --all
+
+
+
+/////////////Ahora levantar///////////
+Archivos de configuración
+levantar el configmap: kubectl apply -f postgres-config-map.yaml
+ver si está levantado el configmap: kubectl get configmap
+
+Ahora las credenciales
+levantar credenciales: kubectl apply -f postgres-secrets.yaml
+ver si están levantadas las credenciales: kubectl get secrets
+
+Ahoras las bases de datos
+kubectl apply -f valor-reparaciones-service-db-deployment-service.yaml
+kubectl apply -f vehiculos-service-db-deployment-service.yaml
+kubectl apply -f reparaciones-vehiculos-service-db-deployment-service.yaml
+kubectl apply -f reportes-service-db-deployment-service.yaml
+-----para ver si están funcionando, vemos los pods: kubectl get pods
+
+///Ahora, para crear las bases de datos inicialmente
+Esto nos manda como a una terminal: kubectl exec -it dbmsprecios-deployment-dd8fb9d4-65pkc -- /bin/bash
+luego ingresamos: psql -U postgres
+
+con \l vemos las bases de datos creadas
+para crear una base de datos usamos: create database dbmsprecios;
+
+Ahora para poblar retrocedemos hasta la ruta: C:\Users\nicol\OneDrive - usach.cl\Compu\Escritorio\pep 2 tingeso\pep2tingeso\deployment>
+usamos: kubectl cp dbmsprecios.sql dbmsprecios-deployment-dd8fb9d4-65pkc:/home
+
+Podemos verificar con: kubectl exec -it dbmsprecios-deployment-dd8fb9d4-65pkc -- /bin/bash
+luego: cd home
+y después: ls (aquí debería aparecer dbmsprecios.sql)
+
+Ahora movemos el .sql a la base de datos que habíamos creado
+psql -Upostgres dbmsprecios < dbmsprecios.sql
+
+/-/-/-Repetimos la parte de las bases de datos para cada uno
+-------vehiculos
+kubectl get pods
+kubectl exec -it dbmsvehiculos-deployment-776f6dc47d-7jh42 -- /bin/bash
+psql -U postgres
+create database dbmsvehiculos;
+kubectl cp dbmsprecios.sql dbmsvehiculos-deployment-776f6dc47d-7jh42:/home
+kubectl exec -it dbmsvehiculos-deployment-776f6dc47d-7jh42 -- /bin/bash
+cd home
+psql -Upostgres dbmsvehiculos < dbmsvehiculos.sql
+
+-------historial
+kubectl get pods
+kubectl exec -it dbmshitorial-deployment-75648cf499-ph8hq -- /bin/bash
+psql -U postgres
+create database dbmshistorial;
+kubectl cp dbmshistorial.sql dbmshitorial-deployment-75648cf499-ph8hq:/home
+kubectl exec -it dbmshitorial-deployment-75648cf499-ph8hq -- /bin/bash
+cd home
+psql -Upostgres dbmsvehiculos < dbmsvehiculos.sql
+
+
+-------reportes
+kubectl get pods
+kubectl exec -it dbmsreportes-deployment-7d87787959-g2cc9-- /bin/bash
+psql -U postgres
+create database dbmsreportes;
+kubectl cp dbmsreportes.sql dbmsreportes-deployment-7d87787959-g2cc9:/home
+kubectl exec -it dbmsreportes-deployment-7d87787959-g2cc9 -- /bin/bash
+cd home
+psql -Upostgres dbmsreportes < dbmsreportes.sql
+
+
+
+
+
+
+

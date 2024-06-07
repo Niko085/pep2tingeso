@@ -1,0 +1,90 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: dbmsprecios-pvc
+  labels:
+    type: local
+spec:
+  storageClassName: standard
+  capacity:
+    storage: 1Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: "/data/dbmsprecios-data"
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: dbmsprecios-pvc
+  labels:
+    app: postgres
+    tier: database
+spec:
+  storageClassName: standard
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dbmsprecios-deployment
+  labels:
+    app: dbmsprecios-deployment
+    tier: database
+spec:
+  selector:
+    matchLabels:
+      app: dbmsprecios-deployment
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: dbmsprecios-deployment
+        tier: database
+    spec:
+      containers:
+        - name: dbmsprecios
+          image: postgres
+          imagePullPolicy: "IfNotPresent"
+          ports:
+            - containerPort: 5432
+          env:
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-credentials
+                  key: DB_USER_PRECIOS
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-credentials
+                  key: DB_PASSWORD_PRECIOS
+          volumeMounts:
+            - mountPath: /var/lib/postgresql/data
+              name: dbmsprecios-data
+      volumes:
+        - name: dbmsprecios-data
+          persistentVolumeClaim:
+            claimName: dbmsprecios-pvc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: dbmsprecios-service
+  labels:
+    app: dbmsprecios-service
+    tier: database
+spec:
+  ports:
+    - port: 5432
+      targetPort: 5432
+      protocol: TCP
+  selector:
+    app: dbmsprecios-deployment
+    tier: database
+  type: LoadBalancer

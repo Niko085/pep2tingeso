@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: vehiculos-service-deployment
+  labels:
+    app: vehiculos-service-deployment
+spec:
+  selector:
+    matchLabels:
+      app: vehiculos-service-deployment
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: vehiculos-service-deployment
+    spec:
+      containers:
+        - name: vehiculos-service
+          image: niko085/vehiculos-service
+          ports:
+            - containerPort: 8090
+          env:
+            - name: SERVER_PORT
+              value: "0"
+            - name: DB_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: postgres-config-map
+                  key: DB_HOST_VEHICULOS
+            - name: DB_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: postgres-config-map
+                  key: DB_PORT_VEHICULOS
+            - name: DB_DBNAME
+              valueFrom:
+                configMapKeyRef:
+                  name: postgres-config-map
+                  key: DB_DBNAME_VEHICULOS
+            - name: DB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-credentials
+                  key: DB_USER_VEHICULOS
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-credentials
+                  key: DB_PASSWORD_VEHICULOS

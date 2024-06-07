@@ -7,9 +7,12 @@ import Button from "@mui/material/Button";
 import FormControl from "@mui/material/FormControl";
 import MenuItem from "@mui/material/MenuItem";
 import SaveIcon from "@mui/icons-material/Save";
+import Alert from "@mui/material/Alert";
+import Select from "@mui/material/Select";
+import InputLabel from "@mui/material/InputLabel";
 
 const AddEditAutomovil = () => {
-  //Esto es para poder escribir en el formulario
+  // Estado del formulario
   const [patente, setPatente] = useState("");
   const [marca, setMarca] = useState("");
   const [modelo, setModelo] = useState("");
@@ -20,16 +23,33 @@ const AddEditAutomovil = () => {
   const [kilometraje, setKilometraje] = useState("");
   const { id } = useParams();
   const [titleAutomovilForm, setTitleAutomovilForm] = useState("");
+  const [errorMessage, setErrorMessage] = useState(""); // Estado para el mensaje de error
   const navigate = useNavigate();
 
   const saveAutomovil = (a) => {
     a.preventDefault();
 
-    //Objeto con los datos del auto
+    // Validar que todos los campos estén llenos
+    if (
+      !patente ||
+      !marca ||
+      !modelo ||
+      !tipo ||
+      !anioFabricacion ||
+      !motor ||
+      !cantAsientos ||
+      !kilometraje
+    ) {
+      setErrorMessage("Por favor, rellena todos los campos.");
+      return;
+    }
+
+    // Objeto con los datos del auto
     const automovil = { patente, marca, modelo, tipo, anioFabricacion, motor, cantAsientos, kilometraje, id };
-    //Se verifica si el auto existe para actualizar o crear
+
+    // Se verifica si el auto existe para actualizar o crear
     if (id) {
-      //Actualizar Datos Automovil
+      // Actualizar Datos Automovil
       automovilService
         .update(automovil)
         .then((response) => {
@@ -43,7 +63,7 @@ const AddEditAutomovil = () => {
           );
         });
     } else {
-      //Crear nuevo Automovil
+      // Crear nuevo Automovil
       automovilService
         .create(automovil)
         .then((response) => {
@@ -57,19 +77,18 @@ const AddEditAutomovil = () => {
           );
         });
     }
-
-
   };
-    // Obtener el año actual
-    const year = new Date().getFullYear();
-    
+
+  // Obtener el año actual
+  const year = new Date().getFullYear();
+
   useEffect(() => {
     if (id) {
       setTitleAutomovilForm("Editar Automovil");
       automovilService
         .get(id)
         .then((automovil) => {
-          //Se establecen los valores del auto en el formulario
+          // Se establecen los valores del auto en el formulario
           setPatente(automovil.data.patente);
           setMarca(automovil.data.marca);
           setModelo(automovil.data.modelo);
@@ -85,11 +104,14 @@ const AddEditAutomovil = () => {
     } else {
       setTitleAutomovilForm("Nuevo Automovil");
     }
-  }, []);
+  }, [id]);
 
-  //Estilo del formulario
+  // Generar lista de años desde 1980 hasta el año actual
+  const years = Array.from({ length: year - 1980 + 1 }, (_, i) => 1980 + i);
+
+  // Estilo del formulario
   return (
-    //Recuadro
+    // Recuadro
     <Box
       display="flex"
       flexDirection="column"
@@ -108,7 +130,12 @@ const AddEditAutomovil = () => {
     >
       <h3>{titleAutomovilForm}</h3>
       <hr />
-      <form>
+      {errorMessage && (
+        <Alert severity="error" sx={{ marginBottom: "20px" }}>
+          {errorMessage}
+        </Alert>
+      )}
+      <form onSubmit={saveAutomovil}>
         <FormControl fullWidth>
           <TextField
             id="patente"
@@ -131,36 +158,6 @@ const AddEditAutomovil = () => {
           />
         </FormControl>
   
-      <FormControl fullWidth>
-          <TextField
-            id="anioFabricacion"
-            label="Año de fabricación"
-            type="number"
-            value={anioFabricacion}
-            variant="standard"
-            inputProps={{ min: "1980", max: year }} // Establece el valor máximo como el año actual
-            onChange={(a) => {
-              // Solo actualiza el estado si el valor ingresado es válido
-              const value = parseInt(a.target.value);
-              if (!isNaN(value) && value <= year) {
-                setAnioFabricacion(value);
-              }
-            }}
-          />
-      </FormControl>
-
-        <FormControl fullWidth>
-          <TextField
-            id="cantAsientos"
-            label="Cantidad de asientos"
-            type="number"
-            value={cantAsientos}
-            variant="standard"
-            inputProps={{ min: "2", max: "15" }}
-            onChange={(a) => setCantAsientos(a.target.value)}
-          />
-        </FormControl>
-  
         <FormControl fullWidth>
           <TextField
             id="kilometraje"
@@ -174,62 +171,101 @@ const AddEditAutomovil = () => {
           />
         </FormControl>
 
-        <div style={{ display: "flex", padding: "0.5rem", gap: "2rem" }}>
-        <FormControl fullWidth>
-          <TextField
-            id="tipo"
-            label="Tipo de automóvil"
-            value={tipo}
-            select
-            variant="standard"
-            defaultValue="Sedan"
-            onChange={(a) => setTipo(a.target.value)}
-            style={{ flex: 1 }}
-          >
-            <MenuItem value={"Sedan"}>Sedán</MenuItem>
-            <MenuItem value={"Hatchback"}>Hatchback</MenuItem>
-            <MenuItem value={"Suv"}>SUV</MenuItem>
-            <MenuItem value={"Pickup"}>Pickup</MenuItem>
-            <MenuItem value={"Furgoneta"}>Furgoneta</MenuItem>
-          </TextField>
-        </FormControl>
+        <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
+          <div style={{ display: "flex", gap: "1rem" }}>
+            
+            <FormControl fullWidth>
+              <TextField
+                id="tipo"
+                label="Tipo de automóvil"
+                value={tipo}
+                select
+                variant="standard"
+                defaultValue="Sedan"
+                onChange={(a) => setTipo(a.target.value)}
+              >
+                <MenuItem value={"Sedan"}>Sedán</MenuItem>
+                <MenuItem value={"Hatchback"}>Hatchback</MenuItem>
+                <MenuItem value={"Suv"}>SUV</MenuItem>
+                <MenuItem value={"Pickup"}>Pickup</MenuItem>
+                <MenuItem value={"Furgoneta"}>Furgoneta</MenuItem>
+              </TextField>
+            </FormControl>
 
-        <FormControl fullWidth>
-          <TextField
-            id="motor"
-            label="Tipo de motor"
-            value={motor}
-            select
-            variant="standard"
-            defaultValue="Gasolina"
-            onChange={(a) => setMotor(a.target.value)}
-            style={{ flex: 1 }}
-          >
-            <MenuItem value={"Gasolina"}>Gasolina</MenuItem>
-            <MenuItem value={"Diesel"}>Diésel</MenuItem>
-            <MenuItem value={"Hibrido"}>Híbrido</MenuItem>
-            <MenuItem value={"Electrico"}>Eléctrico</MenuItem>
-          </TextField>
-        </FormControl>
+            <FormControl fullWidth>
+              <TextField
+                id="motor"
+                label="Tipo de motor"
+                value={motor}
+                select
+                variant="standard"
+                defaultValue="Gasolina"
+                onChange={(a) => setMotor(a.target.value)}
+              >
+                <MenuItem value={"Gasolina"}>Gasolina</MenuItem>
+                <MenuItem value={"Diesel"}>Diésel</MenuItem>
+                <MenuItem value={"Hibrido"}>Híbrido</MenuItem>
+                <MenuItem value={"Electrico"}>Eléctrico</MenuItem>
+              </TextField>
+            </FormControl>
+          </div>
 
-        <FormControl fullWidth>
-          <TextField
-            id="marca"
-            label="Marca de automóvil"
-            value={marca}
-            select
-            variant="standard"
-            defaultValue="Hyundai"
-            onChange={(a) => setMarca(a.target.value)}
-            style={{ flex: 1 }}
-          >
-            <MenuItem value={"Hyundai"}>Hyundai</MenuItem>
-            <MenuItem value={"Toyota"}>Toyota</MenuItem>
-            <MenuItem value={"Ford"}>Ford</MenuItem>
-            <MenuItem value={"Honda"}>Honda</MenuItem>
-          </TextField>
-        </FormControl>
-      </div>
+          <div style={{ display: "flex", gap: "1rem" }}>
+            <FormControl fullWidth>
+              <TextField
+                id="marca"
+                label="Marca de automóvil"
+                value={marca}
+                select
+                variant="standard"
+                defaultValue="Hyundai"
+                onChange={(a) => setMarca(a.target.value)}
+              >
+                <MenuItem value={"Hyundai"}>Hyundai</MenuItem>
+                <MenuItem value={"Toyota"}>Toyota</MenuItem>
+                <MenuItem value={"Ford"}>Ford</MenuItem>
+                <MenuItem value={"Honda"}>Honda</MenuItem>
+              </TextField>
+            </FormControl>
+
+            <FormControl fullWidth>
+              <TextField
+                id="anioFabricacion"
+                label="Año de fabricación"
+                value={anioFabricacion}
+                select
+                variant="standard"
+                defaultValue="1980"
+                onChange={(a) => setAnioFabricacion(a.target.value)}
+              >
+                {years.map((year) => (
+                  <MenuItem key={year} value={year}>
+                    {year}
+                  </MenuItem>
+                ))}
+              </TextField>
+            </FormControl>
+          </div>
+
+          <FormControl fullWidth>
+            <TextField
+              id="cantAsientos"
+              label="Cantidad de asientos"
+              value={cantAsientos}
+              select
+              variant="standard"
+              defaultValue="5"
+              onChange={(a) => setCantAsientos(a.target.value)}
+            >
+              {[...Array(11)].map((_, index) => (
+                <MenuItem key={index + 5} value={index + 5}>
+                  {index + 5}
+                </MenuItem>
+              ))}
+            </TextField>
+          </FormControl>
+        </div>
+
 
 
         <FormControl>
@@ -237,7 +273,7 @@ const AddEditAutomovil = () => {
           <Button
             variant="contained"
             color="info"
-            onClick={(a) => saveAutomovil(a)}
+            onClick={saveAutomovil}
             style={{ marginLeft: "0.5rem" }}
             startIcon={<SaveIcon />}
           >
