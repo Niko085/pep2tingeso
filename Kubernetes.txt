@@ -132,7 +132,7 @@ kubectl get pods
 kubectl exec -it dbmsvehiculos-deployment-776f6dc47d-7jh42 -- /bin/bash
 psql -U postgres
 create database dbmsvehiculos;
-kubectl cp dbmsprecios.sql dbmsvehiculos-deployment-776f6dc47d-7jh42:/home
+kubectl cp dbmsvehiculos.sql dbmsvehiculos-deployment-776f6dc47d-7jh42:/home
 kubectl exec -it dbmsvehiculos-deployment-776f6dc47d-7jh42 -- /bin/bash
 cd home
 psql -Upostgres dbmsvehiculos < dbmsvehiculos.sql
@@ -145,7 +145,7 @@ create database dbmshistorial;
 kubectl cp dbmshistorial.sql dbmshitorial-deployment-75648cf499-ph8hq:/home
 kubectl exec -it dbmshitorial-deployment-75648cf499-ph8hq -- /bin/bash
 cd home
-psql -Upostgres dbmsvehiculos < dbmsvehiculos.sql
+psql -Upostgres dbmshistorial < dbmshistorial.sql
 
 
 -------reportes
@@ -159,8 +159,18 @@ cd home
 psql -Upostgres dbmsreportes < dbmsreportes.sql
 
 
+////////////////////////////////////////////
+Levantar config-server
+En C:\Users\nicol\OneDrive - usach.cl\Compu\Escritorio\pep 2 tingeso\pep2tingeso\deployment>
+kubectl apply -f config-server-deployment-service.yaml
+
+Si queremos ver los logs es:
+kubectl logs -f config-server-deployment-6cbc584448-s6kq7
 
 
+Ahora levantamos el service dicovery(eureka):
+kubectl apply -f eureka-server-deployment-service.yaml
 
-
+Si queremos ver los logs es:
+kubectl logs -f eureka-server-deployment-597b647b85-lpb64
 
