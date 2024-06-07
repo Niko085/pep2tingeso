@@ -1,10 +1,10 @@
-package com.example.eurekaserver;
+package com.mingeso.msconfig;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class EurekaServerApplicationTests {
+class MsConfigApplicationTests {
 
 	@Test
 	void contextLoads() {

@@ -1,13 +1,13 @@
-package com.example.gatewayserver;
+package com.mingeso.apigateway;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class GatewayServerApplication {
+public class ApiGatewayApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(GatewayServerApplication.class, args);
+		SpringApplication.run(ApiGatewayApplication.class, args);
 	}
 
 }

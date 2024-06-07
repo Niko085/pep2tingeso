@@ -54,12 +54,12 @@ Invoke-WebRequest -OutFile 'c:\minikube\minikube.exe' -Uri 'https://github.com/k
 
 Luego (en cmd como administrador)
 Levantar el cluster. Docker, puede ser otro, pero ese usaré (esto se usa para iniciar el minikube)
-C:\Users\nicol>minikube start --driver=docker
+C:\Windows\system32>minikube start --driver=docker
 minikube start --driver=docker
 
 ------------------------------------------------------------------------------------------------------------------------------------------
 Nota: Si aparece el siguiente error:
-C:\Users\nicol>minikube start --driver=docker
+C:\Windows\system32>minikube start --driver=docker
 W0531 01:06:23.412895    2168 main.go:291] Unable to resolve the current Docker CLI context "default": context "default": context not found: open C:\Users\nicol\.docker\contexts\meta\37a8eec1ce19687d132fe29051dca629d164e2c4958ba141d5f4133a33f0688f\meta.json: The system cannot find the path specified.
 
 usar: docker context use default
@@ -78,7 +78,7 @@ En C:\Users\nicol\OneDrive - usach.cl\Compu\Escritorio\pep 2 tingeso\pep2tingeso
 
 ----para ver los pods usamos: kubectl get pods
 
-----para ver los volumenes usamos kubectl get pv
+----para ver los volumenes usamos: kubectl get pv
 
 -----para borrar usamos 
 deployments: kubectl delete deployments --all
@@ -87,9 +87,9 @@ services: kubectl delete services --all
 
 configmap: kubectl delete configmap postgres-config-map
 
-credenciales: deployments: kubectl delete secrets --all
+credenciales: kubectl delete secrets --all
 
-volumenes: deployments: kubectl delete pv --all
+volumenes: kubectl delete pv --all
 
 
 
@@ -165,12 +165,21 @@ En C:\Users\nicol\OneDrive - usach.cl\Compu\Escritorio\pep 2 tingeso\pep2tingeso
 kubectl apply -f config-server-deployment-service.yaml
 
 Si queremos ver los logs es:
-kubectl logs -f config-server-deployment-6cbc584448-s6kq7
+kubectl logs -f config-server-deployment-6cbc584448-mk8sl
 
 
 Ahora levantamos el service dicovery(eureka):
 kubectl apply -f eureka-server-deployment-service.yaml
 
 Si queremos ver los logs es:
-kubectl logs -f eureka-server-deployment-597b647b85-lpb64
+kubectl logs -f eureka-server-deployment-597b647b85-r6k9j
+
+Para ver los services: kubectl get services
+
+Si ocurre el problema de que no se puede acceder usando docker al 192.168.49.2:puerto externo del servicio
+usar: minikube service eureka-server-service
+minikube service gateway-server-service
+
+
+
 
