@@ -128,21 +128,21 @@ psql -Upostgres dbmsprecios < dbmsprecios.sql
 /-/-/-Repetimos la parte de las bases de datos para cada uno
 -------vehiculos
 kubectl get pods
-kubectl exec -it dbmsvehiculos-deployment-85f9ff5fc9-kvlsv -- /bin/bash
+kubectl exec -it dbmsvehiculos-deployment-85f9ff5fc9-bz2w4 -- /bin/bash
 psql -U postgres
 create database dbmsvehiculos;
-kubectl cp dbmsvehiculos.sql dbmsvehiculos-deployment-85f9ff5fc9-kvlsv:/home
-kubectl exec -it dbmsvehiculos-deployment-85f9ff5fc9-kvlsv -- /bin/bash
+kubectl cp dbmsvehiculos.sql dbmsvehiculos-deployment-85f9ff5fc9-bz2w4:/home
+kubectl exec -it dbmsvehiculos-deployment-85f9ff5fc9-bz2w4 -- /bin/bash
 cd home
 psql -Upostgres dbmsvehiculos < dbmsvehiculos.sql
 
 -------historial
 kubectl get pods
-kubectl exec -it dbmshitorial-deployment-75648cf499-g9gbq -- /bin/bash
+kubectl exec -it dbmshistorial-deployment-68cdff8ddb-xs9qh -- /bin/bash
 psql -U postgres
 create database dbmshistorial;
-kubectl cp dbmshistorial.sql dbmshitorial-deployment-75648cf499-g9gbq:/home
-kubectl exec -it dbmshitorial-deployment-75648cf499-g9gbq -- /bin/bash
+kubectl cp dbmshistorial.sql dbmshistorial-deployment-68cdff8ddb-xs9qh:/home
+kubectl exec -it dbmshistorial-deployment-68cdff8ddb-xs9qh -- /bin/bash
 cd home
 psql -Upostgres dbmshistorial < dbmshistorial.sql
 
@@ -195,7 +195,7 @@ Para ver los services: kubectl get services
 
 Si ocurre el problema de que no se puede acceder usando docker al 192.168.49.2:puerto externo del servicio
 usar: minikube service eureka-server-service
-Este es para hque funciones: minikube service gateway-server-service
+Este es para que funcionen las consultas: minikube service gateway-server-service
 
 
 
