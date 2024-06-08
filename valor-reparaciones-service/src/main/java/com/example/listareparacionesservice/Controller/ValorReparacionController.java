@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 public class ValorReparacionController {
     @Autowired
     ValorReparacionService valorReparacionService;
+    //Con kubernetes:http://127.0.0.1:50101/automoviles/
 
     //http://localhost:8092/valorReparacion/monto/1/Gasolina
     @GetMapping("/monto/{numeroReparacion}/{tipoMotor}")
