@@ -8,8 +8,7 @@ Contraseña:
 Primero va docker en cada cosa hecha con spring
 En consola del intelliJ 
 config-server
-PS C:\Users\nicol\OneDrive - usach.cl\Compu\Escritorio\pep 2 tingeso\pep2tingeso\co
-nfig-server>
+PS C:\Users\nicol\OneDrive - usach.cl\Compu\Escritorio\pep 2 tingeso\pep2tingeso\config-server>
 1: docker build -t niko085/config-server .
 2: docker push niko085/config-server
 
@@ -65,7 +64,7 @@ W0531 01:06:23.412895    2168 main.go:291] Unable to resolve the current Docker 
 usar: docker context use default
 ------------------------------------------------------------------------------------------------------------------------------------------
 
-Con esto obtenemos nodos( que es minikube):
+Con esto obtenemos nodos(que es minikube):
 kubectl get nodes
 
 Obtenemos ip del cluster(que creo que es esto gcr.io/k8s-minikube/kicbase en el dockerDesktop):
@@ -103,23 +102,23 @@ levantar credenciales: kubectl apply -f postgres-secrets.yaml
 ver si están levantadas las credenciales: kubectl get secrets
 
 Ahoras las bases de datos
-kubectl apply -f valor-reparaciones-service-db-deployment-service.yaml
-kubectl apply -f vehiculos-service-db-deployment-service.yaml
-kubectl apply -f reparaciones-vehiculos-service-db-deployment-service.yaml
-kubectl apply -f reportes-service-db-deployment-service.yaml
+-kubectl apply -f valor-reparaciones-service-db-deployment-service.yaml
+-kubectl apply -f vehiculos-service-db-deployment-service.yaml
+-kubectl apply -f reparaciones-vehiculos-service-db-deployment-service.yaml
+-kubectl apply -f reportes-service-db-deployment-service.yaml
 -----para ver si están funcionando, vemos los pods: kubectl get pods
 
 ///Ahora, para crear las bases de datos inicialmente
-Esto nos manda como a una terminal: kubectl exec -it dbmsprecios-deployment-dd8fb9d4-65pkc -- /bin/bash
+Esto nos manda como a una terminal: kubectl exec -it dbmsprecios-deployment-dd8fb9d4-w7hdr -- /bin/bash
 luego ingresamos: psql -U postgres
 
 con \l vemos las bases de datos creadas
 para crear una base de datos usamos: create database dbmsprecios;
 
 Ahora para poblar retrocedemos hasta la ruta: C:\Users\nicol\OneDrive - usach.cl\Compu\Escritorio\pep 2 tingeso\pep2tingeso\deployment>
-usamos: kubectl cp dbmsprecios.sql dbmsprecios-deployment-dd8fb9d4-65pkc:/home
+usamos: kubectl cp dbmsprecios.sql dbmsprecios-deployment-dd8fb9d4-w7hdr:/home
 
-Podemos verificar con: kubectl exec -it dbmsprecios-deployment-dd8fb9d4-65pkc -- /bin/bash
+Podemos verificar con: kubectl exec -it dbmsprecios-deployment-dd8fb9d4-w7hdr -- /bin/bash
 luego: cd home
 y después: ls (aquí debería aparecer dbmsprecios.sql)
 
@@ -129,21 +128,21 @@ psql -Upostgres dbmsprecios < dbmsprecios.sql
 /-/-/-Repetimos la parte de las bases de datos para cada uno
 -------vehiculos
 kubectl get pods
-kubectl exec -it dbmsvehiculos-deployment-776f6dc47d-7jh42 -- /bin/bash
+kubectl exec -it dbmsvehiculos-deployment-85f9ff5fc9-kvlsv -- /bin/bash
 psql -U postgres
 create database dbmsvehiculos;
-kubectl cp dbmsvehiculos.sql dbmsvehiculos-deployment-776f6dc47d-7jh42:/home
-kubectl exec -it dbmsvehiculos-deployment-776f6dc47d-7jh42 -- /bin/bash
+kubectl cp dbmsvehiculos.sql dbmsvehiculos-deployment-85f9ff5fc9-kvlsv:/home
+kubectl exec -it dbmsvehiculos-deployment-85f9ff5fc9-kvlsv -- /bin/bash
 cd home
 psql -Upostgres dbmsvehiculos < dbmsvehiculos.sql
 
 -------historial
 kubectl get pods
-kubectl exec -it dbmshitorial-deployment-75648cf499-ph8hq -- /bin/bash
+kubectl exec -it dbmshitorial-deployment-75648cf499-g9gbq -- /bin/bash
 psql -U postgres
 create database dbmshistorial;
-kubectl cp dbmshistorial.sql dbmshitorial-deployment-75648cf499-ph8hq:/home
-kubectl exec -it dbmshitorial-deployment-75648cf499-ph8hq -- /bin/bash
+kubectl cp dbmshistorial.sql dbmshitorial-deployment-75648cf499-g9gbq:/home
+kubectl exec -it dbmshitorial-deployment-75648cf499-g9gbq -- /bin/bash
 cd home
 psql -Upostgres dbmshistorial < dbmshistorial.sql
 
@@ -165,20 +164,38 @@ En C:\Users\nicol\OneDrive - usach.cl\Compu\Escritorio\pep 2 tingeso\pep2tingeso
 kubectl apply -f config-server-deployment-service.yaml
 
 Si queremos ver los logs es:
-kubectl logs -f config-server-deployment-6cbc584448-mk8sl
+kubectl logs -f config-server-deployment-6cbc584448-hv686
 
 
 Ahora levantamos el service dicovery(eureka):
 kubectl apply -f eureka-server-deployment-service.yaml
 
 Si queremos ver los logs es:
-kubectl logs -f eureka-server-deployment-597b647b85-r6k9j
+kubectl logs -f eureka-server-deployment-597b647b85-rgl55
+
+Ahora levantamos el gateway:
+kubectl apply -f gateway-server-deployment-service.yaml
+
+Si queremos ver los logs es:
+gateway-server-deployment-5d888c7d49-7xkjc
+
+//////////Ahora las bases de datos:
+-Vehiculos: kubectl apply -f vehiculos-service-db-deployment-service.yaml
+-Precios: kubectl apply -f valor-reparaciones-service-db-deployment-service.yaml
+-historial: kubectl apply -f reparaciones-vehiculos-service-db-deployment-service.yaml
+
 
 Para ver los services: kubectl get services
 
+//////////Ahora los microservicios:
+-Vehiculos: kubectl apply -f vehiculos-service-deployment-service.yaml
+-Precios: kubectl apply -f valor-reparaciones-service-deployment-service.yaml
+-historial: kubectl apply -f reparaciones-vehiculos-service-deployment-service.yaml
+
+
 Si ocurre el problema de que no se puede acceder usando docker al 192.168.49.2:puerto externo del servicio
 usar: minikube service eureka-server-service
-minikube service gateway-server-service
+Este es para hque funciones: minikube service gateway-server-service
 
 
 

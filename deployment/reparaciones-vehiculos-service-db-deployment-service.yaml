@@ -1,7 +1,7 @@
-apiVersion: v1
+      apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: dbmshitorial-pv
+  name: dbmshistorial-pv
   labels:
     type: local
 spec:
@@ -11,12 +11,12 @@ spec:
   accessModes:
     - ReadWriteOnce
   hostPath:
-    path: "/data/dbmshitorial-data"
+    path: "/data/dbmshistorial-data"
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: dbmshitorial-pvc
+  name: dbmshistorial-pvc
   labels:
     app: postgres
     tier: database
@@ -31,24 +31,24 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: dbmshitorial-deployment
+  name: dbmshistorial-deployment
   labels:
-    app: dbmshitorial-deployment
+    app: dbmshistorial-deployment
     tier: database
 spec:
   selector:
     matchLabels:
-      app: dbmshitorial-deployment
+      app: dbmshistorial-deployment
   strategy:
     type: Recreate
   template:
     metadata:
       labels:
-        app: dbmshitorial-deployment
+        app: dbmshistorial-deployment
         tier: database
     spec:
       containers:
-        - name: dbmshitorial
+        - name: dbmshistorial
           image: postgres
           imagePullPolicy: "IfNotPresent"
           ports:
@@ -66,18 +66,18 @@ spec:
                   key: DB_PASSWORD_REPARACIONES
           volumeMounts:
             - mountPath: /var/lib/postgresql/data
-              name: dbmshitorial-data
+              name: dbmshistorial-data
       volumes:
-        - name: dbmshitorial-data
+        - name: dbmshistorial-data
           persistentVolumeClaim:
-            claimName: dbmshitorial-pvc
+            claimName: dbmshistorial-pvc
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: dbmshitorial-service
+  name: dbmshistorial-service
   labels:
-    app: dbmshitorial-service
+    app: dbmshistorial-service
     tier: database
 spec:
   ports:
@@ -85,6 +85,6 @@ spec:
       targetPort: 5432
       protocol: TCP
   selector:
-    app: dbmshitorial-deployment
+    app: dbmshistorial-deployment
     tier: database
   type: LoadBalancer
