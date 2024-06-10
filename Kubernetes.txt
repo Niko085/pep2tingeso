@@ -109,16 +109,16 @@ Ahoras las bases de datos
 -----para ver si están funcionando, vemos los pods: kubectl get pods
 
 ///Ahora, para crear las bases de datos inicialmente
-Esto nos manda como a una terminal: kubectl exec -it dbmsprecios-deployment-dd8fb9d4-w7hdr -- /bin/bash
+Esto nos manda como a una terminal: kubectl exec -it dbmsprecios-deployment-dd8fb9d4-pnnhc -- /bin/bash
 luego ingresamos: psql -U postgres
 
 con \l vemos las bases de datos creadas
 para crear una base de datos usamos: create database dbmsprecios;
 
 Ahora para poblar retrocedemos hasta la ruta: C:\Users\nicol\OneDrive - usach.cl\Compu\Escritorio\pep 2 tingeso\pep2tingeso\deployment>
-usamos: kubectl cp dbmsprecios.sql dbmsprecios-deployment-dd8fb9d4-w7hdr:/home
+usamos: kubectl cp dbmsprecios.sql dbmsprecios-deployment-dd8fb9d4-pnnhc:/home
 
-Podemos verificar con: kubectl exec -it dbmsprecios-deployment-dd8fb9d4-w7hdr -- /bin/bash
+Podemos verificar con: kubectl exec -it dbmsprecios-deployment-dd8fb9d4-pnnhc -- /bin/bash
 luego: cd home
 y después: ls (aquí debería aparecer dbmsprecios.sql)
 
@@ -128,32 +128,32 @@ psql -Upostgres dbmsprecios < dbmsprecios.sql
 /-/-/-Repetimos la parte de las bases de datos para cada uno
 -------vehiculos
 kubectl get pods
-kubectl exec -it dbmsvehiculos-deployment-85f9ff5fc9-bz2w4 -- /bin/bash
+kubectl exec -it dbmsvehiculos-deployment-85f9ff5fc9-c7fkz -- /bin/bash
 psql -U postgres
 create database dbmsvehiculos;
-kubectl cp dbmsvehiculos.sql dbmsvehiculos-deployment-85f9ff5fc9-bz2w4:/home
-kubectl exec -it dbmsvehiculos-deployment-85f9ff5fc9-bz2w4 -- /bin/bash
+kubectl cp dbmsvehiculos.sql dbmsvehiculos-deployment-85f9ff5fc9-c7fkz:/home
+kubectl exec -it dbmsvehiculos-deployment-85f9ff5fc9-c7fkz -- /bin/bash
 cd home
 psql -Upostgres dbmsvehiculos < dbmsvehiculos.sql
 
 -------historial
 kubectl get pods
-kubectl exec -it dbmshistorial-deployment-68cdff8ddb-xs9qh -- /bin/bash
+kubectl exec -it dbmshistorial-deployment-68cdff8ddb-ltg9z -- /bin/bash
 psql -U postgres
 create database dbmshistorial;
-kubectl cp dbmshistorial.sql dbmshistorial-deployment-68cdff8ddb-xs9qh:/home
-kubectl exec -it dbmshistorial-deployment-68cdff8ddb-xs9qh -- /bin/bash
+kubectl cp dbmshistorial.sql dbmshistorial-deployment-68cdff8ddb-ltg9z:/home
+kubectl exec -it dbmshistorial-deployment-68cdff8ddb-ltg9z -- /bin/bash
 cd home
 psql -Upostgres dbmshistorial < dbmshistorial.sql
 
 
 -------reportes
 kubectl get pods
-kubectl exec -it dbmsreportes-deployment-7d87787959-g2cc9-- /bin/bash
+kubectl exec -it dbmsreportes-deployment-7d87787959-f7xn6-- /bin/bash
 psql -U postgres
 create database dbmsreportes;
-kubectl cp dbmsreportes.sql dbmsreportes-deployment-7d87787959-g2cc9:/home
-kubectl exec -it dbmsreportes-deployment-7d87787959-g2cc9 -- /bin/bash
+kubectl cp dbmsreportes.sql dbmsreportes-deployment-7d87787959-f7xn6:/home
+kubectl exec -it dbmsreportes-deployment-7d87787959-f7xn6 -- /bin/bash
 cd home
 psql -Upostgres dbmsreportes < dbmsreportes.sql
 
@@ -182,7 +182,8 @@ gateway-server-deployment-5d888c7d49-7xkjc
 //////////Ahora las bases de datos:
 -Vehiculos: kubectl apply -f vehiculos-service-db-deployment-service.yaml
 -Precios: kubectl apply -f valor-reparaciones-service-db-deployment-service.yaml
--historial: kubectl apply -f reparaciones-vehiculos-service-db-deployment-service.yaml
+-Historial: kubectl apply -f reparaciones-vehiculos-service-db-deployment-service.yaml
+-Reportes: kubectl apply -f reportes-service-db-deployment-service.yaml
 
 
 Para ver los services: kubectl get services
@@ -190,13 +191,12 @@ Para ver los services: kubectl get services
 //////////Ahora los microservicios:
 -Vehiculos: kubectl apply -f vehiculos-service-deployment-service.yaml
 -Precios: kubectl apply -f valor-reparaciones-service-deployment-service.yaml
--historial: kubectl apply -f reparaciones-vehiculos-service-deployment-service.yaml
+-Historial: kubectl apply -f reparaciones-vehiculos-service-deployment-service.yaml
+-Reportes: kubectl apply -f reportes-service-deployment-service.yaml
 
 
 Si ocurre el problema de que no se puede acceder usando docker al 192.168.49.2:puerto externo del servicio
 usar: minikube service eureka-server-service
 Este es para que funcionen las consultas: minikube service gateway-server-service
-
-
 
 

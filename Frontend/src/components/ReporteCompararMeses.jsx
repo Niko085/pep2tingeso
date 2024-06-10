@@ -37,7 +37,7 @@ function ReporteCompararMeses() {
 
     const obtenerReporteCompararMeses = async (mes, ano) => {
         try {
-            const response = await axios.get(`http://localhost:8081/reportes/reporte/compararMeses/${mes}/${ano}`);
+            const response = await axios.get(`http://127.0.0.1:59897/reportes/reporte/compararMeses/${mes}/${ano}`);
             setReporte(response.data);
         } catch (error) {
             console.error('Error al obtener los datos:', error);
