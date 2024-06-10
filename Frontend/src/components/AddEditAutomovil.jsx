@@ -68,7 +68,7 @@ const AddEditAutomovil = () => {
         .create(automovil)
         .then((response) => {
           console.log("El automovil ha sido añadido.", response.data);
-          navigate("/automovil/list");
+          navigate("/historialreparaciones/add");
         })
         .catch((error) => {
           console.log(
@@ -258,8 +258,8 @@ const AddEditAutomovil = () => {
               onChange={(a) => setCantAsientos(a.target.value)}
             >
               {[...Array(11)].map((_, index) => (
-                <MenuItem key={index + 5} value={index + 5}>
-                  {index + 5}
+                <MenuItem key={index + 2} value={index + 2}>
+                  {index + 2}
                 </MenuItem>
               ))}
             </TextField>

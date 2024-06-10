@@ -15,6 +15,7 @@ import ReporteCompararMeses from './components/ReporteCompararMeses';
 import ReparacionSelectionForm from './components/SeleccionarReparacion';
 import BonosList from './components/DescuentoBonosList';
 import AddEditBono from './components/AddEditDescuentoBonos';
+import IngresoTaller from './components/IngresoTaller';
 
 function App() {
   return (
@@ -32,6 +33,7 @@ function App() {
               <Route path="/historialReparaciones/add" element={<AddEditHistorialReparaciones/>} />
               <Route path="/historialReparaciones/edit/:id" element={<AddEditHistorialReparaciones/>} />
 
+              <Route path="/ingresoTaller" element={<IngresoTaller/>} />
 
               <Route path="/ingresarAutomovil/add" element={<IngresarAutomovil/>} />
               <Route path="/ingresarAutomovil/edit/:id" element={<IngresarAutomovil/>} />

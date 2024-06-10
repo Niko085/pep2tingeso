@@ -89,7 +89,7 @@ const HistorialReparacionesList = () => {
     setHistorialReparaciones(updatedHistorialReparaciones);
 
     // Envía una solicitud PUT al servidor para actualizar el estado de pago
-    axios.put(`http://localhost:8090/api/historialreparaciones/pagar/${id}`, { pagado: true })
+    axios.put(`http://127.0.0.1:62823/historialreparaciones/pagar/${id}`, { pagado: true })
       .then(response => {
         console.log("Estado de pago actualizado en el servidor:", response.data);
       })
