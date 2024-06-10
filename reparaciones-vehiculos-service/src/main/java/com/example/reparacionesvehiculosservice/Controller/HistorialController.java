@@ -8,6 +8,7 @@ import com.example.reparacionesvehiculosservice.Service.DatosBonosService;
 import com.example.reparacionesvehiculosservice.Service.HistorialService;
 import com.example.reparacionesvehiculosservice.Service.ReparacionService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -125,6 +126,12 @@ public class HistorialController {
     public ResponseEntity<ReparacionEntity> saveReparacion(@RequestBody ReparacionEntity reparacion) {
         ReparacionEntity reparacionNew = reparacionService.saveReparacion(reparacion);
         return ResponseEntity.ok(reparacionNew);
+    }
+
+    @PostMapping("/reparacion/crearVarias")
+    public ResponseEntity<List<ReparacionEntity>> createVariousReparaciones(@RequestBody List<ReparacionEntity> reparacionesList) {
+        List<ReparacionEntity> savedReparaciones = reparacionService.createVarious(reparacionesList);
+        return ResponseEntity.status(HttpStatus.CREATED).body(savedReparaciones);
     }
 
     @PutMapping("/reparacion/")

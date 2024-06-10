@@ -21,6 +21,13 @@ public class ReparacionService {
         return reparacionRepository.save(reparacion);
     }
 
+    public List<ReparacionEntity> createVarious(List<ReparacionEntity> reparacionesList) {
+        for (ReparacionEntity reparacion : reparacionesList) {
+            saveReparacion(reparacion);
+        }
+        return reparacionesList;
+    }
+
     public List<ReparacionEntity> getReparacionByIdHistorialReparaciones(long id){
         return reparacionRepository.findByIdHistorialReparaciones(id);
     }
