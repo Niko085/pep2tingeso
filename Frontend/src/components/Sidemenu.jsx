@@ -39,6 +39,15 @@ export default function Sidemenu({ open, toggleDrawer }) {
 
         <Divider />
 
+        <ListItemButton onClick={() => navigate("/ingresar")}>
+          <ListItemIcon>
+          <DirectionsCarIcon />
+          </ListItemIcon>
+          <ListItemText primary="Ingresar al taller" />
+        </ListItemButton>
+
+        <Divider />
+
         <ListItemButton onClick={() => navigate("/automovil/list")}>
           <ListItemIcon>
           <DirectionsCarIcon />
