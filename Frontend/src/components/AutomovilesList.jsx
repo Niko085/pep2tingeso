@@ -41,7 +41,7 @@ const AutomovilesList = () => {
   const handleDelete = (id) => {
     console.log("Printing id", id);
     const confirmDelete = window.confirm(
-      "¿Esta seguro que desea borrar este automovil?"
+      "¿Está seguro que desea borrar este automovil?"
     );
     if (confirmDelete) {
       automovilService
@@ -93,16 +93,16 @@ const AutomovilesList = () => {
               Modelo
             </TableCell>
             <TableCell align="right" sx={{ fontWeight: "bold" }}>
-              Tipo de auto
+              Tipo Vehiculo
             </TableCell>
             <TableCell align="right" sx={{ fontWeight: "bold" }}>
-              Año de fabricación
+              Año Fabricación
             </TableCell>
             <TableCell align="right" sx={{ fontWeight: "bold" }}>
-              Tipo de motor
+              Tipo Motor
             </TableCell>
             <TableCell align="right" sx={{ fontWeight: "bold" }}>
-              Cantidad de asientos
+              Cantidad Asientos
             </TableCell>
             <TableCell align="right" sx={{ fontWeight: "bold" }}>
               Kilometraje

@@ -49,6 +49,16 @@ public class HistorialController {
         }
     }
 
+    @GetMapping("/no-pagado/{patente}")
+    public ResponseEntity<HistorialEntity> getHistorialReparacionesNoPagadasByPatente(@PathVariable String patente) {
+        HistorialEntity historial = historialService.getHistorialReparacionesNoPagadasByPatente(patente);
+        if (historial != null) {
+            return new ResponseEntity<>(historial, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
 
     @PostMapping("/")
     public ResponseEntity<HistorialEntity> saveHistorial(@RequestBody HistorialEntity historial) {

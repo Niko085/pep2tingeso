@@ -20,4 +20,12 @@ const remove = id => {
     return httpClient.delete(`/historialreparaciones/${id}`);
 }
 
-export default { getAll, create, get, update, remove};
+const getAuto = patente => {
+    return httpClient.get(`/historialreparaciones/patente/${patente}`);
+}
+
+const getNoPagadoByPatente = patente => {
+    return httpClient.get(`/historialreparaciones/no-pagado/${patente}`);
+}
+
+export default { getAll, create, get, update, remove, getAuto, getNoPagadoByPatente};

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import historialReparacionesService from "../services/historialReparaciones.service";
+import automovilService from "../services/automovil.service";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -18,18 +19,24 @@ import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
 
 const HistorialReparacionesList = () => {
   const [historialReparaciones, setHistorialReparaciones] = useState([]);
+
   const navigate = useNavigate();
 
-  const init = () => {
-    historialReparacionesService
-      .getAll()
-      .then((response) => {
-        console.log("Mostrando historial de reparaciones:", response.data);
-        setHistorialReparaciones(response.data);
-      })
-      .catch((error) => {
-        console.log("Error al cargar historial de reparaciones:", error);
-      });
+  const init = async () => {
+    try {
+      const historialResponse = await historialReparacionesService.getAll();
+      const historialData = historialResponse.data;
+
+      const historialWithAutomovil = await Promise.all(historialData.map(async historial => {
+        const automovilResponse = await historialReparacionesService.getAuto(historial.patente);
+        const automovilData = automovilResponse.data;
+        return { ...historial, automovil: automovilData };
+      }));
+
+      setHistorialReparaciones(historialWithAutomovil);
+    } catch (error) {
+      console.log("Error al cargar historial de reparaciones:", error);
+    }
   };
 
   useEffect(() => {
@@ -89,7 +96,7 @@ const HistorialReparacionesList = () => {
     setHistorialReparaciones(updatedHistorialReparaciones);
 
     // Envía una solicitud PUT al servidor para actualizar el estado de pago
-    axios.put(`http://127.0.0.1:62823/historialreparaciones/pagar/${id}`, { pagado: true })
+    axios.put(`http://localhosst:8081/historialreparaciones/pagar/${id}`, { pagado: true })
       .then(response => {
         console.log("Estado de pago actualizado en el servidor:", response.data);
       })
@@ -118,6 +125,12 @@ const HistorialReparacionesList = () => {
         <TableHead>
           <TableRow>
             <TableCell align="left">Patente</TableCell>
+            <TableCell align="left">Marca</TableCell>
+            <TableCell align="left">Modelo</TableCell>
+            <TableCell align="left">Tipo Vehiculo</TableCell>
+            <TableCell align="left">Año Fabricación</TableCell>
+            <TableCell align="left">Tipo Motor</TableCell>
+
             <TableCell align="left">Fecha Ingreso Taller</TableCell>
             <TableCell align="left">Hora Ingreso Taller</TableCell>
             <TableCell align="right">Monto Total a Pagar</TableCell>
@@ -126,8 +139,8 @@ const HistorialReparacionesList = () => {
             <TableCell align="right">IVA</TableCell>
             <TableCell align="left">Fecha Salida Taller</TableCell>
             <TableCell align="left">Hora Salida Taller</TableCell>
-            <TableCell align="left">Fecha Cliente se Lleva Vehículo</TableCell>
-            <TableCell align="left">Hora Cliente se Lleva Vehículo</TableCell>
+            <TableCell align="left">Fecha Retiro Cliente</TableCell>
+            <TableCell align="left">Hora Retiro Cliente</TableCell>
             <TableCell align="left">Pagado</TableCell>
             <TableCell align="left">Operaciones</TableCell>
             <TableCell align="left">Seleccionar Reparaciones</TableCell>
@@ -137,7 +150,13 @@ const HistorialReparacionesList = () => {
         <TableBody>
           {historialReparaciones.map((historialReparacion) => (
             <TableRow key={historialReparacion.id}>
-              <TableCell align="left">{historialReparacion.patente}</TableCell>
+              <TableCell align="left">{historialReparacion.automovil.patente}</TableCell>
+              <TableCell align="left">{historialReparacion.automovil.marca}</TableCell>
+              <TableCell align="left">{historialReparacion.automovil.modelo}</TableCell>
+              <TableCell align="left">{historialReparacion.automovil.tipo}</TableCell>
+              <TableCell align="left">{historialReparacion.automovil.anioFabricacion}</TableCell>
+              <TableCell align="left">{historialReparacion.automovil.motor}</TableCell>
+
               <TableCell align="left">{historialReparacion.fechaIngresoTaller}</TableCell>
               <TableCell align="left">{historialReparacion.horaIngresoTaller}</TableCell>
               <TableCell align="right">{historialReparacion.montoTotalPagar}</TableCell>
@@ -175,7 +194,7 @@ const HistorialReparacionesList = () => {
                     </Button>
 
                     {/*historialReparacion.montoTotalPagar !== 0 && (
-                     <Button
+                      <Button
                         variant="contained"
                         color="secondary"
                         size="small"
@@ -221,8 +240,9 @@ const HistorialReparacionesList = () => {
           ))}
         </TableBody>
       </Table>
-    </TableContainer>
-  );
+      </TableContainer>
+    );
 };
 
 export default HistorialReparacionesList;
+

@@ -4,32 +4,33 @@ import Button from '@mui/material/Button';
 import DriveEtaIcon from '@mui/icons-material/DriveEta';
 
 const IngresoTaller = () => {
-
     return (
         <div className="container">
             <h1>¿Primera vez en el taller?</h1>
             <Link
                 to="/automovil/add"
-                style={{ textDecoration: "none", marginTop: "1rem" }}
+                style={{ textDecoration: "none" }}
             >
                 <Button
                     variant="contained"
                     color="primary"
                     startIcon={<DriveEtaIcon />}
+                    style={{ marginTop: "1.5rem", marginRight: "2.5rem", fontSize: "1.5rem"}} // Ajustando el margen superior del botón y a la derecha y tamaño de letra
                 >
                     Añadir Automóvil
                 </Button>
             </Link>
 
-
             <Link
                 to="/historialreparaciones/add"
-                style={{ textDecoration: "none", marginTop: "1rem" }}
+                style={{ textDecoration: "none" }}
             >
                 <Button
                     variant="contained"
                     color="primary"
                     startIcon={<DriveEtaIcon />}
+                    style={{ marginTop: "1.5rem", marginLeft: "2.5rem", fontSize: "1.5rem" }} // Ajustando el margen superior del botón y a la izquierda
+                    
                 >
                     Ya registrado
                 </Button>
