@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: frontend-container
-          image: niko085/reportes-service/frontend-ms:latest
+          image: niko085/frontend:latest
           ports:
             - containerPort: 3000
 
