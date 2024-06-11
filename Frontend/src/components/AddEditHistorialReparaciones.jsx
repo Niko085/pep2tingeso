@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Link, useParams, useNavigate } from "react-router-dom";
+import { Link, useParams, useNavigate, useSearchParams } from "react-router-dom";
 import Box from "@mui/material/Box";
 import historialReparacionesService from "../services/historialReparaciones.service";
 import TextField from "@mui/material/TextField";
@@ -16,8 +16,16 @@ const AddEditHistorialReparaciones = () => {
   const [fechaClienteSeLlevaVehiculo, setFechaClienteSeLlevaVehiculo] = useState("");
   const [horaClienteSeLlevaVehiculo, setHoraClienteSeLlevaVehiculo] = useState("");
   const { id } = useParams();
+  const [searchParams] = useSearchParams(); // Hook para obtener los parámetros de búsqueda
   const [titleHistorialReparacionesForm, setTitleHistorialReparacionesForm] = useState("");
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const initialPatente = searchParams.get("patente");
+    if (initialPatente) {
+      setPatente(initialPatente);
+    }
+  }, [searchParams]);
 
   const saveHistorial = (e) => {
     e.preventDefault();
@@ -79,7 +87,7 @@ const AddEditHistorialReparaciones = () => {
           console.log("Se ha producido un error.", error);
         });
     } else {
-      setTitleHistorialReparacionesForm("Nuevo Historial de Reparaciones");
+      setTitleHistorialReparacionesForm("Nuevo ingreso al taller de reparaciones");
     }
   }, [id]);
 
@@ -228,7 +236,7 @@ const AddEditHistorialReparaciones = () => {
         </FormControl>
       </form>
       <hr />
-      <Link to="/historialreparaciones/list">Volver a la lista de historial de reparaciones</Link>
+      <Link to="/ingresoTaller">Retroceder</Link>
     </Box>
   );
 };

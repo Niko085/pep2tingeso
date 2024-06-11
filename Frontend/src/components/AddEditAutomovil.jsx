@@ -68,7 +68,7 @@ const AddEditAutomovil = () => {
         .create(automovil)
         .then((response) => {
           console.log("El automovil ha sido añadido.", response.data);
-          navigate("/historialreparaciones/add");
+          navigate(`/historialreparaciones/add?patente=${patente}`);
         })
         .catch((error) => {
           console.log(
@@ -282,7 +282,7 @@ const AddEditAutomovil = () => {
         </FormControl>
       </form>
       <hr />
-      <Link to="/automovil/list">Volver a la lista de automoviles</Link>
+      <Link to="/ingresoTaller">Retroceder</Link>
     </Box>
   );  
 };

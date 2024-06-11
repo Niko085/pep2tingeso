@@ -33,7 +33,7 @@ function ReporteReparacionesVsTiposAutos() {
 
     const obtenerReporteReparacionesVsTiposAutos = async (mes, ano) => {
         try {
-            const response = await axios.get(`http://127.0.0.1:62823/reportes/reporte/reparaciones-vs-tipo-autos/${mes}/${ano}`);
+            const response = await axios.get(`http://localhost:8081/reportes/reporte/reparaciones-vs-tipo-autos/${mes}/${ano}`);
             setReporte(response.data);
         } catch (error) {
             console.error('Error al obtener los datos:', error);

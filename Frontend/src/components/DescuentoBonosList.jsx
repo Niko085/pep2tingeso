@@ -78,7 +78,7 @@ const BonosList = () => {
         <TableHead>
           <TableRow>
             <TableCell align="left" sx={{ fontWeight: "bold" }}>
-              Marca Automovil
+              Marca de automovil
             </TableCell>
             <TableCell align="left" sx={{ fontWeight: "bold" }}>
               Cantidad de bonos
@@ -87,7 +87,7 @@ const BonosList = () => {
               Monto del bono
             </TableCell>
             <TableCell align="left" sx={{ fontWeight: "bold" }}>
-              Operaciones
+              Operación
             </TableCell>
           </TableRow>
         </TableHead>

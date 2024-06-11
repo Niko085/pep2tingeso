@@ -23,7 +23,7 @@ const IngresoTaller = () => {
 
 
             <Link
-                to="/automovil/add"
+                to="/historialreparaciones/add"
                 style={{ textDecoration: "none", marginTop: "1rem" }}
             >
                 <Button
