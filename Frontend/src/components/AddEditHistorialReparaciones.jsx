@@ -51,7 +51,7 @@ const AddEditHistorialReparaciones = () => {
         .update(historialReparaciones)
         .then((response) => {
           console.log("El Historial de Reparaciones ha sido actualizado.", response.data);
-          navigate(`/reparaciones/select/${historialReparaciones.id}/${historialReparaciones.patente}`);
+          navigate(`/pagar/${historialReparaciones.patente}`);
         })
         .catch((error) => {
           console.log("Ha ocurrido un error al intentar actualizar datos del historial de reparaciones.", error);

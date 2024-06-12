@@ -107,19 +107,6 @@ const HistorialReparacionesList = () => {
 
   return (
     <TableContainer component={Paper}>
-      <br />
-      <Link
-        to="/historialreparaciones/add"
-        style={{ textDecoration: "none", marginBottom: "1rem" }}
-      >
-        <Button
-          variant="contained"
-          color="primary"
-          startIcon={<BuildIcon />}
-        >
-          Añadir Historial de Reparaciones
-        </Button>
-      </Link>
       <br /> <br />
       <Table sx={{ minWidth: 650 }} size="small" aria-label="historial de reparaciones">
         <TableHead>
@@ -168,6 +155,7 @@ const HistorialReparacionesList = () => {
               <TableCell align="left">{historialReparacion.fechaClienteSeLlevaVehiculo}</TableCell>
               <TableCell align="left">{historialReparacion.horaClienteSeLlevaVehiculo}</TableCell>
               <TableCell align="left">{historialReparacion.pagado ? 'Sí' : 'No'}</TableCell>
+              {/* 
               <TableCell>
                 {!historialReparacion.pagado && (
                   <>
@@ -193,7 +181,7 @@ const HistorialReparacionesList = () => {
                       Eliminar
                     </Button>
 
-                    {/*historialReparacion.montoTotalPagar !== 0 && (
+                    historialReparacion.montoTotalPagar !== 0 && (
                       <Button
                         variant="contained"
                         color="secondary"
@@ -203,12 +191,12 @@ const HistorialReparacionesList = () => {
                       >
                         Pagar
                       </Button>
-                    )*/}
+                    )
                   </>
                 )}
-              </TableCell>
+              </TableCell>*/}
 
-              <TableCell>
+              {/*<TableCell>
                 {!historialReparacion.pagado && (
                   <Button
                     variant="contained"
@@ -220,9 +208,9 @@ const HistorialReparacionesList = () => {
                     Agregar reparación
                   </Button>
                 )}
-              </TableCell>
+              </TableCell>*/}
 
-              <TableCell>
+              {/*<TableCell>
                 {!historialReparacion.pagado && (
                   <Button
                     variant="contained"
@@ -235,7 +223,7 @@ const HistorialReparacionesList = () => {
                     Calcular y pagar
                   </Button>
                 )}
-              </TableCell>
+              </TableCell>*/}
             </TableRow>
           ))}
         </TableBody>

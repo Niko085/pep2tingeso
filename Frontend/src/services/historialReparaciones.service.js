@@ -28,4 +28,9 @@ const getNoPagadoByPatente = patente => {
     return httpClient.get(`/historialreparaciones/no-pagado/${patente}`);
 }
 
-export default { getAll, create, get, update, remove, getAuto, getNoPagadoByPatente};
+const calcular = patente => {
+    return httpClient.get(`/historialreparaciones/calculate?patente=${patente}`);
+}
+
+
+export default { getAll, create, get, update, remove, getAuto, getNoPagadoByPatente, calcular};

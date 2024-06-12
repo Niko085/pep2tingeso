@@ -17,6 +17,7 @@ import BonosList from './components/DescuentoBonosList';
 import AddEditBono from './components/AddEditDescuentoBonos';
 import IngresoTaller from './components/IngresoTaller';
 import RetiroTaller from './components/RetiroTaller';
+import Pagar from './components/Pagar';
 
 function App() {
   return (
@@ -51,6 +52,8 @@ function App() {
 
               <Route path="/agregarReparacion/list" element={<ReparacionSelectionForm/>} />
               <Route path="/reparaciones/select/:idH/:patenteH" element={<ReparacionSelectionForm />} />
+              <Route path="/pagar/:patente" element={<Pagar />} />
+
 
               <Route path="/bonos/list" element={<BonosList/>} />
               <Route path="/bonos/add" element={<AddEditBono/>} />
