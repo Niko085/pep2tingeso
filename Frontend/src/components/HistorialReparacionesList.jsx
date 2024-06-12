@@ -129,9 +129,6 @@ const HistorialReparacionesList = () => {
             <TableCell align="left">Fecha Retiro Cliente</TableCell>
             <TableCell align="left">Hora Retiro Cliente</TableCell>
             <TableCell align="left">Pagado</TableCell>
-            <TableCell align="left">Operaciones</TableCell>
-            <TableCell align="left">Seleccionar Reparaciones</TableCell>
-            <TableCell align="left">Calcular</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>

@@ -9,11 +9,13 @@ import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableHead from '@mui/material/TableHead';
 import Paper from '@mui/material/Paper';
-import { Link, useParams, useNavigate } from 'react-router-dom';
+import TableContainer from '@mui/material/TableContainer'; // Asegúrate de importar TableContainer
+import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 const Pagar = () => {
     const [historialReparaciones, setHistorialReparaciones] = useState([]);
+    const [reparaciones, setReparaciones] = useState([]);
     const { patente } = useParams();
     const navigate = useNavigate();
 
@@ -23,7 +25,6 @@ const Pagar = () => {
           .get(`http://localhost:8081/historialreparaciones/calculate?patente=${patente}`)
           .then(() => {
             console.log("Historial de reparaciones calculado con éxito");
-            // Después de calcular, redirige a "/historialReparaciones/list"
             navigate("/historialReparaciones/list");
           })
           .catch((error) => {
@@ -40,8 +41,22 @@ const Pagar = () => {
                 if (response.status === 200) {
                     const data = response.data;
                     console.log("Datos obtenidos:", data);
-                    // Asegúrate de que los datos se manejen como un array
                     setHistorialReparaciones(Array.isArray(data) ? data : [data]);
+
+                    if (Array.isArray(data)) {
+                        // Obtener reparaciones para cada historial
+                        const reparacionesPromises = data.map(historial => 
+                            axios.get(`http://localhost:8081/historialreparaciones/reparacion/historial/${historial.id}`)
+                        );
+                        const reparacionesResponses = await Promise.all(reparacionesPromises);
+                        const reparacionesData = reparacionesResponses.map(res => res.data).flat();
+                        console.log("Datos de las reparaciones obtenidos:", reparacionesData);
+                        setReparaciones(reparacionesData);
+                    } else {
+                        const reparacionesResponse = await axios.get(`http://localhost:8081/historialreparaciones/reparacion/historial/${data.id}`);
+                        console.log("Datos de las reparaciones obtenidos:", reparacionesResponse.data);
+                        setReparaciones(reparacionesResponse.data);
+                    }
                 } else {
                     console.error('Error al buscar historial de reparaciones:', response.statusText);
                 }
@@ -49,7 +64,7 @@ const Pagar = () => {
                 console.error('Error al buscar historial de reparaciones:', error);
             }
         };
-
+    
         if (patente) {
             getHistorialReparaciones();
         }
@@ -77,7 +92,7 @@ const Pagar = () => {
                                     <TableCell align="left">Fecha Retira Vehículo</TableCell>
                                     <TableCell align="left">Hora Retira Vehículo</TableCell>
                                     <TableCell align="left">Pagado</TableCell>
-                                    <TableCell align="left">Acciones</TableCell> {/* Nuevo encabezado de columna */}
+                                    <TableCell align="left">Acciones</TableCell>
                                 </TableRow>
                             </TableHead>
                             <TableBody>
@@ -97,16 +112,16 @@ const Pagar = () => {
                                         <TableCell align="left">{historial.pagado ? 'Sí' : 'No'}</TableCell>
                                         <TableCell>
                                             {!historial.pagado && (
-                                            <Button
-                                                variant="contained"
-                                                color="secondary"
-                                                size="small"
-                                                onClick={() => handleCalculate(historial.patente)}
-                                                style={{ marginLeft: "0.5rem" }}
-                                                startIcon={<AttachMoneyIcon />}
-                                            >
-                                                Calcular y pagar
-                                            </Button>
+                                                <Button
+                                                    variant="contained"
+                                                    color="secondary"
+                                                    size="small"
+                                                    onClick={() => handleCalculate(historial.patente)}
+                                                    style={{ marginLeft: "0.5rem" }}
+                                                    startIcon={<AttachMoneyIcon />}
+                                                >
+                                                    Calcular y pagar
+                                                </Button>
                                             )}
                                         </TableCell>
                                     </TableRow>
@@ -116,6 +131,31 @@ const Pagar = () => {
                     </Paper>
                 </div>
             )}
+            <TableContainer component={Paper}>
+                <br />
+                <Table sx={{ minWidth: 650 }} size="small" aria-label="a dense table">
+                    <TableHead>
+                        <TableRow>
+                            <TableCell align="left">Patente</TableCell>
+                            <TableCell align="left">N° de reparación</TableCell>
+                            <TableCell align="left">Descripción</TableCell>
+                            {/*<TableCell align="left">ID Historial Reparaciones</TableCell>*/}
+                        </TableRow>
+                    </TableHead>
+                    <TableBody>
+                        {reparaciones.length > 0 && reparaciones.map((reparacion) => (
+                            <TableRow key={reparacion.id}>
+                                {/*<TableCell align="left">{reparacion.id}</TableCell>*/}
+                                <TableCell align="left">{reparacion.patente}</TableCell>
+                                <TableCell align="left">{reparacion.tipoReparacion}</TableCell>
+                                <TableCell align="left">{reparacion.descripcion}</TableCell>
+                                {/*<TableCell align="left">{reparacion.idHistorialReparaciones}</TableCell>*/}
+                                <TableCell align="left"> {/* Aquí puedes agregar las acciones para esta tabla si es necesario */}</TableCell>
+                            </TableRow>
+                        ))}
+                    </TableBody>
+                </Table>
+            </TableContainer>
         </div>
     );
 };
