@@ -39,6 +39,8 @@ function App() {
 
               <Route path="/ingresarAutomovil/add" element={<IngresarAutomovil/>} />
               <Route path="/ingresarAutomovil/edit/:id" element={<IngresarAutomovil/>} />
+              
+              
 
               <Route path="/reparaciones/list" element={<ReparacionesList/>} />
               <Route path="/reparaciones/add" element={<AddEditReparacion/>} />

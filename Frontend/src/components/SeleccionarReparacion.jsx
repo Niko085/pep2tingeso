@@ -26,8 +26,8 @@ const reparaciones = [
 
 const ReparacionSelectionForm = () => {
   const [patente, setPatente] = useState("");
-  const [reparaciones_disponibles, setReparacionesDisponibles] = useState(reparaciones);
-  const [reparaciones_seleccionadas, setReparacionesSeleccionadas] = useState([]);
+  const [reparacionesDisponibles, setReparacionesDisponibles] = useState(reparaciones);
+  const [reparacionesSeleccionadas, setReparacionesSeleccionadas] = useState([]);
   const { idH, patenteH } = useParams();
   const [id, setId] = useState("");
   const [idHistorialReparaciones, setIdHistorialReparaciones] = useState("");
@@ -35,27 +35,29 @@ const ReparacionSelectionForm = () => {
   const navigate = useNavigate();
 
   const manejarSeleccionarReparacion = (index) => {
-    setReparacionesSeleccionadas([...reparaciones_seleccionadas, reparaciones_disponibles[index]].sort((a, b) => a.value - b.value));
-    const reparaciones_disponibles_aux = reparaciones_disponibles.filter((_, i) => i !== index);
-    setReparacionesDisponibles(reparaciones_disponibles_aux);
+    setReparacionesSeleccionadas([...reparacionesSeleccionadas, reparacionesDisponibles[index]].sort((a, b) => a.value - b.value));
+    const reparacionesDisponiblesAux = reparacionesDisponibles.filter((_, i) => i !== index);
+    setReparacionesDisponibles(reparacionesDisponiblesAux);
   };
 
   const manejarEliminarReparacion = (index) => {
-    setReparacionesDisponibles([...reparaciones_disponibles, reparaciones_seleccionadas[index]].sort((a, b) => a.value - b.value));
-    const reparaciones_seleccionadas_aux = reparaciones_seleccionadas.filter((_, i) => i !== index);
-    setReparacionesSeleccionadas(reparaciones_seleccionadas_aux);
+    setReparacionesDisponibles([...reparacionesDisponibles, reparacionesSeleccionadas[index]].sort((a, b) => a.value - b.value));
+    const reparacionesSeleccionadasAux = reparacionesSeleccionadas.filter((_, i) => i !== index);
+    setReparacionesSeleccionadas(reparacionesSeleccionadasAux);
   };
 
-  const saveReparacion = (a) => {
-    a.preventDefault();
+  const saveReparacion = (e) => {
+    e.preventDefault();
 
-    const reparacionesToSave = reparaciones_seleccionadas.map((reparacion) => ({
+    const reparacionesToSave = reparacionesSeleccionadas.map((reparacion) => ({
       patente,
       tipoReparacion: reparacion.value,
       descripcion: reparacion.label,
       idHistorialReparaciones,
       id,
     }));
+
+    console.log("Reparaciones to Save:", reparacionesToSave); // Debug
 
     Promise.all(
       reparacionesToSave.map((reparacion) => reparacionService.create(reparacion))
@@ -74,7 +76,7 @@ const ReparacionSelectionForm = () => {
     reparacionService
       .get(idH)
       .then((reparacion) => {
-        console.log(reparacion.data);
+        console.log("Reparacion Data:", reparacion.data); // Debug
         setPatente(patenteH);
         setIdHistorialReparaciones(reparacion.data.id);
       })
@@ -104,7 +106,7 @@ const ReparacionSelectionForm = () => {
       <hr />
       <div>
         <h4>Reparaciones Disponibles</h4>
-        {reparaciones_disponibles.map((reparacion, index) => (
+        {reparacionesDisponibles.map((reparacion, index) => (
           <MenuItem key={reparacion.value} onClick={() => manejarSeleccionarReparacion(index)} className="d-flex justify-content-between">
             {reparacion.label}
             <AddCircleIcon color="success" />
@@ -113,7 +115,7 @@ const ReparacionSelectionForm = () => {
       </div>
       <div>
         <h4>Reparaciones Seleccionadas</h4>
-        {reparaciones_seleccionadas.map((reparacion, index) => (
+        {reparacionesSeleccionadas.map((reparacion, index) => (
           <MenuItem key={reparacion.value} onClick={() => manejarEliminarReparacion(index)} className="d-flex justify-content-between">
             {reparacion.label}
             <RemoveCircleIcon color="error" />

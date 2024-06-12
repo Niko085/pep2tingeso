@@ -1,18 +1,13 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Button from '@mui/material/Button';
 import DriveEtaIcon from '@mui/icons-material/DriveEta';
 import historialReparacionesService from "../services/historialReparaciones.service";
-import TableCell from '@mui/material/TableCell';
-import TableRow from '@mui/material/TableRow';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableHead from '@mui/material/TableHead';
-import Paper from '@mui/material/Paper';
 import TextField from '@mui/material/TextField';
 
 const RetiroTaller = () => {
     const [patente, setPatente] = useState('');
-    const [historialReparaciones, setHistorialReparaciones] = useState([]);
+    const navigate = useNavigate();
 
     const handleSearch = async () => {
         try {
@@ -22,8 +17,8 @@ const RetiroTaller = () => {
             if (response.status === 200) {
                 const data = response.data;
                 console.log("Datos obtenidos:", data);
-                // Asegúrate de que los datos se manejen como un array
-                setHistorialReparaciones(Array.isArray(data) ? data : [data]);
+                // Redirigir a la ruta de edición con el id del primer historial obtenido
+                navigate(`/historialreparaciones/edit/${data.id}`);
             } else {
                 console.error('Error al buscar historial de reparaciones:', response.statusText);
             }
@@ -48,50 +43,9 @@ const RetiroTaller = () => {
                     onClick={handleSearch}
                     startIcon={<DriveEtaIcon />}
                 >
-                    Buscar
+                    Buscar historial
                 </Button>
             </div>
-            {historialReparaciones.length > 0 && (
-                <div>
-                    <h2>Historial de reparaciones no pagadas para la patente {patente}:</h2>
-                    <Paper>
-                        <Table>
-                            <TableHead>
-                                <TableRow>
-                                    <TableCell align="left">Fecha Ingreso Taller</TableCell>
-                                    <TableCell align="left">Hora Ingreso Taller</TableCell>
-                                    <TableCell align="right">Monto Total a Pagar</TableCell>
-                                    <TableCell align="right">Recargos</TableCell>
-                                    <TableCell align="right">Descuentos</TableCell>
-                                    <TableCell align="right">IVA</TableCell>
-                                    <TableCell align="left">Fecha Salida Taller</TableCell>
-                                    <TableCell align="left">Hora Salida Taller</TableCell>
-                                    <TableCell align="left">Fecha Cliente se Lleva Vehículo</TableCell>
-                                    <TableCell align="left">Hora Cliente se Lleva Vehículo</TableCell>
-                                    <TableCell align="left">Pagado</TableCell>
-                                </TableRow>
-                            </TableHead>
-                            <TableBody>
-                                {historialReparaciones.map((historial, index) => (
-                                    <TableRow key={index}>
-                                        <TableCell align="left">{historial.fechaIngresoTaller}</TableCell>
-                                        <TableCell align="left">{historial.horaIngresoTaller}</TableCell>
-                                        <TableCell align="right">{historial.montoTotalPagar}</TableCell>
-                                        <TableCell align="right">{historial.recargos}</TableCell>
-                                        <TableCell align="right">{historial.descuentos}</TableCell>
-                                        <TableCell align="right">{historial.iva}</TableCell>
-                                        <TableCell align="left">{historial.fechaSalidaTaller}</TableCell>
-                                        <TableCell align="left">{historial.horaSalidaTaller}</TableCell>
-                                        <TableCell align="left">{historial.fechaClienteSeLlevaVehiculo}</TableCell>
-                                        <TableCell align="left">{historial.horaClienteSeLlevaVehiculo}</TableCell>
-                                        <TableCell align="left">{historial.pagado ? 'Sí' : 'No'}</TableCell>
-                                    </TableRow>
-                                ))}
-                            </TableBody>
-                        </Table>
-                    </Paper>
-                </div>
-            )}
         </div>
     );
 };

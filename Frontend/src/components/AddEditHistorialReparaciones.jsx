@@ -29,7 +29,7 @@ const AddEditHistorialReparaciones = () => {
 
   const saveHistorial = (e) => {
     e.preventDefault();
-
+  
     const historialReparaciones = {
       patente,
       fechaIngresoTaller,
@@ -45,13 +45,13 @@ const AddEditHistorialReparaciones = () => {
       pagado: false,
       id
     };
-
+  
     if (id) {
       historialReparacionesService
         .update(historialReparaciones)
         .then((response) => {
           console.log("El Historial de Reparaciones ha sido actualizado.", response.data);
-          navigate("/historialreparaciones/list");
+          navigate(`/reparaciones/select/${historialReparaciones.id}/${historialReparaciones.patente}`);
         })
         .catch((error) => {
           console.log("Ha ocurrido un error al intentar actualizar datos del historial de reparaciones.", error);
@@ -61,13 +61,14 @@ const AddEditHistorialReparaciones = () => {
         .create(historialReparaciones)
         .then((response) => {
           console.log("El historial de reparaciones ha sido añadido.", response.data);
-          navigate("/historialreparaciones/list");
+          navigate(`/reparaciones/select/${response.data.id}/${response.data.patente}`);
         })
         .catch((error) => {
           console.log("Ha ocurrido un error al intentar crear un nuevo historial de reparaciones.", error);
         });
     }
   };
+  
 
   useEffect(() => {
     if (id) {
