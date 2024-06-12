@@ -10,6 +10,7 @@ import Paper from "@mui/material/Paper";
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import MenuItem from '@mui/material/MenuItem';
+import reportesServices from "../services/reportes.service";
 
 function ReporteCompararMeses() {
     const [reporte, setReporte] = useState([]);
@@ -37,7 +38,7 @@ function ReporteCompararMeses() {
 
     const obtenerReporteCompararMeses = async (mes, ano) => {
         try {
-            const response = await axios.get(`http://127.0.0.1:8081/reportes/reporte/compararMeses/${mes}/${ano}`);
+            const response = await reportesServices.getReporteCompararMeses({ mes, ano });
             setReporte(response.data);
         } catch (error) {
             console.error('Error al obtener los datos:', error);

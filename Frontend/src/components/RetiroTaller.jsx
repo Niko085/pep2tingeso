@@ -8,6 +8,7 @@ import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableHead from '@mui/material/TableHead';
 import Paper from '@mui/material/Paper';
+import TextField from '@mui/material/TextField';
 
 const RetiroTaller = () => {
     const [patente, setPatente] = useState('');
@@ -18,10 +19,11 @@ const RetiroTaller = () => {
             console.log("Buscando historial de reparaciones para la patente:", patente);
             const response = await historialReparacionesService.getNoPagadoByPatente(patente);
             console.log("Respuesta de la solicitud:", response);
-            if (response.ok) {
-                const data = await response.json();
+            if (response.status === 200) {
+                const data = response.data;
                 console.log("Datos obtenidos:", data);
-                setHistorialReparaciones(data);
+                // Asegúrate de que los datos se manejen como un array
+                setHistorialReparaciones(Array.isArray(data) ? data : [data]);
             } else {
                 console.error('Error al buscar historial de reparaciones:', response.statusText);
             }
@@ -34,10 +36,9 @@ const RetiroTaller = () => {
         <div className="container">
             <h1>Retiro del taller</h1>
             <div>
-                <label htmlFor="patenteInput">Ingrese la patente:</label>
-                <input 
-                    type="text" 
-                    id="patenteInput" 
+                <TextField 
+                    label="Ingrese la patente" 
+                    variant="outlined" 
                     value={patente} 
                     onChange={(e) => setPatente(e.target.value)} 
                 />
@@ -47,7 +48,7 @@ const RetiroTaller = () => {
                     onClick={handleSearch}
                     startIcon={<DriveEtaIcon />}
                 >
-                    Buscar historial
+                    Buscar
                 </Button>
             </div>
             {historialReparaciones.length > 0 && (
@@ -71,8 +72,8 @@ const RetiroTaller = () => {
                                 </TableRow>
                             </TableHead>
                             <TableBody>
-                                {historialReparaciones.map(historial => (
-                                    <TableRow key={historial.id}>
+                                {historialReparaciones.map((historial, index) => (
+                                    <TableRow key={index}>
                                         <TableCell align="left">{historial.fechaIngresoTaller}</TableCell>
                                         <TableCell align="left">{historial.horaIngresoTaller}</TableCell>
                                         <TableCell align="right">{historial.montoTotalPagar}</TableCell>
