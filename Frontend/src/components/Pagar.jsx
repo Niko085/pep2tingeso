@@ -139,7 +139,7 @@ const Pagar = () => {
                             <TableCell align="left">Patente</TableCell>
                             <TableCell align="left">N° de reparación</TableCell>
                             <TableCell align="left">Descripción</TableCell>
-                            {/*<TableCell align="left">ID Historial Reparaciones</TableCell>*/}
+                            <TableCell align="left">ID Historial Reparaciones</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
@@ -149,7 +149,7 @@ const Pagar = () => {
                                 <TableCell align="left">{reparacion.patente}</TableCell>
                                 <TableCell align="left">{reparacion.tipoReparacion}</TableCell>
                                 <TableCell align="left">{reparacion.descripcion}</TableCell>
-                                {/*<TableCell align="left">{reparacion.idHistorialReparaciones}</TableCell>*/}
+                                <TableCell align="left">{reparacion.idHistorialReparaciones}</TableCell>
                                 <TableCell align="left"> {/* Aquí puedes agregar las acciones para esta tabla si es necesario */}</TableCell>
                             </TableRow>
                         ))}

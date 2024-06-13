@@ -121,12 +121,12 @@ function ReporteCompararMeses() {
                                 <TableCell>{obtenerNombreMes(item.mes2)}</TableCell>
                                 <TableCell>{item.cantidadAutos2}</TableCell>
                                 <TableCell>{item.monto2}</TableCell>
-                                <TableCell>{item.variacionCantidad2}</TableCell>
+                                <TableCell>{item.variacionCantidad2}%</TableCell>
                                 <TableCell>{item.variacionMonto2}</TableCell>
                                 <TableCell>{obtenerNombreMes(item.mes3)}</TableCell>
                                 <TableCell>{item.cantidadAutos3}</TableCell>
                                 <TableCell>{item.monto3}</TableCell>
-                                <TableCell>{item.variacionCantidad3}</TableCell>
+                                <TableCell>{item.variacionCantidad3}%</TableCell>
                                 <TableCell>{item.variacionMonto3}</TableCell>
                             </TableRow>
                         ))}
