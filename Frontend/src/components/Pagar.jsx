@@ -24,7 +24,7 @@ const Pagar = () => {
     const handleCalculate = (patente) => {
         console.log("Calculando historial de reparaciones para la patente:", patente);
         axios
-          .get(`http://localhost:8081/historialreparaciones/calculate?patente=${patente}`)
+          .get(`http://127.0.0.1:8081/historialreparaciones/calculate?patente=${patente}`)
           .then(() => {
             console.log("Historial de reparaciones calculado con éxito");
             navigate("/historialReparaciones/list"); // Navegar a la lista de historiales después de calcular
@@ -48,14 +48,14 @@ const Pagar = () => {
                     if (Array.isArray(data)) {
                         // Obtener reparaciones para cada historial
                         const reparacionesPromises = data.map(historial => 
-                            axios.get(`http://localhost:8081/historialreparaciones/reparacion/historial/${historial.id}`)
+                            axios.get(`http://127.0.0.1:8081/historialreparaciones/reparacion/historial/${historial.id}`)
                         );
                         const reparacionesResponses = await Promise.all(reparacionesPromises);
                         const reparacionesData = reparacionesResponses.map(res => res.data).flat();
                         console.log("Datos de las reparaciones obtenidos:", reparacionesData);
                         setReparaciones(reparacionesData);
                     } else {
-                        const reparacionesResponse = await axios.get(`http://localhost:8081/historialreparaciones/reparacion/historial/${data.id}`);
+                        const reparacionesResponse = await axios.get(`http://127.0.0.1:8081/historialreparaciones/reparacion/historial/${data.id}`);
                         console.log("Datos de las reparaciones obtenidos:", reparacionesResponse.data);
                         setReparaciones(reparacionesResponse.data);
                     }
