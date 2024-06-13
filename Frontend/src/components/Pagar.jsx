@@ -14,18 +14,20 @@ import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 const Pagar = () => {
+    // Estado para almacenar el historial de reparaciones y las reparaciones
     const [historialReparaciones, setHistorialReparaciones] = useState([]);
     const [reparaciones, setReparaciones] = useState([]);
-    const { patente } = useParams();
+    const { patente } = useParams(); // Obtener la patente desde los parámetros de la URL
     const navigate = useNavigate();
 
+    // Función para calcular el historial de reparaciones para una patente específica
     const handleCalculate = (patente) => {
         console.log("Calculando historial de reparaciones para la patente:", patente);
         axios
           .get(`http://localhost:8081/historialreparaciones/calculate?patente=${patente}`)
           .then(() => {
             console.log("Historial de reparaciones calculado con éxito");
-            navigate("/historialReparaciones/list");
+            navigate("/historialReparaciones/list"); // Navegar a la lista de historiales después de calcular
           })
           .catch((error) => {
             console.log("Error al calcular historial de reparaciones:", error);
@@ -145,7 +147,6 @@ const Pagar = () => {
                     <TableBody>
                         {reparaciones.length > 0 && reparaciones.map((reparacion) => (
                             <TableRow key={reparacion.id}>
-                                {/*<TableCell align="left">{reparacion.id}</TableCell>*/}
                                 <TableCell align="left">{reparacion.patente}</TableCell>
                                 <TableCell align="left">{reparacion.tipoReparacion}</TableCell>
                                 <TableCell align="left">{reparacion.descripcion}</TableCell>

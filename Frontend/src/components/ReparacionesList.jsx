@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import reparacionService from "../services/reparacion.service"; // Importa el servicio de reparaciones
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -13,52 +13,48 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 
 const ReparacionesList = () => {
-  const [reparaciones, setReparaciones] = useState([]);
-  const navigate = useNavigate();
+  const [reparaciones, setReparaciones] = useState([]); // Estado para almacenar la lista de reparaciones
+  const navigate = useNavigate(); // Hook para la navegación
 
+  // Función para inicializar la lista de reparaciones
   const init = () => {
     reparacionService
       .getAll()
       .then((response) => {
         console.log("Mostrando listado de todas las reparaciones.", response.data);
-        setReparaciones(response.data);
+        setReparaciones(response.data); // Actualiza el estado con los datos obtenidos
       })
       .catch((error) => {
-        console.log(
-          "Se ha producido un error al intentar mostrar el listado de reparaciones.",
-          error
-        );
+        console.log("Se ha producido un error al intentar mostrar el listado de reparaciones.", error);
       });
   };
 
+  // Hook useEffect para llamar a la función init cuando el componente se monta
   useEffect(() => {
     init();
   }, []);
 
+  // Función para manejar la eliminación de una reparación
   const handleDelete = (id) => {
     console.log("Imprimiendo id", id);
-    const confirmDelete = window.confirm(
-      "¿Estás seguro de que deseas eliminar esta reparación?"
-    );
+    const confirmDelete = window.confirm("¿Estás seguro de que deseas eliminar esta reparación?");
     if (confirmDelete) {
       reparacionService
         .remove(id)
         .then((response) => {
           console.log("La reparación ha sido eliminada.", response.data);
-          init();
+          init(); // Vuelve a cargar la lista de reparaciones
         })
         .catch((error) => {
-          console.log(
-            "Se ha producido un error al intentar eliminar la reparación.",
-            error
-          );
+          console.log("Se ha producido un error al intentar eliminar la reparación.", error);
         });
     }
   };
 
+  // Función para manejar la edición de una reparación
   const handleEdit = (id) => {
     console.log("Imprimiendo id", id);
-    navigate(`/reparaciones/edit/${id}`);
+    navigate(`/reparaciones/edit/${id}`); // Navega a la página de edición con el id de la reparación
   };
 
   return (

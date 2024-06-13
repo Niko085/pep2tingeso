@@ -20,10 +20,21 @@ const RetiroTaller = () => {
                 // Redirigir a la ruta de edición con el id del primer historial obtenido
                 navigate(`/historialreparaciones/edit/${data.id}`);
             } else {
+                const confirmMessage = "No se encontró registro de visita al taller para la patente ingresada.";
+                window.confirm(confirmMessage); // Muestra un cuadro de confirmación con el mensaje
                 console.error('Error al buscar historial de reparaciones:', response.statusText);
             }
         } catch (error) {
+            const errorMessage = "No se encontró registro de visita al taller para la patente ingresada o no se ha ingresado una patente válida";
+            window.confirm(errorMessage); // Muestra un cuadro de confirmación con el mensaje
             console.error('Error al buscar historial de reparaciones:', error);
+        }
+    };
+    
+
+    const handleKeyDown = (event) => {
+        if (event.key === 'Enter') {
+            handleSearch();
         }
     };
 
@@ -36,6 +47,7 @@ const RetiroTaller = () => {
                     variant="outlined" 
                     value={patente} 
                     onChange={(e) => setPatente(e.target.value)} 
+                    onKeyDown={handleKeyDown} // Llamar a handleKeyDown cuando se presione una tecla
                 />
                 <Button 
                     variant="contained" 

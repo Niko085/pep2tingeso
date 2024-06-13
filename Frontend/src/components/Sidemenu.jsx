@@ -19,6 +19,11 @@ import HistoryIcon from "@mui/icons-material/History";
 import TimelineIcon from "@mui/icons-material/Timeline";
 import DirectionsCarIcon from "@mui/icons-material/DirectionsCar";
 import { useNavigate } from "react-router-dom";
+import SummarizeIcon from '@mui/icons-material/Summarize';
+import BuildIcon from '@mui/icons-material/Build';
+import FeedIcon from '@mui/icons-material/Feed';
+import ConstructionIcon from '@mui/icons-material/Construction';
+import NoCrashIcon from '@mui/icons-material/NoCrash';
 
 export default function Sidemenu({ open, toggleDrawer }) {
   const navigate = useNavigate();
@@ -41,14 +46,14 @@ export default function Sidemenu({ open, toggleDrawer }) {
 
         <ListItemButton onClick={() => navigate("/ingresoTaller")}>
           <ListItemIcon>
-          <DirectionsCarIcon />
+          <BuildIcon/>
           </ListItemIcon>
           <ListItemText primary="Ingresar al taller" />
         </ListItemButton>
 
         <ListItemButton onClick={() => navigate("/retiroTaller")}>
           <ListItemIcon>
-          <DirectionsCarIcon />
+          <NoCrashIcon />
           </ListItemIcon>
           <ListItemText primary="Retirar del taller" />
         </ListItemButton>
@@ -79,7 +84,7 @@ export default function Sidemenu({ open, toggleDrawer }) {
 
         <ListItemButton onClick={() => navigate("/reparaciones/list")}>
           <ListItemIcon>
-            <HistoryIcon />
+            <ConstructionIcon />
           </ListItemIcon>
           <ListItemText primary="Listado de Reparaciones" />
         </ListItemButton>
@@ -90,14 +95,14 @@ export default function Sidemenu({ open, toggleDrawer }) {
       <List>
         <ListItemButton onClick={() => navigate("/reportes/ReporteReparacionesVsTiposAutos")}>
           <ListItemIcon>
-            <MedicationLiquidIcon />
+            <FeedIcon />
           </ListItemIcon>
           <ListItemText primary="Reporte reparaciones Vs tipo de automovil" />
         </ListItemButton>
 
         <ListItemButton onClick={() => navigate("/reportes/ReporteCompararMeses")}>
           <ListItemIcon>
-            <MedicationLiquidIcon />
+            <FeedIcon />
           </ListItemIcon>
           <ListItemText primary="Reporte de comparación de meses" />
         </ListItemButton>
@@ -106,7 +111,7 @@ export default function Sidemenu({ open, toggleDrawer }) {
 
         <ListItemButton onClick={() => navigate("/bonos/list")}>
           <ListItemIcon>
-            <MedicationLiquidIcon />
+            <SummarizeIcon />
           </ListItemIcon>
           <ListItemText primary="Datos de descuento por bonos" />
         </ListItemButton>

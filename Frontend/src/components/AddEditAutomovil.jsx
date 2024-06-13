@@ -107,7 +107,7 @@ const AddEditAutomovil = () => {
   }, [id]);
 
   // Generar lista de años desde 1980 hasta el año actual
-  const years = Array.from({ length: year - 1980 + 1 }, (_, i) => 1980 + i);
+  const years = Array.from({ length: year - 1995 + 1 }, (_, i) => 1995 + i);
 
   // Estilo del formulario
   return (
