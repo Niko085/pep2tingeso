@@ -9,6 +9,7 @@ import SaveIcon from "@mui/icons-material/Save";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import RemoveCircleIcon from "@mui/icons-material/RemoveCircle";
 import reparacionService from "../services/reparacion.service";
+import historialReparacionesService from "../services/historialReparaciones.service";
 
 const reparaciones = [
   { value: 1, label: "Reparaciones del Sistema de Frenos" },
@@ -32,7 +33,24 @@ const ReparacionSelectionForm = () => {
   const [id, setId] = useState("");
   const [idHistorialReparaciones, setIdHistorialReparaciones] = useState("");
   const [titleReparacionForm, setTitleReparacionForm] = useState("");
+  const [fechaIngresoTaller, setFechaIngresoTaller] = useState("");
+  const [horaIngresoTaller, setHoraIngresoTaller] = useState("");
   const navigate = useNavigate();
+
+  useEffect(() => {
+    setTitleReparacionForm("Seleccione las reparaciones a realizar");
+    historialReparacionesService.get(idH)
+      .then((response) => {
+        const historial = response.data;
+        setPatente(historial.patente);
+        setIdHistorialReparaciones(historial.id);
+        setFechaIngresoTaller(historial.fechaIngresoTaller);
+        setHoraIngresoTaller(historial.horaIngresoTaller);
+      })
+      .catch((error) => {
+        console.log("Se ha producido un error al obtener el historial de reparaciones.", error);
+      });
+  }, [idH]);
 
   const manejarSeleccionarReparacion = (index) => {
     setReparacionesSeleccionadas([...reparacionesSeleccionadas, reparacionesDisponibles[index]].sort((a, b) => a.value - b.value));
@@ -53,6 +71,8 @@ const ReparacionSelectionForm = () => {
       patente,
       tipoReparacion: reparacion.value,
       descripcion: reparacion.label,
+      fechaReparacion: fechaIngresoTaller,
+      horaReparacion: horaIngresoTaller,
       idHistorialReparaciones,
       id,
     }));
@@ -71,20 +91,6 @@ const ReparacionSelectionForm = () => {
       });
   };
 
-  useEffect(() => {
-    setTitleReparacionForm("Seleccione las reparaciones a realizar");
-    reparacionService
-      .get(idH)
-      .then((reparacion) => {
-        console.log("Reparacion Data:", reparacion.data); // Debug
-        setPatente(patenteH);
-        setIdHistorialReparaciones(reparacion.data.id);
-      })
-      .catch((error) => {
-        console.log("Se ha producido un error.", error);
-      });
-  }, [idH, patenteH]);
-
   return (
     <Box
       display="flex"
@@ -92,6 +98,7 @@ const ReparacionSelectionForm = () => {
       alignItems="center"
       justifyContent="center"
       component="form"
+      onSubmit={saveReparacion}
       sx={{
         padding: "20px",
         borderRadius: "25px",
@@ -127,7 +134,7 @@ const ReparacionSelectionForm = () => {
         <Button
           variant="contained"
           color="info"
-          onClick={saveReparacion}
+          type="submit"
           style={{ marginLeft: "0.5rem" }}
           startIcon={<SaveIcon />}
         >

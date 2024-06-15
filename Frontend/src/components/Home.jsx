@@ -4,9 +4,9 @@ import carImage from "../assets/car-image.jpg"; // Importa la imagen desde tu di
 const Home = () => {
   return (
     <div>
-      <h1>SiGRA: Sistema de Gestión de Reparaciones de Automoviles</h1>
+      <h1>AutoFix: Sistema de Gestión de Reparaciones de Automoviles</h1>
       <p>
-        SiGRA es una aplicación web para la gestión de reparaciones de
+      AutoFix es una aplicación web para la gestión de reparaciones de
         automoviles. Esta aplicación ha sido desarrollada usando tecnologías
         como{" "}
         <a href="https://spring.io/projects/spring-boot">Spring Boot</a> (para

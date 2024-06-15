@@ -93,7 +93,7 @@ const HistorialReparacionesList = () => {
     });
     setHistorialReparaciones(updatedHistorialReparaciones);
 
-    axios.put(`http://127.0.0.1:8081/historialreparaciones/pagar/${id}`, { pagado: true })
+    axios.put(`http://locahost:8081/historialreparaciones/pagar/${id}`, { pagado: true })
       .then(response => {
         console.log("Estado de pago actualizado en el servidor:", response.data);
       })
@@ -122,10 +122,11 @@ const HistorialReparacionesList = () => {
               <TableCell align="left" sx={{ fontWeight: "bold" }}>Tipo Motor</TableCell>
               <TableCell align="left" sx={{ fontWeight: "bold" }}>Fecha Ingreso Taller</TableCell>
               <TableCell align="left" sx={{ fontWeight: "bold" }}>Hora Ingreso Taller</TableCell>
-              <TableCell align="right" sx={{ fontWeight: "bold" }}>Monto Total a Pagar</TableCell>
+              <TableCell align="right" sx={{ fontWeight: "bold" }}>Monto Total Reparaciones</TableCell>
               <TableCell align="right" sx={{ fontWeight: "bold" }}>Recargos</TableCell>
               <TableCell align="right" sx={{ fontWeight: "bold" }}>Descuentos</TableCell>
               <TableCell align="right" sx={{ fontWeight: "bold" }}>IVA</TableCell>
+              <TableCell align="right" sx={{ fontWeight: "bold" }}>Monto Total a Pagar</TableCell>
               <TableCell align="left" sx={{ fontWeight: "bold" }}>Fecha Salida Taller</TableCell>
               <TableCell align="left" sx={{ fontWeight: "bold" }}>Hora Salida Taller</TableCell>
               <TableCell align="left" sx={{ fontWeight: "bold" }}>Fecha Retiro Cliente</TableCell>
@@ -144,10 +145,11 @@ const HistorialReparacionesList = () => {
                 <TableCell align="left">{historialReparacion.automovil.motor}</TableCell>
                 <TableCell align="left">{historialReparacion.fechaIngresoTaller}</TableCell>
                 <TableCell align="left">{historialReparacion.horaIngresoTaller}</TableCell>
-                <TableCell align="right">{historialReparacion.montoTotalPagar}</TableCell>
+                <TableCell align="right">{historialReparacion.montoTotalReparaciones}</TableCell>
                 <TableCell align="right">{historialReparacion.recargos}</TableCell>
                 <TableCell align="right">{historialReparacion.descuentos}</TableCell>
                 <TableCell align="right">{historialReparacion.iva}</TableCell>
+                <TableCell align="right">{historialReparacion.montoTotalPagar}</TableCell>
                 <TableCell align="left">{historialReparacion.fechaSalidaTaller}</TableCell>
                 <TableCell align="left">{historialReparacion.horaSalidaTaller}</TableCell>
                 <TableCell align="left">{historialReparacion.fechaClienteSeLlevaVehiculo}</TableCell>

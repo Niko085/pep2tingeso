@@ -74,36 +74,16 @@ public class HistorialService {
 
     }
 
-    /////////////////////////////////////COMUNICACIÓN CON AUTOMOVIL/////////////////////////////////////
-
-    //http://localhost:8081/historial/patente/CFYF55
-    public AutomovilEntity getAutomovilByPatente(String patente) {
-        // Utiliza el nombre lógico del servicio registrado en Eureka
-        String url = "http://vehiculos-service/automoviles/patente/" + patente;
-
-        // Realiza la solicitud utilizando RestTemplate
-        AutomovilEntity automovil = restTemplate.getForObject(url, AutomovilEntity.class);
-        return automovil;
-    }
-    /////////////////////////////////COMUNICACIÓN CON VALOR REPARACION/////////////////////////////////
-
-    //http://localhost:8081/historial/monto/1/Gasolina
-    public int getMonto(int numeroReparacion, String tipoMotor) {
-        String url = "http://valor-reparaciones-service/valorReparacion/monto/" + numeroReparacion + "/" + tipoMotor;
-        int monto = restTemplate.getForObject(url, Integer.class);
-        return monto;
-    }
-
 
     //Función modificada para que calcule el monto total a pagar de un auto en particular, en un historial ya creado
     public Boolean calcularMontoTotalPagar(String patente) {
-        double montoTotal = 0;
+        double montoTotalReparaciones = 0;
 
         //Buscar historiales por patente
         List<HistorialEntity> historiales = historialRepository.findByPatente(patente);
 
         //Buscar automovil por patente
-        AutomovilEntity automovil = getAutomovilByPatente(patente);
+        AutomovilEntity automovil = reparacionService.getAutomovilByPatente(patente);
         String tipoMotor = automovil.getMotor();
 
         // Buscar el historial existente por patente que esté sin pagar
@@ -113,36 +93,49 @@ public class HistorialService {
 
         //Calculo del monto de reparaciones, sin descuentos, recargos ni iva
         for (ReparacionEntity reparacion : reparaciones) {
-            montoTotal += getMonto(reparacion.getTipoReparacion(), tipoMotor);//////////////////////////////////////////////////////////////////
+            montoTotalReparaciones += reparacionService.getMonto(reparacion.getTipoReparacion(), tipoMotor);//////////////////////////////////////////////////////////////////
         }
 
         //Descuentos
-        double descuentoDia = (costManagerService.getPorcentajeDescuentoDia(historial.getFechaIngresoTaller(), historial.getHoraIngresoTaller()) * montoTotal);
-        double descuentoCantidadReparaciones = (costManagerService.getDescuentoCantidadReparaciones(automovil,encontrarReparacionesPorFecha(historiales)))* montoTotal;
+        double descuentoDia = (costManagerService.getPorcentajeDescuentoDia(historial.getFechaIngresoTaller(), historial.getHoraIngresoTaller()) * montoTotalReparaciones);
+        double descuentoCantidadReparaciones = (costManagerService.getDescuentoCantidadReparaciones(automovil,encontrarReparacionesPorFecha(historiales)))* montoTotalReparaciones;
         int descuentoPorBonos = costManagerService.getMontoDescuentoBonos(automovil);
         double descuentos = descuentoDia + descuentoCantidadReparaciones + descuentoPorBonos;
 
         //Recargos
         //historial.setRecargos(recargoAntiguedad);
-        double recargoKilometraje = costManagerService.getPorcentajeRecargoKilometraje(automovil) * montoTotal;
-        double recargoAntiguedad = costManagerService.getPorcentajeRecargoAntiguedad(automovil) * montoTotal;
-        double recargoRetraso = costManagerService.getPorcentajeRecargoRetraso(historial) * montoTotal;
+        double recargoKilometraje = costManagerService.getPorcentajeRecargoKilometraje(automovil) * montoTotalReparaciones;
+        double recargoAntiguedad = costManagerService.getPorcentajeRecargoAntiguedad(automovil) * montoTotalReparaciones;
+        double recargoRetraso = costManagerService.getPorcentajeRecargoRetraso(historial) * montoTotalReparaciones;
         double recargos = recargoAntiguedad + recargoKilometraje + recargoRetraso;
 
-        double iva = (montoTotal + recargos - descuentos) * 0.19;
+        double montoTotalPagar = montoTotalReparaciones + recargos - descuentos;
+        double iva = montoTotalPagar * 0.19; //iva de 19%
 
         //Setters de nuevos valores
         historial.setRecargos(recargos);
         historial.setDescuentos(descuentos);
         historial.setIva(iva);
-        historial.setMontoTotalPagar((montoTotal + recargos - descuentos) + iva);
-        historial.setPagado(true); //está extra, pero por si las moscas
+        historial.setMontoTotalReparaciones(montoTotalReparaciones);
+        //historial.setMontoTotalPagar((montoTotalReparaciones + recargos - descuentos) + iva);
+        historial.setMontoSinIva(montoTotalPagar - iva);
+        historial.setMontoTotalPagar(montoTotalPagar);
+        //historial.setPagado(true); //está extra, pero por si las moscas
 
         // Guardar o actualizar el historial en la base de datos
         historialRepository.save(historial);
         return true;
     }
 
+    public Boolean pagarHistorial(String patente) {
+        HistorialEntity historial = getHistorialReparacionesNoPagadasByPatente(patente);
+        if (historial != null && historial.getMontoTotalPagar() > 0 && !historial.isPagado()) { //No se porque, pero no funciona !historial.isPagado()
+            historial.setPagado(true);
+            historialRepository.save(historial);
+            return true;
+        }
+        return false;
+    }
 
 
 
@@ -156,7 +149,7 @@ public class HistorialService {
         for (ReparacionEntity reparacion : reparaciones) {
             if (reparacion.getTipoReparacion() == tipoReparacion) {
                 String patente = reparacion.getPatente();
-                AutomovilEntity automovil = getAutomovilByPatente(patente);
+                AutomovilEntity automovil = reparacionService.getAutomovilByPatente(patente);
                 String tipoAutomovil = automovil.getTipo();
 
                 // Si el tipo de automóvil no está en la lista, lo agregamos
@@ -179,7 +172,7 @@ public class HistorialService {
         for (ReparacionEntity reparacion : reparaciones) {
             if (reparacion.getTipoReparacion() == tipoReparacion) {
                 String patente = reparacion.getPatente();
-                AutomovilEntity automovil = getAutomovilByPatente(patente);
+                AutomovilEntity automovil = reparacionService.getAutomovilByPatente(patente);
                 String tipoAutomovil = automovil.getTipo();
 
                 // Si el tipo de automóvil no está en la lista, lo agregamos
@@ -191,7 +184,7 @@ public class HistorialService {
         }
         int sumaMontos = 0;
         for(String tipoMotor : tiposMotor){
-            sumaMontos += getMonto(tipoReparacion, tipoMotor);
+            sumaMontos += reparacionService.getMonto(tipoReparacion, tipoMotor);
         }
         return sumaMontos;
     }
@@ -408,7 +401,7 @@ public class HistorialService {
         for (ReparacionEntity reparacion : reparaciones) {
             if (reparacion.getTipoReparacion() == tipoReparacion) {
                 String patente = reparacion.getPatente();
-                AutomovilEntity automovil = getAutomovilByPatente(patente);
+                AutomovilEntity automovil = reparacionService.getAutomovilByPatente(patente);
                 Long idHistorial = reparacion.getIdHistorialReparaciones();
 
                 // Usamos Optional para manejar la posible ausencia de historialAuto
@@ -444,7 +437,7 @@ public class HistorialService {
         for (ReparacionEntity reparacion : reparaciones) {
             if (reparacion.getTipoReparacion() == tipoReparacion) {
                 String patente = reparacion.getPatente();
-                AutomovilEntity automovil = getAutomovilByPatente(patente);
+                AutomovilEntity automovil = reparacionService.getAutomovilByPatente(patente);
                 Long idHistorial = reparacion.getIdHistorialReparaciones();
 
                 // Usamos Optional para manejar la posible ausencia de historialAuto
@@ -466,7 +459,7 @@ public class HistorialService {
 
         int sumaMontos = 0;
         for (String tipoMotor : tiposMotor) {
-            sumaMontos += getMonto(tipoReparacion, tipoMotor);
+            sumaMontos += reparacionService.getMonto(tipoReparacion, tipoMotor);
         }
         return sumaMontos;
     }

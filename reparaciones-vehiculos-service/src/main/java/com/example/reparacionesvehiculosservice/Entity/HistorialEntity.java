@@ -20,6 +20,8 @@ public class HistorialEntity {
     private Long id;
     private LocalDate fechaIngresoTaller;
     private LocalTime horaIngresoTaller;
+    private double montoTotalReparaciones;
+    private double montoSinIva;//SUB Total
     private double montoTotalPagar;
     private double recargos;
     private double descuentos;

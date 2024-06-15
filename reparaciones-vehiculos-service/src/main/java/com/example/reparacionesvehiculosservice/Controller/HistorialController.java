@@ -27,7 +27,7 @@ public class HistorialController {
     @Autowired
     DatosBonosService datosBonosService;
 
-//------------------------------------HISTORIAL CONTROLLER------------------------------------
+    //------------------------------------HISTORIAL CONTROLLER------------------------------------
     @GetMapping("/")
     public ResponseEntity<List<HistorialEntity>> listhistorialReparaciones() {
         List<HistorialEntity> historialReparaciones = historialService.getHistorialReparaciones();
@@ -79,18 +79,18 @@ public class HistorialController {
     }
 
 
-///////////////////////////////////////////////////PRUEBAS DE CONEXIÓN///////////////////////////////////////////////////
-   //http://localhost:8081/historial/patente/CFYF55
+    ///////////////////////////////////////////////////PRUEBAS DE CONEXIÓN///////////////////////////////////////////////////
+    //http://localhost:8081/historial/patente/CFYF55
     @GetMapping("/patente/{patente}")
     public ResponseEntity<AutomovilEntity> getAutomovilByPatente(@PathVariable String patente) {
-        AutomovilEntity automovil = historialService.getAutomovilByPatente(patente);
+        AutomovilEntity automovil = reparacionService.getAutomovilByPatente(patente);
         return ResponseEntity.ok(automovil);
     }
 
     //http://localhost:8081/historial/monto/1/Gasolina
     @GetMapping("/monto/{numeroReparacion}/{tipoMotor}")
     public int getMonto(@PathVariable int numeroReparacion, @PathVariable String tipoMotor) {
-        return historialService.getMonto(numeroReparacion, tipoMotor);
+        return reparacionService.getMonto(numeroReparacion, tipoMotor);
     }
 
     @GetMapping("/montoTipoReparacionByTipoAutomovil/{tipoReparacion}/{tipoAuto}/{numMes}/{ano}")
@@ -116,6 +116,12 @@ public class HistorialController {
         return ResponseEntity.noContent().build();
     }
 
+    @GetMapping("/pagar")
+    public ResponseEntity<Void> pagarHistorial(@RequestParam("patente") String patente) {
+        historialService.pagarHistorial(patente);
+        return ResponseEntity.noContent().build();
+    }
+
 //------------------------------------REPARACION CONTROLLER------------------------------------
 
     @GetMapping("/reparacion/")
@@ -138,16 +144,17 @@ public class HistorialController {
         return ResponseEntity.ok(reparacionNew);
     }
 
-    @PostMapping("/reparacion/crearVarias")
-    public ResponseEntity<List<ReparacionEntity>> createVariousReparaciones(@RequestBody List<ReparacionEntity> reparacionesList) {
-        List<ReparacionEntity> savedReparaciones = reparacionService.createVarious(reparacionesList);
-        return ResponseEntity.status(HttpStatus.CREATED).body(savedReparaciones);
-    }
-
     @PutMapping("/reparacion/")
     public ResponseEntity<ReparacionEntity> updateReparacion(@RequestBody ReparacionEntity reparacion){
         ReparacionEntity reparacionUpdated = reparacionService.updateReparacion(reparacion);
         return ResponseEntity.ok(reparacionUpdated);
+    }
+
+
+    @PostMapping("/reparacion/crearVarias")
+    public ResponseEntity<List<ReparacionEntity>> createVariousReparaciones(@RequestBody List<ReparacionEntity> reparacionesList) {
+        List<ReparacionEntity> savedReparaciones = reparacionService.createVarious(reparacionesList);
+        return ResponseEntity.status(HttpStatus.CREATED).body(savedReparaciones);
     }
 
     @DeleteMapping("/reparacion/{id}")

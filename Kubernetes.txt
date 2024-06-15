@@ -1,7 +1,7 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 Crear un dump de una base de datos:
 C:\Program Files\PostgreSQL\16\bin>pg_dump -U postgres -W -h localhost dbmsvehiculos > dbmsvehiculos.sql
-Contraseña:
+Contraseña: 12345678
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
@@ -31,6 +31,16 @@ reparaciones-vehiculos-service
 PS C:\Users\nicol\OneDrive - usach.cl\Compu\Escritorio\pep 2 tingeso\pep2tingeso\reparaciones-vehiculos-service> 
 1: docker build -t niko085/reparaciones-vehiculos-service .
 2: docker push niko085/reparaciones-vehiculos-service
+
+Front
+Paso 1(generar el build):
+npm run build
+
+Paso 2:
+docker build -t niko085/frontend .
+
+Paso 3:
+docker push niko085/frontend 
 
 
 reportes-service
@@ -203,12 +213,15 @@ Para ver los services: kubectl get services
 -Precios: kubectl apply -f valor-reparaciones-service-deployment-service.yaml
 -Historial: kubectl apply -f reparaciones-vehiculos-service-deployment-service.yaml
 -Reportes: kubectl apply -f reportes-service-deployment-service.yaml
+-Frontend: kubectl apply -f frontend-server-deployment-service.yaml
 
 
 Si ocurre el problema de que no se puede acceder usando docker al 192.168.49.2:puerto externo del servicio
 usar: minikube service eureka-server-service
 Este es para que funcionen las consultas: minikube service gateway-server-service
+ 
+minikube service frontend-service
 
+kubectl get svc
 
-
-
+Usamos:minikube tunnel

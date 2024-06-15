@@ -55,7 +55,7 @@ export default function Sidemenu({ open, toggleDrawer }) {
           <ListItemIcon>
           <NoCrashIcon />
           </ListItemIcon>
-          <ListItemText primary="Retirar del taller" />
+          <ListItemText primary="Retirar del Taller" />
         </ListItemButton>
 
         <Divider />
@@ -71,7 +71,7 @@ export default function Sidemenu({ open, toggleDrawer }) {
           <ListItemIcon>
             <HistoryIcon />
           </ListItemIcon>
-          <ListItemText primary="Listado de historiales" />
+          <ListItemText primary="Listado de Registros" />
         </ListItemButton>
 
         {/*<ListItemButton onClick={() => navigate("/agregarReparacion/list")}>

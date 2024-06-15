@@ -32,7 +32,7 @@ export default function Navbar() {
           </IconButton>
 
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            SiGRA: Sistema de Gestión de Reparaciones de Automoviles
+          AutoFix: Sistema de Gestión de Reparaciones de Automoviles
           </Typography>
         </Toolbar>
       </AppBar>

@@ -68,6 +68,9 @@ const ReparacionesList = () => {
             <TableCell align="left">N° de reparación</TableCell>
             <TableCell align="left">Descripción</TableCell>
             <TableCell align="left">ID Historial Reparaciones</TableCell>
+            <TableCell align="left">Fecha Reparación</TableCell>
+            <TableCell align="left">Hora Reparación</TableCell>
+            <TableCell align="left">Monto</TableCell>
             <TableCell align="left">Acciones</TableCell>
           </TableRow>
         </TableHead>
@@ -79,6 +82,9 @@ const ReparacionesList = () => {
               <TableCell align="left">{reparacion.tipoReparacion}</TableCell>
               <TableCell align="left">{reparacion.descripcion}</TableCell>
               <TableCell align="left">{reparacion.idHistorialReparaciones}</TableCell>
+              <TableCell align="left">{reparacion.fechaReparacion}</TableCell>
+              <TableCell align="left">{reparacion.horaReparacion}</TableCell>
+              <TableCell align="left">{reparacion.montoReparacion}</TableCell>
               <TableCell>
                 <Button
                   variant="contained"
