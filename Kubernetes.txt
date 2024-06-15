@@ -32,17 +32,6 @@ PS C:\Users\nicol\OneDrive - usach.cl\Compu\Escritorio\pep 2 tingeso\pep2tingeso
 1: docker build -t niko085/reparaciones-vehiculos-service .
 2: docker push niko085/reparaciones-vehiculos-service
 
-Front
-Paso 1(generar el build):
-npm run build
-
-Paso 2:
-docker build -t niko085/frontend .
-
-Paso 3:
-docker push niko085/frontend 
-
-
 reportes-service
 PS C:\Users\nicol\OneDrive - usach.cl\Compu\Escritorio\pep 2 tingeso\pep2tingeso\reportes-service> 
 1: docker build -t niko085/reportes-service .
@@ -52,6 +41,16 @@ vehiculos-service
 PS C:\Users\nicol\OneDrive - usach.cl\Compu\Escritorio\pep 2 tingeso\pep2tingeso\vehiculos-service> 
 1: docker build -t niko085/vehiculos-service .
 2: docker push niko085/vehiculos-service
+
+Front
+Paso 1(generar el build):
+npm run build
+
+Paso 2:
+docker build -t niko085/frontend-service .
+
+Paso 3:
+docker push niko085/frontend-service 
 
 
 //////////////////////////Ahora minikube//////////////////////////
@@ -153,16 +152,18 @@ cd home
 psql -Upostgres dbmsvehiculos < dbmsvehiculos.sql
 
 -------historial
+-/-/el v2 se refiere a la versión 2 de la base datos-/-/
+
 kubectl get pods
-kubectl exec -it dbmshistorial-deployment-68cdff8ddb-vhxd9 -- /bin/bash
+kubectl exec -it dbmshistorialv2-deployment-5667d67d4b-6vmfz -- /bin/bash
 psql -U postgres
-create database dbmshistorial;
+create database dbmshistorialv2;
 exit
 exit
-kubectl cp dbmshistorial.sql dbmshistorial-deployment-68cdff8ddb-vhxd9:/home
-kubectl exec -it dbmshistorial-deployment-68cdff8ddb-vhxd9 -- /bin/bash
+kubectl cp dbmshistorialv2.sql dbmshistorialv2-deployment-5667d67d4b-6vmfz:/home
+kubectl exec -it dbmshistorialv2-deployment-5667d67d4b-6vmfz -- /bin/bash
 cd home
-psql -Upostgres dbmshistorial < dbmshistorial.sql
+psql -Upostgres dbmshistorialv2 < dbmshistorialv2.sql
 
 
 -------reportes
@@ -225,3 +226,5 @@ minikube service frontend-service
 kubectl get svc
 
 Usamos:minikube tunnel
+
+kubectl logs -f frontend-deployment-7c55b6845-sx4hq

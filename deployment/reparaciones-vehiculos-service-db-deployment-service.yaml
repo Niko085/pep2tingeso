@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: dbmshistorial-pv
+  name: dbmshistorialv2-pv
   labels:
     type: local
 spec:
@@ -11,12 +11,12 @@ spec:
   accessModes:
     - ReadWriteOnce
   hostPath:
-    path: "/data/dbmshistorial-data"
+    path: "/data/dbmshistorialv2-data"
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: dbmshistorial-pvc
+  name: dbmshistorialv2-pvc
   labels:
     app: postgres
     tier: database
@@ -31,24 +31,24 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: dbmshistorial-deployment
+  name: dbmshistorialv2-deployment
   labels:
-    app: dbmshistorial-deployment
+    app: dbmshistorialv2-deployment
     tier: database
 spec:
   selector:
     matchLabels:
-      app: dbmshistorial-deployment
+      app: dbmshistorialv2-deployment
   strategy:
     type: Recreate
   template:
     metadata:
       labels:
-        app: dbmshistorial-deployment
+        app: dbmshistorialv2-deployment
         tier: database
     spec:
       containers:
-        - name: dbmshistorial
+        - name: dbmshistorialv2
           image: postgres
           imagePullPolicy: "IfNotPresent"
           ports:
@@ -66,18 +66,18 @@ spec:
                   key: DB_PASSWORD_REPARACIONES
           volumeMounts:
             - mountPath: /var/lib/postgresql/data
-              name: dbmshistorial-data
+              name: dbmshistorialv2-data
       volumes:
-        - name: dbmshistorial-data
+        - name: dbmshistorialv2-data
           persistentVolumeClaim:
-            claimName: dbmshistorial-pvc
+            claimName: dbmshistorialv2-pvc
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: dbmshistorial-service
+  name: dbmshistorialv2-service
   labels:
-    app: dbmshistorial-service
+    app: dbmshistorialv2-service
     tier: database
 spec:
   ports:
@@ -85,6 +85,6 @@ spec:
       targetPort: 5432
       protocol: TCP
   selector:
-    app: dbmshistorial-deployment
+    app: dbmshistorialv2-deployment
     tier: database
   type: LoadBalancer

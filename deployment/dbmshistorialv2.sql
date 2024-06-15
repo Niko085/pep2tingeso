@@ -2,10 +2,10 @@
 \c postgres;
 
 -- Crear la nueva base de datos
-CREATE DATABASE "dbmshistorial";
+CREATE DATABASE "dbmshistorialv2";
 
 -- Conectar a la nueva base de datos
-\c "dbmshistorial";
+\c "dbmshistorialv2";
 --
 -- PostgreSQL database dump
 --
@@ -77,7 +77,9 @@ CREATE TABLE public.historial_reparaciones (
     hora_ingreso_taller time(6) without time zone,
     hora_salida_taller time(6) without time zone,
     iva double precision NOT NULL,
+    monto_sin_iva double precision NOT NULL,
     monto_total_pagar double precision NOT NULL,
+    monto_total_reparaciones double precision NOT NULL,
     pagado boolean NOT NULL,
     recargos double precision NOT NULL,
     id bigint NOT NULL,
@@ -113,6 +115,9 @@ ALTER SEQUENCE public.historial_reparaciones_id_seq OWNED BY public.historial_re
 --
 
 CREATE TABLE public.reparaciones (
+    fecha_reparacion date,
+    hora_reparacion time(6) without time zone,
+    monto_reparacion double precision NOT NULL,
     tipo_reparacion integer NOT NULL,
     id bigint NOT NULL,
     id_historial_reparaciones bigint,
@@ -181,10 +186,9 @@ COPY public.datos_bonos (cantidad_bonos, monto_bono, id, marca_automovil) FROM s
 -- Data for Name: historial_reparaciones; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.historial_reparaciones (descuentos, fecha_cliente_se_lleva_vehiculo, fecha_ingreso_taller, fecha_salida_taller, hora_cliente_se_lleva_vehiculo, hora_ingreso_taller, hora_salida_taller, iva, monto_total_pagar, pagado, recargos, id, patente) FROM stdin;
-43500	2022-01-21	2022-01-18	2022-01-20	15:25:00	10:30:00	10:30:00	53808	337008	t	56700	1	CFYF55
-0	2023-12-20	2023-12-15	2023-12-19	13:27:00	12:55:00	13:30:00	0	0	f	0	2	TW6977
-0	2024-03-21	2024-03-18	2024-03-19	15:25:00	10:30:00	10:30:00	0	0	f	0	3	CFYF55
+COPY public.historial_reparaciones (descuentos, fecha_cliente_se_lleva_vehiculo, fecha_ingreso_taller, fecha_salida_taller, hora_cliente_se_lleva_vehiculo, hora_ingreso_taller, hora_salida_taller, iva, monto_sin_iva, monto_total_pagar, monto_total_reparaciones, pagado, recargos, id, patente) FROM stdin;
+43500	2022-01-21	2022-01-18	2022-01-20	15:25:00	10:30:00	10:30:00	53808	240327	337008	270000	t	56700	1	CFYF55
+0	2023-12-20	2023-12-15	2023-12-19	13:27:00	12:55:00	13:30:00	0	0	0	0	f	0	2	TW6977
 \.
 
 
@@ -192,14 +196,11 @@ COPY public.historial_reparaciones (descuentos, fecha_cliente_se_lleva_vehiculo,
 -- Data for Name: reparaciones; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.reparaciones (tipo_reparacion, id, id_historial_reparaciones, descripcion, patente) FROM stdin;
-5	1	1	Reparacion sistema electrico	CFYF55
-1	2	1	Reparacion sistema de frenos	CFYF55
-1	3	2	Reparacion sistema de frenos	TW6977
-10	4	2	Reparacion sistema de combustible	TW6977
-5	5	3	Reparacion sistema electrico	CFYF55
-1	6	3	Reparacion sistema de frenos	CFYF55
-2	7	4	Reparacion sistema de refrigeracion	KDJW65
+COPY public.reparaciones (fecha_reparacion, hora_reparacion, monto_reparacion, tipo_reparacion, id, id_historial_reparaciones, descripcion, patente) FROM stdin;
+2022-01-18	10:30:00	120000	5	1	1	Reparación sistema eléctrico	CFYF55
+2022-01-18	10:30:00	150000	1	2	1	Reparación sistema de frenos	CFYF55
+2023-12-15	12:55:00	120000	1	3	2	Reparación sistema de frenos	TW6977
+2023-12-15	12:55:00	130000	10	4	2	Reparación sistema de combustible	TW6977
 \.
 
 
@@ -214,14 +215,14 @@ SELECT pg_catalog.setval('public.datos_bonos_id_seq', 4, true);
 -- Name: historial_reparaciones_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.historial_reparaciones_id_seq', 3, true);
+SELECT pg_catalog.setval('public.historial_reparaciones_id_seq', 2, true);
 
 
 --
 -- Name: reparaciones_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.reparaciones_id_seq', 7, true);
+SELECT pg_catalog.setval('public.reparaciones_id_seq', 4, true);
 
 
 --

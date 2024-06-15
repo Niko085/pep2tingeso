@@ -8,9 +8,9 @@ data:
   DB_HOST_VEHICULOS: dbmsvehiculos-service
   DB_PORT_VEHICULOS: "5432"
   DB_DBNAME_VEHICULOS: dbmsvehiculos
-  DB_HOST_REPARACIONES: dbmshistorial-service
+  DB_HOST_REPARACIONES: dbmshistorialv2-service
   DB_PORT_REPARACIONES: "5432"
-  DB_DBNAME_REPARACIONES: dbmshistorial
+  DB_DBNAME_REPARACIONES: dbmshistorialv2
   DB_HOST_PRECIOS: dbmsprecios-service
   DB_PORT_PRECIOS: "5432"
   DB_DBNAME_PRECIOS: dbmsprecios
