@@ -10,12 +10,18 @@ import Paper from "@mui/material/Paper";
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import MenuItem from '@mui/material/MenuItem';
+import CircularProgress from '@mui/material/CircularProgress';
+import Box from '@mui/material/Box';
+import Typography from '@mui/material/Typography';
 import reportesServices from "../services/reportes.service";
 
 function ReporteReparacionesVsTiposAutos() {
     const [reporte, setReporte] = useState([]);
     const [mes, setMes] = useState(12); // Mes predeterminado: diciembre
     const [ano, setAno] = useState(2023); // Año predeterminado: 2023
+    const [isLoading, setIsLoading] = useState(false);
+    const [isSubmitted, setIsSubmitted] = useState(false);
+    const [error, setError] = useState(null);
 
     const meses = [
         { value: 1, label: "Enero" },
@@ -33,18 +39,21 @@ function ReporteReparacionesVsTiposAutos() {
     ];
 
     const obtenerReporteReparacionesVsTiposAutos = async (mes, ano) => {
+        setIsLoading(true);
+        setIsSubmitted(false);
+        setError(null);
+
         try {
             const response = await reportesServices.getReporteReparacionesVsTipoAuto({ mes, ano });
             setReporte(response.data);
+            setIsSubmitted(true);
         } catch (error) {
+            setError(error);
             console.error('Error al obtener los datos:', error);
+        } finally {
+            setIsLoading(false);
         }
     };
-    
-
-    useEffect(() => {
-        obtenerReporteReparacionesVsTiposAutos(mes, ano);
-    }, [mes, ano]);
 
     const handleMesChange = (event) => {
         setMes(event.target.value);
@@ -88,44 +97,59 @@ function ReporteReparacionesVsTiposAutos() {
                 </Button>
             </div>
 
-            <TableContainer component={Paper}>
-                <Table sx={{ minWidth: 650 }} size="small" aria-label="a dense table">
-                    <TableHead>
-                        <TableRow>
-                            <TableCell scope="col">Tipo de reparacion</TableCell>
-                            <TableCell scope="col">Cantidad Sedan</TableCell>
-                            <TableCell scope="col">Monto Sedan</TableCell>
-                            <TableCell scope="col">Cantidad Hatchback</TableCell>
-                            <TableCell scope="col">Monto Hatchback</TableCell>
-                            <TableCell scope="col">Cantidad Suv</TableCell>
-                            <TableCell scope="col">Monto Suv</TableCell>
-                            <TableCell scope="col">Cantidad Pickup</TableCell>
-                            <TableCell scope="col">Monto Pickup</TableCell>
-                            <TableCell scope="col">Cantidad Furgoneta</TableCell>
-                            <TableCell scope="col">Monto Furgoneta</TableCell>
-                            <TableCell scope="col">Monto total reparaciones</TableCell>
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        {reporte.map(item => (
-                            <TableRow key={item.reparacion}>
-                                <TableCell>{item.reparacion}</TableCell>
-                                <TableCell>{item.cantidadSedan}</TableCell>
-                                <TableCell>{item.montoSedan}</TableCell>
-                                <TableCell>{item.cantidadHatchback}</TableCell>
-                                <TableCell>{item.montoHatchback}</TableCell>
-                                <TableCell>{item.cantidadSuv}</TableCell>
-                                <TableCell>{item.montoSuv}</TableCell>
-                                <TableCell>{item.cantidadPickup}</TableCell>
-                                <TableCell>{item.montoPickup}</TableCell>
-                                <TableCell>{item.cantidadFurgoneta}</TableCell>
-                                <TableCell>{item.montoFurgoneta}</TableCell>
-                                <TableCell>{item.montoTotalReparaciones}</TableCell>
+            {isLoading ? (
+                <Box display="flex" alignItems="center" justifyContent="center" height="100vh">
+                    <CircularProgress size={50} />
+                    <Box ml={2}>Cargando...</Box>
+                </Box>
+            ) : error ? (
+                <Typography variant="h6" color="error" sx={{ mt: 2 }}>
+                    Error: {error.message}
+                </Typography>
+            ) : !isSubmitted ? (
+                <Typography variant="h6" sx={{ mt: 2 }}>
+                    Seleccione el mes y el año para ver el reporte.
+                </Typography>
+            ) : (
+                <TableContainer component={Paper}>
+                    <Table sx={{ minWidth: 650 }} size="small" aria-label="a dense table">
+                        <TableHead>
+                            <TableRow>
+                                <TableCell>Tipo de reparacion</TableCell>
+                                <TableCell>Cantidad Sedan</TableCell>
+                                <TableCell>Monto Sedan</TableCell>
+                                <TableCell>Cantidad Hatchback</TableCell>
+                                <TableCell>Monto Hatchback</TableCell>
+                                <TableCell>Cantidad Suv</TableCell>
+                                <TableCell>Monto Suv</TableCell>
+                                <TableCell>Cantidad Pickup</TableCell>
+                                <TableCell>Monto Pickup</TableCell>
+                                <TableCell>Cantidad Furgoneta</TableCell>
+                                <TableCell>Monto Furgoneta</TableCell>
+                                <TableCell>Monto total reparaciones</TableCell>
                             </TableRow>
-                        ))}
-                    </TableBody>
-                </Table>
-            </TableContainer>
+                        </TableHead>
+                        <TableBody>
+                            {reporte.map(item => (
+                                <TableRow key={item.reparacion}>
+                                    <TableCell>{item.reparacion}</TableCell>
+                                    <TableCell>{item.cantidadSedan}</TableCell>
+                                    <TableCell>{item.montoSedan}</TableCell>
+                                    <TableCell>{item.cantidadHatchback}</TableCell>
+                                    <TableCell>{item.montoHatchback}</TableCell>
+                                    <TableCell>{item.cantidadSuv}</TableCell>
+                                    <TableCell>{item.montoSuv}</TableCell>
+                                    <TableCell>{item.cantidadPickup}</TableCell>
+                                    <TableCell>{item.montoPickup}</TableCell>
+                                    <TableCell>{item.cantidadFurgoneta}</TableCell>
+                                    <TableCell>{item.montoFurgoneta}</TableCell>
+                                    <TableCell>{item.montoTotalReparaciones}</TableCell>
+                                </TableRow>
+                            ))}
+                        </TableBody>
+                    </Table>
+                </TableContainer>
+            )}
         </div>
     );
 }

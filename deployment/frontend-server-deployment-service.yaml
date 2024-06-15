@@ -15,7 +15,7 @@ spec:
         app: frontend-deployment
     spec:
       containers:
-        - name: frontend
+        - name: frontend-service
           image: niko085/frontend-service
           ports:
             - containerPort: 3000

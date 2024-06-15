@@ -4,6 +4,7 @@ import Button from '@mui/material/Button';
 import DriveEtaIcon from '@mui/icons-material/DriveEta';
 import historialReparacionesService from "../services/historialReparaciones.service";
 import TextField from '@mui/material/TextField';
+import Box from '@mui/material/Box';
 
 const RetiroTaller = () => {
     const [patente, setPatente] = useState('');
@@ -30,7 +31,6 @@ const RetiroTaller = () => {
             console.error('Error al buscar historial de reparaciones:', error);
         }
     };
-    
 
     const handleKeyDown = (event) => {
         if (event.key === 'Enter') {
@@ -41,23 +41,25 @@ const RetiroTaller = () => {
     return (
         <div className="container">
             <h1>Retiro del taller</h1>
-            <div>
+            <Box display="flex" justifyContent="center" alignItems="center" flexDirection="column" mt={4}>
                 <TextField 
                     label="Ingrese la patente" 
                     variant="outlined" 
                     value={patente} 
                     onChange={(e) => setPatente(e.target.value)} 
                     onKeyDown={handleKeyDown} // Llamar a handleKeyDown cuando se presione una tecla
+                    sx={{ marginBottom: 2, minWidth: 300 }}
                 />
                 <Button 
                     variant="contained" 
                     color="primary" 
                     onClick={handleSearch}
                     startIcon={<DriveEtaIcon />}
+                    sx={{ padding: '10px 20px', fontSize: '16px' }}
                 >
-                    Buscar historial
+                    Buscar
                 </Button>
-            </div>
+            </Box>
         </div>
     );
 };

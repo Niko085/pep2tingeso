@@ -126,7 +126,7 @@ const HistorialReparacionesList = () => {
               <TableCell align="right" sx={{ fontWeight: "bold" }}>Recargos</TableCell>
               <TableCell align="right" sx={{ fontWeight: "bold" }}>Descuentos</TableCell>
               <TableCell align="right" sx={{ fontWeight: "bold" }}>IVA</TableCell>
-              <TableCell align="right" sx={{ fontWeight: "bold" }}>Monto Total a Pagar</TableCell>
+              <TableCell align="right" sx={{ fontWeight: "bold" }}>Monto Total Pagar</TableCell>
               <TableCell align="left" sx={{ fontWeight: "bold" }}>Fecha Salida Taller</TableCell>
               <TableCell align="left" sx={{ fontWeight: "bold" }}>Hora Salida Taller</TableCell>
               <TableCell align="left" sx={{ fontWeight: "bold" }}>Fecha Retiro Cliente</TableCell>

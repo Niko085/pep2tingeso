@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -10,12 +9,18 @@ import Paper from "@mui/material/Paper";
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import MenuItem from '@mui/material/MenuItem';
+import CircularProgress from '@mui/material/CircularProgress';
+import Box from '@mui/material/Box';
+import Typography from '@mui/material/Typography';
 import reportesServices from "../services/reportes.service";
 
 function ReporteCompararMeses() {
     const [reporte, setReporte] = useState([]);
     const [mes, setMes] = useState(1); // Mes predeterminado: enero
     const [ano, setAno] = useState(2024); // Año predeterminado: 2024
+    const [isLoading, setIsLoading] = useState(false);
+    const [isSubmitted, setIsSubmitted] = useState(false);
+    const [error, setError] = useState(null);
 
     const meses = [
         { value: 1, label: "Enero" },
@@ -37,17 +42,21 @@ function ReporteCompararMeses() {
     };
 
     const obtenerReporteCompararMeses = async (mes, ano) => {
+        setIsLoading(true);
+        setIsSubmitted(false);
+        setError(null);
+
         try {
             const response = await reportesServices.getReporteCompararMeses({ mes, ano });
             setReporte(response.data);
+            setIsSubmitted(true);
         } catch (error) {
+            setError(error);
             console.error('Error al obtener los datos:', error);
+        } finally {
+            setIsLoading(false);
         }
     };
-
-    useEffect(() => {
-        obtenerReporteCompararMeses(mes, ano);
-    }, [mes, ano]);
 
     const handleMesChange = (event) => {
         setMes(event.target.value);
@@ -91,48 +100,63 @@ function ReporteCompararMeses() {
                 </Button>
             </div>
 
-            <TableContainer component={Paper}>
-                <Table sx={{ minWidth: 650 }} size="small" aria-label="a dense table">
-                    <TableHead>
-                        <TableRow>
-                            <TableCell scope="col">Tipo de reparación</TableCell>
-                            <TableCell scope="col">Mes</TableCell>
-                            <TableCell scope="col">Cantidad autos</TableCell>
-                            <TableCell scope="col">Monto</TableCell>
-                            <TableCell scope="col">Mes</TableCell>
-                            <TableCell scope="col">Cantidad autos</TableCell>
-                            <TableCell scope="col">Monto</TableCell>
-                            <TableCell scope="col">Variación cantidad</TableCell>
-                            <TableCell scope="col">Variación monto</TableCell>
-                            <TableCell scope="col">Mes</TableCell>
-                            <TableCell scope="col">Cantidad autos</TableCell>
-                            <TableCell scope="col">Monto</TableCell>
-                            <TableCell scope="col">Variación cantidad</TableCell>
-                            <TableCell scope="col">Variación monto</TableCell>
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        {reporte.map(item => (
-                            <TableRow key={item.reparacion}>
-                                <TableCell>{item.reparacion}</TableCell>
-                                <TableCell>{obtenerNombreMes(item.mes1)}</TableCell>
-                                <TableCell>{item.cantidadAutos1}</TableCell>
-                                <TableCell>{item.monto1}</TableCell>
-                                <TableCell>{obtenerNombreMes(item.mes2)}</TableCell>
-                                <TableCell>{item.cantidadAutos2}</TableCell>
-                                <TableCell>{item.monto2}</TableCell>
-                                <TableCell>{item.variacionCantidad2}%</TableCell>
-                                <TableCell>{item.variacionMonto2}%</TableCell>
-                                <TableCell>{obtenerNombreMes(item.mes3)}</TableCell>
-                                <TableCell>{item.cantidadAutos3}</TableCell>
-                                <TableCell>{item.monto3}</TableCell>
-                                <TableCell>{item.variacionCantidad3}%</TableCell>
-                                <TableCell>{item.variacionMonto3}%</TableCell>
+            {isLoading ? (
+                <Box display="flex" alignItems="center" justifyContent="center" height="100vh">
+                    <CircularProgress size={50} />
+                    <Box ml={2}>Cargando...</Box>
+                </Box>
+            ) : error ? (
+                <Typography variant="h6" color="error" sx={{ mt: 2 }}>
+                    Error: {error.message}
+                </Typography>
+            ) : !isSubmitted ? (
+                <Typography variant="h6" sx={{ mt: 2 }}>
+                    Seleccione el mes y el año para ver el reporte.
+                </Typography>
+            ) : (
+                <TableContainer component={Paper}>
+                    <Table sx={{ minWidth: 650 }} size="small" aria-label="a dense table">
+                        <TableHead>
+                            <TableRow>
+                                <TableCell>Tipo de reparación</TableCell>
+                                <TableCell>Mes</TableCell>
+                                <TableCell>Cantidad autos</TableCell>
+                                <TableCell>Monto</TableCell>
+                                <TableCell>Mes</TableCell>
+                                <TableCell>Cantidad autos</TableCell>
+                                <TableCell>Monto</TableCell>
+                                <TableCell>Variación cantidad</TableCell>
+                                <TableCell>Variación monto</TableCell>
+                                <TableCell>Mes</TableCell>
+                                <TableCell>Cantidad autos</TableCell>
+                                <TableCell>Monto</TableCell>
+                                <TableCell>Variación cantidad</TableCell>
+                                <TableCell>Variación monto</TableCell>
                             </TableRow>
-                        ))}
-                    </TableBody>
-                </Table>
-            </TableContainer>
+                        </TableHead>
+                        <TableBody>
+                            {reporte.map(item => (
+                                <TableRow key={item.reparacion}>
+                                    <TableCell>{item.reparacion}</TableCell>
+                                    <TableCell>{obtenerNombreMes(item.mes1)}</TableCell>
+                                    <TableCell>{item.cantidadAutos1}</TableCell>
+                                    <TableCell>{item.monto1}</TableCell>
+                                    <TableCell>{obtenerNombreMes(item.mes2)}</TableCell>
+                                    <TableCell>{item.cantidadAutos2}</TableCell>
+                                    <TableCell>{item.monto2}</TableCell>
+                                    <TableCell>{item.variacionCantidad2}%</TableCell>
+                                    <TableCell>{item.variacionMonto2}%</TableCell>
+                                    <TableCell>{obtenerNombreMes(item.mes3)}</TableCell>
+                                    <TableCell>{item.cantidadAutos3}</TableCell>
+                                    <TableCell>{item.monto3}</TableCell>
+                                    <TableCell>{item.variacionCantidad3}%</TableCell>
+                                    <TableCell>{item.variacionMonto3}%</TableCell>
+                                </TableRow>
+                            ))}
+                        </TableBody>
+                    </Table>
+                </TableContainer>
+            )}
         </div>
     );
 }

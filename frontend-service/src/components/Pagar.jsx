@@ -9,45 +9,44 @@ import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableHead from '@mui/material/TableHead';
 import Paper from '@mui/material/Paper';
-import TableContainer from '@mui/material/TableContainer'; // Asegúrate de importar TableContainer
+import TableContainer from '@mui/material/TableContainer';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import Typography from '@mui/material/Typography';
+import Box from '@mui/material/Box';
 
 const Pagar = () => {
-    // Estado para almacenar el historial de reparaciones y las reparaciones
     const [historialReparaciones, setHistorialReparaciones] = useState([]);
     const [reparaciones, setReparaciones] = useState([]);
-    const { patente } = useParams(); // Obtener la patente desde los parámetros de la URL
+    const { patente } = useParams();
     const navigate = useNavigate();
 
-    // Función para calcular el historial de reparaciones para una patente específica
     const handleCalculate = (patente) => {
         console.log("Calculando historial de reparaciones para la patente:", patente);
         axios
-          .get(`http://localhost:8081/historialreparaciones/calculate?patente=${patente}`)
-          .then(() => {
-            console.log("Historial de reparaciones calculado con éxito");
-            fetchHistorialReparaciones(); // Recargar los datos después de calcular
-          })
-          .catch((error) => {
-            console.log("Error al calcular historial de reparaciones:", error);
-          });
+            .get(`http://127.0.0.1:8081/historialreparaciones/calculate?patente=${patente}`)
+            .then(() => {
+                console.log("Historial de reparaciones calculado con éxito");
+                fetchHistorialReparaciones();
+            })
+            .catch((error) => {
+                console.log("Error al calcular historial de reparaciones:", error);
+            });
     };
 
     const handlePay = (patente) => {
         console.log("Pagando el historial de reparaciones para la patente:", patente);
         axios
-          .get(`http://localhost:8081/historialreparaciones/pagar?patente=${patente}`)
-          .then(() => {
-            console.log("Historial de reparaciones pagado con éxito");
-            navigate("/historialReparaciones/list"); // Navegar a la lista de historiales después de calcular
-          })
-          .catch((error) => {
-            console.log("Error al pagar historial de reparaciones:", error);
-          });
+            .get(`http://127.0.0.1:8081/historialreparaciones/pagar?patente=${patente}`)
+            .then(() => {
+                console.log("Historial de reparaciones pagado con éxito");
+                navigate("/historialReparaciones/list");
+            })
+            .catch((error) => {
+                console.log("Error al pagar historial de reparaciones:", error);
+            });
     };
 
-    // Función para obtener el historial de reparaciones
     const fetchHistorialReparaciones = async () => {
         try {
             console.log("Buscando historial de reparaciones para la patente:", patente);
@@ -59,16 +58,15 @@ const Pagar = () => {
                 setHistorialReparaciones(Array.isArray(data) ? data : [data]);
 
                 if (Array.isArray(data)) {
-                    // Obtener reparaciones para cada historial
                     const reparacionesPromises = data.map(historial => 
-                        axios.get(`http://localhost:8081/historialreparaciones/reparacion/historial/${historial.id}`)
+                        axios.get(`http://127.0.0.1:8081/historialreparaciones/reparacion/historial/${historial.id}`)
                     );
                     const reparacionesResponses = await Promise.all(reparacionesPromises);
                     const reparacionesData = reparacionesResponses.map(res => res.data).flat();
                     console.log("Datos de las reparaciones obtenidos:", reparacionesData);
                     setReparaciones(reparacionesData);
                 } else {
-                    const reparacionesResponse = await axios.get(`http://localhost:8081/historialreparaciones/reparacion/historial/${data.id}`);
+                    const reparacionesResponse = await axios.get(`http://127.0.0.1:8081/historialreparaciones/reparacion/historial/${data.id}`);
                     console.log("Datos de las reparaciones obtenidos:", reparacionesResponse.data);
                     setReparaciones(reparacionesResponse.data);
                 }
@@ -88,111 +86,117 @@ const Pagar = () => {
 
     return (
         <div className="container">
-            <h1>Retiro del taller</h1>
+            <Typography variant="h4" gutterBottom>
+                Retiro del taller
+            </Typography>
             {historialReparaciones.length > 0 && (
-                <div>
-                    <h2>Pagar reparaciones de la patente {patente}</h2>
-                    <Paper>
-                        <Table>
-                            <TableHead>
-                                <TableRow>
-                                    <TableCell align="left">Patente</TableCell>
-                                    <TableCell align="left">Fecha Ingreso Taller</TableCell>
-                                    <TableCell align="left">Hora Ingreso Taller</TableCell>
-                                    <TableCell align="right">Monto Total Reparaciones</TableCell>
-                                    <TableCell align="right">Recargos</TableCell>
-                                    <TableCell align="right">Descuentos</TableCell>
-                                    <TableCell align="right">IVA</TableCell>
-                                    <TableCell align="right">SUB Total</TableCell>
-                                    <TableCell align="right">Monto Total a Pagar</TableCell>
-                                    <TableCell align="left">Fecha Salida Taller</TableCell>
-                                    <TableCell align="left">Hora Salida Taller</TableCell>
-                                    <TableCell align="left">Fecha Retiro Vehículo</TableCell>
-                                    <TableCell align="left">Hora Retiro Vehículo</TableCell>
-                                    <TableCell align="left">Pagado</TableCell>
-                                    <TableCell align="left">Acciones</TableCell>
-                                </TableRow>
-                            </TableHead>
-                            <TableBody>
-                                {historialReparaciones.map((historial, index) => (
-                                    <TableRow key={index}>
-                                        <TableCell align="left">{historial.patente}</TableCell>
-                                        <TableCell align="left">{historial.fechaIngresoTaller}</TableCell>
-                                        <TableCell align="left">{historial.horaIngresoTaller}</TableCell>
-                                        <TableCell align="right">{historial.montoTotalReparaciones}</TableCell>
-                                        <TableCell align="right">{historial.recargos}</TableCell>
-                                        <TableCell align="right">{historial.descuentos}</TableCell>
-                                        <TableCell align="right">{historial.iva}</TableCell>
-                                        <TableCell align="right">{historial.montoSinIva}</TableCell>
-                                        <TableCell align="right">{historial.montoTotalPagar}</TableCell>
-                                        <TableCell align="left">{historial.fechaSalidaTaller}</TableCell>
-                                        <TableCell align="left">{historial.horaSalidaTaller}</TableCell>
-                                        <TableCell align="left">{historial.fechaClienteSeLlevaVehiculo}</TableCell>
-                                        <TableCell align="left">{historial.horaClienteSeLlevaVehiculo}</TableCell>
-                                        <TableCell align="left">{historial.pagado ? 'Sí' : 'No'}</TableCell>
-                                        <TableCell>
-                                            {!historial.pagado && (
-                                                <Button
-                                                    variant="contained"
-                                                    color="secondary"
-                                                    size="small"
-                                                    onClick={() => handleCalculate(historial.patente)}
-                                                    style={{ marginLeft: "0.5rem" }}
-                                                    startIcon={<AttachMoneyIcon />}
-                                                >
-                                                    Calcular
-                                                </Button>
-                                            )}
-                                            {!historial.pagado && (
-                                                <Button
-                                                    variant="contained"
-                                                    color="secondary"
-                                                    size="small"
-                                                    onClick={() => handlePay(historial.patente)}
-                                                    style={{ marginLeft: "0.5rem" }}
-                                                    startIcon={<AttachMoneyIcon />}
-                                                >
-                                                    Pagar
-                                                </Button>
-                                            )}
-                                        </TableCell>
+                <Box mb={4}>
+                    <Typography variant="h6">
+                        Pagar reparaciones de la patente {patente}
+                    </Typography>
+                    <Paper elevation={3}>
+                        <TableContainer>
+                            <Table>
+                                <TableHead>
+                                    <TableRow>
+                                        <TableCell align="left">Patente</TableCell>
+                                        <TableCell align="left">Fecha Ingreso Taller</TableCell>
+                                        <TableCell align="left">Hora Ingreso Taller</TableCell>
+                                        <TableCell align="right">Monto Total Reparaciones</TableCell>
+                                        <TableCell align="right">Recargos</TableCell>
+                                        <TableCell align="right">Descuentos</TableCell>
+                                        <TableCell align="right">IVA</TableCell>
+                                        <TableCell align="right">SUB Total</TableCell>
+                                        <TableCell align="right">Monto Total Pagar</TableCell>
+                                        <TableCell align="left">Fecha Salida Taller</TableCell>
+                                        <TableCell align="left">Hora Salida Taller</TableCell>
+                                        <TableCell align="left">Fecha Retiro Vehículo</TableCell>
+                                        <TableCell align="left">Hora Retiro Vehículo</TableCell>
+                                        <TableCell align="left">Pagado</TableCell>
+                                        <TableCell align="left">Acciones</TableCell>
                                     </TableRow>
-                                ))}
-                            </TableBody>
-                        </Table>
+                                </TableHead>
+                                <TableBody>
+                                    {historialReparaciones.map((historial, index) => (
+                                        <TableRow key={index}>
+                                            <TableCell align="left">{historial.patente}</TableCell>
+                                            <TableCell align="left">{historial.fechaIngresoTaller}</TableCell>
+                                            <TableCell align="left">{historial.horaIngresoTaller}</TableCell>
+                                            <TableCell align="right">{historial.montoTotalReparaciones}</TableCell>
+                                            <TableCell align="right">{historial.recargos}</TableCell>
+                                            <TableCell align="right">{historial.descuentos}</TableCell>
+                                            <TableCell align="right">{historial.iva}</TableCell>
+                                            <TableCell align="right">{historial.montoSinIva}</TableCell>
+                                            <TableCell align="right">{historial.montoTotalPagar}</TableCell>
+                                            <TableCell align="left">{historial.fechaSalidaTaller}</TableCell>
+                                            <TableCell align="left">{historial.horaSalidaTaller}</TableCell>
+                                            <TableCell align="left">{historial.fechaClienteSeLlevaVehiculo}</TableCell>
+                                            <TableCell align="left">{historial.horaClienteSeLlevaVehiculo}</TableCell>
+                                            <TableCell align="left">{historial.pagado ? 'Sí' : 'No'}</TableCell>
+                                            <TableCell>
+                                                {!historial.pagado && (
+                                                    <>
+                                                        <Button
+                                                            variant="contained"
+                                                            color="primary"
+                                                            size="small"
+                                                            onClick={() => handleCalculate(historial.patente)}
+                                                            sx={{ margin: '0.5rem' }}
+                                                            startIcon={<AttachMoneyIcon />}
+                                                        >
+                                                            Calcular
+                                                        </Button>
+                                                        <Button
+                                                            variant="contained"
+                                                            color="secondary"
+                                                            size="small"
+                                                            onClick={() => handlePay(historial.patente)}
+                                                            sx={{ margin: '0.5rem' }}
+                                                            startIcon={<AttachMoneyIcon />}
+                                                        >
+                                                            Pagar
+                                                        </Button>
+                                                    </>
+                                                )}
+                                            </TableCell>
+                                        </TableRow>
+                                    ))}
+                                </TableBody>
+                            </Table>
+                        </TableContainer>
                     </Paper>
-                </div>
+                </Box>
             )}
-            <TableContainer component={Paper}>
-                <br />
-                <Table sx={{ minWidth: 650 }} size="small" aria-label="a dense table">
-                    <TableHead>
-                        <TableRow>
-                            <TableCell align="left">Patente</TableCell>
-                            <TableCell align="left">N° de Reparación</TableCell>
-                            <TableCell align="left">Descripción</TableCell>
-                            <TableCell align="left">ID Historial Reparaciones</TableCell>
-                            <TableCell align="left">Fecha Reparación</TableCell>
-                            <TableCell align="left">Hora Reparación</TableCell>
-                            <TableCell align="left">Monto</TableCell>
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        {reparaciones.length > 0 && reparaciones.map((reparacion) => (
-                            <TableRow key={reparacion.id}>
-                                <TableCell align="left">{reparacion.patente}</TableCell>
-                                <TableCell align="left">{reparacion.tipoReparacion}</TableCell>
-                                <TableCell align="left">{reparacion.descripcion}</TableCell>
-                                <TableCell align="left">{reparacion.idHistorialReparaciones}</TableCell>
-                                <TableCell align="left">{reparacion.fechaReparacion}</TableCell>
-                                <TableCell align="left">{reparacion.horaReparacion}</TableCell>
-                                <TableCell align="left">{reparacion.montoReparacion}</TableCell>
-                                <TableCell align="left"> {/* Aquí puedes agregar las acciones para esta tabla si es necesario */}</TableCell>
+            <Paper elevation={3}>
+                <TableContainer>
+                    <Table sx={{ minWidth: 650 }} size="small" aria-label="a dense table">
+                        <TableHead>
+                            <TableRow>
+                                <TableCell align="left">Patente</TableCell>
+                                <TableCell align="left">N° de Reparación</TableCell>
+                                <TableCell align="left">Descripción</TableCell>
+                                <TableCell align="left">ID Historial Reparaciones</TableCell>
+                                <TableCell align="left">Fecha Reparación</TableCell>
+                                <TableCell align="left">Hora Reparación</TableCell>
+                                <TableCell align="left">Monto</TableCell>
                             </TableRow>
-                        ))}
-                    </TableBody>
-                </Table>
-            </TableContainer>
+                        </TableHead>
+                        <TableBody>
+                            {reparaciones.length > 0 && reparaciones.map((reparacion) => (
+                                <TableRow key={reparacion.id}>
+                                    <TableCell align="left">{reparacion.patente}</TableCell>
+                                    <TableCell align="left">{reparacion.tipoReparacion}</TableCell>
+                                    <TableCell align="left">{reparacion.descripcion}</TableCell>
+                                    <TableCell align="left">{reparacion.idHistorialReparaciones}</TableCell>
+                                    <TableCell align="left">{reparacion.fechaReparacion}</TableCell>
+                                    <TableCell align="left">{reparacion.horaReparacion}</TableCell>
+                                    <TableCell align="left">{reparacion.montoReparacion}</TableCell>
+                                </TableRow>
+                            ))}
+                        </TableBody>
+                    </Table>
+                </TableContainer>
+            </Paper>
         </div>
     );
 };
