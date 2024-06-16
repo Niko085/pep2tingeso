@@ -74,7 +74,7 @@ const HistorialReparacionesList = () => {
   const handleCalculate = (patente) => {
     console.log("Calculando historial de reparaciones para la patente:", patente);
     axios
-      .get(`http://localhost:8081/historialreparaciones/calculate?patente=${patente}`)
+      .get(`http://127.0.0.1:8081/historialreparaciones/calculate?patente=${patente}`)
       .then(() => {
         console.log("Historial de reparaciones calculado con éxito");
         init();
