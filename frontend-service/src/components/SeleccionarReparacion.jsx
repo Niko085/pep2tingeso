@@ -1,36 +1,20 @@
 import { useState, useEffect } from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";
 import Box from "@mui/material/Box";
-import TextField from "@mui/material/TextField";
+import MenuItem from "@mui/material/MenuItem";
 import Button from "@mui/material/Button";
 import FormControl from "@mui/material/FormControl";
-import MenuItem from "@mui/material/MenuItem";
 import SaveIcon from "@mui/icons-material/Save";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import RemoveCircleIcon from "@mui/icons-material/RemoveCircle";
 import reparacionService from "../services/reparacion.service";
 import historialReparacionesService from "../services/historialReparaciones.service";
 
-const reparaciones = [
-  { value: 1, label: "Reparaciones del Sistema de Frenos" },
-  { value: 2, label: "Servicio del Sistema de Refrigeración" },
-  { value: 3, label: "Reparaciones del Motor" },
-  { value: 4, label: "Reparaciones de la Transmisión" },
-  { value: 5, label: "Reparación del Sistema Eléctrico" },
-  { value: 6, label: "Reparaciones del Sistema de Escape" },
-  { value: 7, label: "Reparación de Neumáticos y Ruedas" },
-  { value: 8, label: "Reparaciones de la Suspensión y la Dirección" },
-  { value: 9, label: "Reparación del Sistema de Aire Acondicionado y Calefacción" },
-  { value: 10, label: "Reparaciones del Sistema de Combustible" },
-  { value: 11, label: "Reparación y Reemplazo del Parabrisas y Cristales" }
-];
-
 const ReparacionSelectionForm = () => {
   const [patente, setPatente] = useState("");
-  const [reparacionesDisponibles, setReparacionesDisponibles] = useState(reparaciones);
+  const [reparacionesDisponibles, setReparacionesDisponibles] = useState([]);
   const [reparacionesSeleccionadas, setReparacionesSeleccionadas] = useState([]);
-  const { idH, patenteH } = useParams();
-  const [id, setId] = useState("");
+  const { idH } = useParams();
   const [idHistorialReparaciones, setIdHistorialReparaciones] = useState("");
   const [titleReparacionForm, setTitleReparacionForm] = useState("");
   const [fechaIngresoTaller, setFechaIngresoTaller] = useState("");
@@ -39,6 +23,40 @@ const ReparacionSelectionForm = () => {
 
   useEffect(() => {
     setTitleReparacionForm("Seleccione las reparaciones a realizar");
+  
+    // Fetching available repairs from the API
+    if (patente) {
+      fetch(`http://localhost:8081/historialreparaciones/monto/montos/${patente}`)
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error(`Network response was not ok: ${response.statusText}`);
+          }
+          return response.json();
+        })
+        .then((data) => {
+          // Debug: Log the raw data from the API
+          console.log("Raw data from API:", data);
+  
+          // Mapping the response data to match the format expected by the component
+          const reparaciones = data.map((item) => ({
+            id: item.id,
+            tipoReparacion: item.tipoReparacion,
+            descripcion: item.descripcion,
+            numeroReparacion: item.numeroReparacion,
+            monto: item.monto,
+          }));
+  
+          // Debug: Log the mapped data
+          console.log("Mapped reparaciones:", reparaciones);
+  
+          setReparacionesDisponibles(reparaciones);
+        })
+        .catch((error) => {
+          console.error("Error fetching available repairs:", error);
+        });
+    }
+  
+    // Fetch historical repair data based on idH
     historialReparacionesService.get(idH)
       .then((response) => {
         const historial = response.data;
@@ -50,31 +68,33 @@ const ReparacionSelectionForm = () => {
       .catch((error) => {
         console.log("Se ha producido un error al obtener el historial de reparaciones.", error);
       });
-  }, [idH]);
+  }, [idH, patente]);
+  
 
   const manejarSeleccionarReparacion = (index) => {
-    setReparacionesSeleccionadas([...reparacionesSeleccionadas, reparacionesDisponibles[index]].sort((a, b) => a.value - b.value));
+    setReparacionesSeleccionadas([...reparacionesSeleccionadas, reparacionesDisponibles[index]]);
     const reparacionesDisponiblesAux = reparacionesDisponibles.filter((_, i) => i !== index);
     setReparacionesDisponibles(reparacionesDisponiblesAux);
   };
 
   const manejarEliminarReparacion = (index) => {
-    setReparacionesDisponibles([...reparacionesDisponibles, reparacionesSeleccionadas[index]].sort((a, b) => a.value - b.value));
+    setReparacionesDisponibles([...reparacionesDisponibles, reparacionesSeleccionadas[index]]);
     const reparacionesSeleccionadasAux = reparacionesSeleccionadas.filter((_, i) => i !== index);
     setReparacionesSeleccionadas(reparacionesSeleccionadasAux);
   };
 
   const saveReparacion = (e) => {
-    e.preventDefault();
+    e.preventDefault(); // Prevenir envío automático del formulario
+
+    console.log("Reparaciones seleccionadas:", reparacionesSeleccionadas);
 
     const reparacionesToSave = reparacionesSeleccionadas.map((reparacion) => ({
       patente,
-      tipoReparacion: reparacion.value,
-      descripcion: reparacion.label,
+      tipoReparacion: reparacion.numeroReparacion,
+      descripcion: reparacion.tipoReparacion,
       fechaReparacion: fechaIngresoTaller,
       horaReparacion: horaIngresoTaller,
       idHistorialReparaciones,
-      id,
     }));
 
     console.log("Reparaciones to Save:", reparacionesToSave); // Debug
@@ -114,8 +134,12 @@ const ReparacionSelectionForm = () => {
       <div>
         <h4>Reparaciones Disponibles</h4>
         {reparacionesDisponibles.map((reparacion, index) => (
-          <MenuItem key={reparacion.value} onClick={() => manejarSeleccionarReparacion(index)} className="d-flex justify-content-between">
-            {reparacion.label}
+          <MenuItem key={reparacion.id} onClick={() => manejarSeleccionarReparacion(index)} className="d-flex justify-content-between">
+            <div>
+              <span>{reparacion.tipoReparacion}</span>
+              <br />
+              <span>Precio: {reparacion.monto}</span>
+            </div>
             <AddCircleIcon color="success" />
           </MenuItem>
         ))}
@@ -123,8 +147,12 @@ const ReparacionSelectionForm = () => {
       <div>
         <h4>Reparaciones Seleccionadas</h4>
         {reparacionesSeleccionadas.map((reparacion, index) => (
-          <MenuItem key={reparacion.value} onClick={() => manejarEliminarReparacion(index)} className="d-flex justify-content-between">
-            {reparacion.label}
+          <MenuItem key={reparacion.id} onClick={() => manejarEliminarReparacion(index)} className="d-flex justify-content-between">
+            <div>
+              <span>{reparacion.tipoReparacion}</span>
+              <br />
+              <span>Precio: {reparacion.monto}</span>
+            </div>
             <RemoveCircleIcon color="error" />
           </MenuItem>
         ))}
@@ -134,7 +162,7 @@ const ReparacionSelectionForm = () => {
         <Button
           variant="contained"
           color="info"
-          type="submit"
+          type="submit" // Asegúrate de que el tipo de botón sea 'submit'
           style={{ marginLeft: "0.5rem" }}
           startIcon={<SaveIcon />}
         >

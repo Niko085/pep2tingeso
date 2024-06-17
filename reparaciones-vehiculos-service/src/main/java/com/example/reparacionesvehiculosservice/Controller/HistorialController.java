@@ -4,6 +4,7 @@ import com.example.reparacionesvehiculosservice.Entity.DatosBonosEntity;
 import com.example.reparacionesvehiculosservice.Entity.HistorialEntity;
 import com.example.reparacionesvehiculosservice.Entity.ReparacionEntity;
 import com.example.reparacionesvehiculosservice.Model.AutomovilEntity;
+import com.example.reparacionesvehiculosservice.Model.ValorReparacionEntity;
 import com.example.reparacionesvehiculosservice.Service.DatosBonosService;
 import com.example.reparacionesvehiculosservice.Service.HistorialService;
 import com.example.reparacionesvehiculosservice.Service.ReparacionService;
@@ -96,6 +97,13 @@ public class HistorialController {
     @GetMapping("/montoTipoReparacionByTipoAutomovil/{tipoReparacion}/{tipoAuto}/{numMes}/{ano}")
     public int getMontoTipoReparacionByTipoAutomovil(@PathVariable int tipoReparacion, @PathVariable String tipoAuto, @PathVariable int numMes, @PathVariable int ano) {
         return historialService.getMontoTipoReparacionByTipoAutomovil(tipoReparacion, tipoAuto, numMes, ano);
+    }
+
+    @GetMapping("/monto/montos/{patente}")
+    public ResponseEntity<List<ValorReparacionEntity>> listaValores(@PathVariable String patente) {
+        List<ValorReparacionEntity> montos = historialService.getMontosByPatente(patente);
+        return ResponseEntity.ok(montos);
+
     }
 
 

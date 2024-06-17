@@ -3,8 +3,11 @@ package com.example.reparacionesvehiculosservice.Service;
 import com.example.reparacionesvehiculosservice.Entity.HistorialEntity;
 import com.example.reparacionesvehiculosservice.Entity.ReparacionEntity;
 import com.example.reparacionesvehiculosservice.Model.AutomovilEntity;
+import com.example.reparacionesvehiculosservice.Model.ValorReparacionEntity;
 import com.example.reparacionesvehiculosservice.Repository.HistorialRepository;
+import jakarta.ws.rs.HttpMethod;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -73,6 +76,39 @@ public class HistorialService {
         }
 
     }
+
+
+    /////////////////////////////////////COMUNICACIÓN CON VALOR REPARACIONES/////////////////////////////////////
+
+    //http://localhost:8081/valorReparacion/montos/Hibrido
+    public List<ValorReparacionEntity> getMontosByTipoMotor(String tipoMotor) {
+        // Utiliza el nombre lógico del servicio registrado en Eureka
+        String url = "http://valor-reparaciones-service/valorReparacion/montos/" + tipoMotor;
+
+        // Realiza la solicitud utilizando RestTemplate
+        List<ValorReparacionEntity> valores = restTemplate.getForObject(url, List.class);
+        return valores;
+    }
+
+
+    public List<ValorReparacionEntity> getMojjjntosByTipoMotor(String tipoMotor) {
+        // Utiliza el nombre lógico del servicio registrado en Eureka
+        String url = "http://valor-reparaciones-service/valorReparacion/montos/" + tipoMotor;
+
+        // Realiza la solicitud utilizando RestTemplate
+        ValorReparacionEntity[] valoresArray = restTemplate.getForObject(url, ValorReparacionEntity[].class);
+
+        // Convierte el array en una lista
+        return Arrays.asList(valoresArray);
+    }
+
+
+    public List<ValorReparacionEntity> getMontosByPatente(String patente){
+        AutomovilEntity automovil = reparacionService.getAutomovilByPatente(patente);
+        List<ValorReparacionEntity> montos = getMontosByTipoMotor(automovil.getMotor());
+        return montos;
+    }
+
 
 
     //Función modificada para que calcule el monto total a pagar de un auto en particular, en un historial ya creado
