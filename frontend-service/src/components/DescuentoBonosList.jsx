@@ -13,6 +13,7 @@ import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import DriveEtaIcon from "@mui/icons-material/DriveEta";
+import AddIcon from "@mui/icons-material/Add"; // Importa el ícono de agregar
 import datosBonosService from "../services/datosBonos.service";
 
 const BonosList = () => {
@@ -67,68 +68,71 @@ const BonosList = () => {
 
   return (
     <TableContainer component={Paper}>
-      <br />
-      <Link
-        to="/bonos/add"
-        style={{ textDecoration: "none", marginBottom: "1rem" }}
-      >
-      </Link>
-      <br /> <br />
-      <Table sx={{ minWidth: 650 }} size="small" aria-label="a dense table">
-        <TableHead>
-          <TableRow>
-            <TableCell align="left" sx={{ fontWeight: "bold" }}>
-              Marca de automovil
-            </TableCell>
-            <TableCell align="left" sx={{ fontWeight: "bold" }}>
-              Cantidad de bonos
-            </TableCell>
-            <TableCell align="right" sx={{ fontWeight: "bold" }}>
-              Monto del bono
-            </TableCell>
-            <TableCell align="left" sx={{ fontWeight: "bold" }}>
-              Operación
-            </TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {bonos.map((bono) => (
-            <TableRow
-              key={bono.id}
-              sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+      <div style={{ margin: '20px' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+          <div>
+            <h1 style={{ fontSize: '24px', fontWeight: 'bold' }}>Bonos</h1>
+            <h2 style={{ color: '#666', textTransform: 'uppercase' }}>Listado de bonos registrados</h2>
+          </div>
+          <Link to="/bonos/add" style={{ textDecoration: 'none', marginBottom: '1rem' }}>
+            <Button
+              variant="contained"
+              color="primary"
+              startIcon={<AddIcon />} // Usa el ícono de agregar
             >
-              <TableCell align="left">{bono.marcaAutomovil}</TableCell>
-              <TableCell align="left">{bono.cantidadBonos}</TableCell>
-              <TableCell align="right">{bono.montoBono}</TableCell>
-              <TableCell>
-                <Button
-                //variant es el recuadro en azul
-                  variant="contained"
-                  color="info"
-                  size="small"
-                  onClick={() => handleEdit(bono.id)}
-                  style={{ marginLeft: "0.5rem" }}
-                  startIcon={<EditIcon />}
-                >
-                  Editar
-                </Button>
-
-                {/*<Button
-                  variant="contained"
-                  color="error"
-                  size="small"
-                  onClick={() => handleDelete(bono.id)}
-                  style={{ marginLeft: "0.5rem" }}
-                  startIcon={<DeleteIcon />}
-                >
-                  Eliminar
-                </Button>
-          */}
+              Agregar Bono
+            </Button>
+          </Link>
+        </div>
+        <Table sx={{ minWidth: 650 }} size="small" aria-label="a dense table">
+          <TableHead>
+            <TableRow>
+              <TableCell align="left" sx={{ fontWeight: 'bold' }}>
+                Marca Automóvil
+              </TableCell>
+              <TableCell align="left" sx={{ fontWeight: 'bold' }}>
+                Cantidad de bonos
+              </TableCell>
+              <TableCell align="right" sx={{ fontWeight: 'bold' }}>
+                Monto del bono
+              </TableCell>
+              <TableCell align="left" sx={{ fontWeight: 'bold' }}>
+                Operaciones
               </TableCell>
             </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+          </TableHead>
+          <TableBody>
+            {bonos.map((bono) => (
+              <TableRow key={bono.id}>
+                <TableCell align="left">{bono.marcaAutomovil}</TableCell>
+                <TableCell align="left">{bono.cantidadBonos}</TableCell>
+                <TableCell align="right">{bono.montoBono}</TableCell>
+                <TableCell>
+                  <Button
+                    variant="contained"
+                    color="primary" // Cambiado a "primary" para el botón de editar
+                    size="small"
+                    onClick={() => handleEdit(bono.id)}
+                    style={{ marginRight: '0.5rem' }}
+                    startIcon={<EditIcon />}
+                  >
+                    Editar
+                  </Button>
+                  <Button
+                    variant="contained"
+                    color="error" // Usando "error" para el botón de eliminar
+                    size="small"
+                    onClick={() => handleDelete(bono.id)}
+                    startIcon={<DeleteIcon />}
+                  >
+                    Eliminar
+                  </Button>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </div>
     </TableContainer>
   );
 };

@@ -190,7 +190,7 @@ public class CostManagerService {
     }
 
 
-
+/*
     public int getMontoDescuentoBonos(AutomovilEntity automovil){
         String marca = automovil.getMarca();
         DatosBonosEntity datosBono = datosBonosService.getDatosBonosByMarca(marca);
@@ -199,6 +199,36 @@ public class CostManagerService {
             return datosBono.getMontoBono();
         }else return 0;
     }
+
+ */
+
+    public int getMontoDescuentoBonos(AutomovilEntity automovil) {
+        String marca = automovil.getMarca();
+
+        // Verificar si la marca es null o está vacía
+        if (marca == null || marca.isEmpty()) {
+            return 0; // Devolver un valor predeterminado (en este caso, 0)
+        }
+
+        // Intentar obtener los datos de bonos por la marca
+        DatosBonosEntity datosBono = datosBonosService.getDatosBonosByMarca(marca);
+
+        // Verificar si se encontraron datos de bonos para esa marca
+        if (datosBono != null) {
+            // Si hay bonos disponibles, decrementar la cantidad y devolver el monto del bono
+            if (datosBono.getCantidadBonos() > 0) {
+                datosBono.setCantidadBonos(datosBono.getCantidadBonos() - 1);
+                return datosBono.getMontoBono();
+            } else {
+                // Si no hay bonos disponibles, devolver 0
+                return 0;
+            }
+        } else {
+            // Si no se encontraron datos de bonos para esa marca, devolver 0
+            return 0;
+        }
+    }
+
 
 
 }

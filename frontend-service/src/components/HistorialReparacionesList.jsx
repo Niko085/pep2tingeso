@@ -107,7 +107,7 @@ const HistorialReparacionesList = () => {
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
         <div>
           <h1 style={{ fontSize: "24px", fontWeight: "bold" }}>Historial de Reparaciones</h1>
-          <h2 style={{ color: "#666", textTransform: "uppercase" }}>Lista de registrados</h2>
+          <h2 style={{ color: "#666", textTransform: "uppercase" }}>Listado de registros</h2>
         </div>
       </div>
       <TableContainer component={Paper} style={{ boxShadow: "0px 0px 15px rgba(0, 0, 0, 0.1)", borderRadius: "12px" }}>

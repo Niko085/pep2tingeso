@@ -19,6 +19,7 @@ import IngresoTaller from './components/IngresoTaller';
 import RetiroTaller from './components/RetiroTaller';
 import Pagar from './components/Pagar';
 
+
 function App() {
   return (
       <Router>

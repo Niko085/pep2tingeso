@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";
 import Box from "@mui/material/Box";
+import Grid from "@mui/material/Grid";
 import automovilService from "../services/automovil.service";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
@@ -106,7 +107,7 @@ const AddEditAutomovil = () => {
     }
   }, [id]);
 
-  // Generar lista de años desde 1980 hasta el año actual
+  // Generar lista de años desde 1995 hasta el año actual
   const years = Array.from({ length: year - 1995 + 1 }, (_, i) => 1995 + i);
 
   // Estilo del formulario
@@ -127,6 +128,7 @@ const AddEditAutomovil = () => {
         margin: "auto",
         marginTop: "30px",
       }}
+      onSubmit={saveAutomovil}
     >
       <h3>{titleAutomovilForm}</h3>
       <hr />
@@ -135,156 +137,144 @@ const AddEditAutomovil = () => {
           {errorMessage}
         </Alert>
       )}
-      <form onSubmit={saveAutomovil}>
-        <FormControl fullWidth>
-          <TextField
-            id="patente"
-            label="Patente"
-            value={patente}
-            variant="standard"
-            onChange={(a) => setPatente(a.target.value)}
-            helperText="Ej: CFTF45"
-          />
-        </FormControl>
-
-        <FormControl fullWidth>
-          <TextField
-            id="modelo"
-            label="Modelo"
-            value={modelo}
-            variant="standard"
-            onChange={(a) => setModelo(a.target.value)}
-            helperText="Ej: Getz"
-          />
-        </FormControl>
-  
-        <FormControl fullWidth>
-          <TextField
-            id="kilometraje"
-            label="Kilometraje"
-            type="number"
-            value={kilometraje}
-            variant="standard"
-            inputProps={{ min: "100" }} 
-            onChange={(a) => setKilometraje(a.target.value)}
-            helperText="Ej: 120000"
-          />
-        </FormControl>
-
-        <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
-          <div style={{ display: "flex", gap: "1rem" }}>
-            
-            <FormControl fullWidth>
-              <TextField
-                id="tipo"
-                label="Tipo de automóvil"
-                value={tipo}
-                select
-                variant="standard"
-                defaultValue="Sedan"
-                onChange={(a) => setTipo(a.target.value)}
-              >
-                <MenuItem value={"Sedan"}>Sedán</MenuItem>
-                <MenuItem value={"Hatchback"}>Hatchback</MenuItem>
-                <MenuItem value={"Suv"}>SUV</MenuItem>
-                <MenuItem value={"Pickup"}>Pickup</MenuItem>
-                <MenuItem value={"Furgoneta"}>Furgoneta</MenuItem>
-              </TextField>
-            </FormControl>
-
-            <FormControl fullWidth>
-              <TextField
-                id="motor"
-                label="Tipo de motor"
-                value={motor}
-                select
-                variant="standard"
-                defaultValue="Gasolina"
-                onChange={(a) => setMotor(a.target.value)}
-              >
-                <MenuItem value={"Gasolina"}>Gasolina</MenuItem>
-                <MenuItem value={"Diesel"}>Diésel</MenuItem>
-                <MenuItem value={"Hibrido"}>Híbrido</MenuItem>
-                <MenuItem value={"Electrico"}>Eléctrico</MenuItem>
-              </TextField>
-            </FormControl>
-          </div>
-
-          <div style={{ display: "flex", gap: "1rem" }}>
-            <FormControl fullWidth>
-              <TextField
-                id="marca"
-                label="Marca de automóvil"
-                value={marca}
-                select
-                variant="standard"
-                defaultValue="Hyundai"
-                onChange={(a) => setMarca(a.target.value)}
-              >
-                <MenuItem value={"Hyundai"}>Hyundai</MenuItem>
-                <MenuItem value={"Toyota"}>Toyota</MenuItem>
-                <MenuItem value={"Ford"}>Ford</MenuItem>
-                <MenuItem value={"Honda"}>Honda</MenuItem>
-              </TextField>
-            </FormControl>
-
-            <FormControl fullWidth>
-              <TextField
-                id="anioFabricacion"
-                label="Año de fabricación"
-                value={anioFabricacion}
-                select
-                variant="standard"
-                defaultValue="1980"
-                onChange={(a) => setAnioFabricacion(a.target.value)}
-              >
-                {years.map((year) => (
-                  <MenuItem key={year} value={year}>
-                    {year}
-                  </MenuItem>
-                ))}
-              </TextField>
-            </FormControl>
-          </div>
-
+      <Grid container spacing={2}>
+        <Grid item xs={12} sm={6}>
           <FormControl fullWidth>
             <TextField
-              id="cantAsientos"
-              label="Cantidad de asientos"
-              value={cantAsientos}
-              select
+              id="patente"
+              label="Patente"
+              value={patente}
               variant="standard"
-              defaultValue="5"
+              onChange={(a) => setPatente(a.target.value)}
+              helperText="Ej: CFTF45"
+            />
+          </FormControl>
+        </Grid>
+        <Grid item xs={12} sm={6}>
+          <FormControl fullWidth>
+            <TextField
+              id="modelo"
+              label="Modelo"
+              value={modelo}
+              variant="standard"
+              onChange={(a) => setModelo(a.target.value)}
+              helperText="Ej: Getz"
+            />
+          </FormControl>
+        </Grid>
+        <Grid item xs={12} sm={6}>
+          <FormControl fullWidth>
+            <TextField
+              id="marca"
+              label="Marca de automóvil"
+              value={marca}
+              variant="standard"
+              onChange={(a) => setMarca(a.target.value)}
+              helperText="Ej: Hyundai"
+            />
+          </FormControl>
+        </Grid>
+        <Grid item xs={12} sm={6}>
+          <FormControl fullWidth>
+            <TextField
+              id="kilometraje"
+              label="Kilometraje"
+              type="number"
+              value={kilometraje}
+              variant="standard"
+              inputProps={{ min: "1" }}
+              onChange={(a) => setKilometraje(a.target.value)}
+              helperText="Ej: 120000"
+            />
+          </FormControl>
+        </Grid>
+        <Grid item xs={12} sm={6}>
+          <FormControl fullWidth>
+            <InputLabel id="tipo-label">Tipo de automóvil</InputLabel>
+            <Select
+              labelId="tipo-label"
+              id="tipo"
+              value={tipo}
+              label="Tipo de automóvil"
+              onChange={(a) => setTipo(a.target.value)}
+            >
+              <MenuItem value={"Sedan"}>Sedán</MenuItem>
+              <MenuItem value={"Hatchback"}>Hatchback</MenuItem>
+              <MenuItem value={"Suv"}>SUV</MenuItem>
+              <MenuItem value={"Pickup"}>Pickup</MenuItem>
+              <MenuItem value={"Furgoneta"}>Furgoneta</MenuItem>
+            </Select>
+          </FormControl>
+        </Grid>
+        <Grid item xs={12} sm={6}>
+          <FormControl fullWidth>
+            <InputLabel id="motor-label">Tipo de motor</InputLabel>
+            <Select
+              labelId="motor-label"
+              id="motor"
+              value={motor}
+              label="Tipo de motor"
+              onChange={(a) => setMotor(a.target.value)}
+            >
+              <MenuItem value={"Gasolina"}>Gasolina</MenuItem>
+              <MenuItem value={"Diesel"}>Diésel</MenuItem>
+              <MenuItem value={"Hibrido"}>Híbrido</MenuItem>
+              <MenuItem value={"Electrico"}>Eléctrico</MenuItem>
+            </Select>
+          </FormControl>
+        </Grid>
+        <Grid item xs={12} sm={6}>
+          <FormControl fullWidth>
+            <InputLabel id="anioFabricacion-label">Año de fabricación</InputLabel>
+            <Select
+              labelId="anioFabricacion-label"
+              id="anioFabricacion"
+              value={anioFabricacion}
+              label="Año de fabricación"
+              onChange={(a) => setAnioFabricacion(a.target.value)}
+            >
+              {years.map((year) => (
+                <MenuItem key={year} value={year}>
+                  {year}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        </Grid>
+        <Grid item xs={12} sm={6}>
+          <FormControl fullWidth>
+            <InputLabel id="cantAsientos-label">Cantidad de asientos</InputLabel>
+            <Select
+              labelId="cantAsientos-label"
+              id="cantAsientos"
+              value={cantAsientos}
+              label="Cantidad de asientos"
               onChange={(a) => setCantAsientos(a.target.value)}
             >
-              {[...Array(11)].map((_, index) => (
+              {[...Array(10)].map((_, index) => (
                 <MenuItem key={index + 2} value={index + 2}>
                   {index + 2}
                 </MenuItem>
               ))}
-            </TextField>
+            </Select>
           </FormControl>
-        </div>
-
-
-
-        <FormControl>
-          <br />
+        </Grid>
+        <Grid item xs={12}>
           <Button
+            type="submit"
             variant="contained"
             color="info"
-            onClick={saveAutomovil}
-            style={{ marginLeft: "0.5rem" }}
             startIcon={<SaveIcon />}
+            fullWidth
           >
             Guardar
           </Button>
-        </FormControl>
-      </form>
+        </Grid>
+      </Grid>
       <hr />
       <Link to="/ingresoTaller">Retroceder</Link>
     </Box>
-  );  
+  );
 };
 
 export default AddEditAutomovil;

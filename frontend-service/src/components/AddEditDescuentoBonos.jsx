@@ -88,6 +88,7 @@ const AddEditBono = () => {
             value={marcaAutomovil}
             onChange={(e) => setMarcaAutomovil(e.target.value)}
             variant="outlined"
+            helperText="Ej: Honda"
             required
             size="small"
           />
