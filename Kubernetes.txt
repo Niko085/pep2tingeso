@@ -227,4 +227,4 @@ kubectl get svc
 
 Usamos:minikube tunnel
 
-kubectl logs -f frontend-deployment-7c55b6845-sx4hq
+kubectl logs -f frontend-deployment-844877f5ff-sqfb4
